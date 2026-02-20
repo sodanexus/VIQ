@@ -33,7 +33,7 @@
             z-index: -1;
         }
 
-        /* --- LAYOUT PRINCIPAL --- */
+        /* --- LAYOUT --- */
         .viq-master-wrapper {
             position: fixed;
             --margin-left: clamp(25px, 5vw, 45px);
@@ -54,13 +54,16 @@
             text-transform: uppercase;
             line-height: 0.95; 
             pointer-events: auto;
+            display: flex;
+            flex-direction: column; /* Aligne verticalement sans avoir besoin de <br> */
         }
 
         .viq-links a, .trigger-links {
             display: inline-block;
             color: #fff;
             text-decoration: none;
-            padding: 2px 0; 
+            /* On remplace les <br> par une marge précise */
+            margin-bottom: 4px; 
             transition: transform 0.4s cubic-bezier(0.2, 0, 0.2, 1), opacity 0.4s ease;
             cursor: pointer;
             white-space: nowrap;
@@ -69,12 +72,11 @@
 
         .brand-color { color: #b31300 !important; }
 
-        /* --- ANIMATION SWAP (CONTACT/LINKS -> CLOSE) --- */
+        /* --- ANIMATION SWAP --- */
         .trigger-links {
             position: relative;
             overflow: hidden; 
-            height: 0.95em; /* Force la hauteur d'une seule ligne */
-            display: block; 
+            height: 0.95em; 
         }
 
         .text-swap {
@@ -83,7 +85,6 @@
             transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
-        /* Décale le texte vers le haut pour montrer la 2ème ligne */
         .active-trigger .text-swap {
             transform: translateY(-0.95em);
         }
@@ -111,9 +112,9 @@
             }
         }
 
-        /* --- TIROIRS & CASCADE --- */
+        /* --- TIROIRS --- */
         .drawer { display: none; }
-        .drawer.active { display: block; }
+        .drawer.active { display: flex; flex-direction: column; }
         
         .drawer.active a {
             animation: fadeInRise 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards;
@@ -121,7 +122,7 @@
             transform: translateY(15px);
         }
 
-        /* Cascade pour tous les liens (jusqu'à 15 liens supportés) */
+        /* Cascade */
         .drawer.active a:nth-of-type(1) { animation-delay: 0.05s; }
         .drawer.active a:nth-of-type(2) { animation-delay: 0.10s; }
         .drawer.active a:nth-of-type(3) { animation-delay: 0.15s; }
@@ -132,11 +133,6 @@
         .drawer.active a:nth-of-type(8) { animation-delay: 0.40s; }
         .drawer.active a:nth-of-type(9) { animation-delay: 0.45s; }
         .drawer.active a:nth-of-type(10) { animation-delay: 0.50s; }
-        .drawer.active a:nth-of-type(11) { animation-delay: 0.55s; }
-        .drawer.active a:nth-of-type(12) { animation-delay: 0.60s; }
-        .drawer.active a:nth-of-type(13) { animation-delay: 0.65s; }
-        .drawer.active a:nth-of-type(14) { animation-delay: 0.70s; }
-        .drawer.active a:nth-of-type(15) { animation-delay: 0.75s; }
 
         @keyframes fadeInRise { to { opacity: 1; transform: translateY(0); } }
 
@@ -146,7 +142,6 @@
                 --margin-left: 20px; 
                 --margin-y: 35px; 
                 height: calc(100% - (var(--margin-y) * 2));
-                position: fixed;
             }
             .viq-bottom-zone { margin-top: auto; }
             #bg-video { object-position: 35% center; }
@@ -165,35 +160,35 @@
         <div class="viq-links top-block">
             <div class="trigger-links" id="btn-contact" onclick="toggleSection('contact')">
                 <span class="text-swap">CONTACT<br>CLOSE —</span>
-            </div><br>
+            </div>
             
-            <a href="https://votre-boutique.com" target="_blank">STORE</a><br>
+            <a href="https://votre-boutique.com" target="_blank">STORE</a>
             
             <div class="trigger-links" id="btn-links" onclick="toggleSection('links')">
                 <span class="text-swap">LINKS<br>CLOSE —</span>
-            </div><br>
+            </div>
             
             <a href="#" class="brand-color">VIQ</a>
         </div>
 
         <div class="viq-bottom-zone">
             <div class="viq-links drawer" id="contactDrawer">
-                <a href="mailto:viqmusic.promo@gmail.com">GENERAL INQUIRIES</a><br>
+                <a href="mailto:viqmusic.promo@gmail.com">GENERAL INQUIRIES</a>
                 <a href="https://drive.google.com/drive/folders/13zPAOc29mHrjve1CM-KaZwaS_TqAtFzI?usp=sharing" target="_blank">PRESS KIT</a>
             </div>
 
             <div class="viq-links drawer" id="linksDrawer">
-                <a href="https://tidal.com/artist/14851275" target="_blank">TIDAL</a><br>
-                <a href="https://www.tiktok.com/@viqmusic" target="_blank">TIKTOK</a><br>
-                <a href="https://www.deezer.com/fr/artist/53988822" target="_blank">DEEZER</a><br>
-                <a href="https://open.spotify.com/intl-fr/artist/6XpN8mRlhuOXuvEyva4yjZ" target="_blank">SPOTIFY</a><br>
-                <a href="https://music.amazon.fr/artists/B07SVHSJ37/viq" target="_blank">AMAZON</a><br>
-                <a href="https://www.pandora.com/artist/viq/AR7v5wJfcr9gkKX" target="_blank">PANDORA</a><br>
-                <a href="https://www.youtube.com/c/VIQmusic" target="_blank">YOUTUBE</a><br>
-                <a href="https://www.facebook.com/Viqmusic" target="_blank">FACEBOOK</a><br>
-                <a href="https://viqmusic.bandcamp.com/music" target="_blank">BANDCAMP</a><br>
-                <a href="https://www.instagram.com/viqmusic/" target="_blank">INSTAGRAM</a><br>
-                <a href="https://music.apple.com/us/artist/viq/1467177415" target="_blank">APPLE MUSIC</a><br>
+                <a href="https://tidal.com/artist/14851275" target="_blank">TIDAL</a>
+                <a href="https://www.tiktok.com/@viqmusic" target="_blank">TIKTOK</a>
+                <a href="https://www.deezer.com/fr/artist/53988822" target="_blank">DEEZER</a>
+                <a href="https://open.spotify.com/intl-fr/artist/6XpN8mRlhuOXuvEyva4yjZ" target="_blank">SPOTIFY</a>
+                <a href="https://music.amazon.fr/artists/B07SVHSJ37/viq" target="_blank">AMAZON</a>
+                <a href="https://www.pandora.com/artist/viq/AR7v5wJfcr9gkKX" target="_blank">PANDORA</a>
+                <a href="https://www.youtube.com/c/VIQmusic" target="_blank">YOUTUBE</a>
+                <a href="https://www.facebook.com/Viqmusic" target="_blank">FACEBOOK</a>
+                <a href="https://viqmusic.bandcamp.com/music" target="_blank">BANDCAMP</a>
+                <a href="https://www.instagram.com/viqmusic/" target="_blank">INSTAGRAM</a>
+                <a href="https://music.apple.com/us/artist/viq/1467177415" target="_blank">APPLE MUSIC</a>
                 <a href="https://soundcloud.com/viqmusic" target="_blank">SOUNDCLOUD</a>
             </div>
         </div>
