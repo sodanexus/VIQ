@@ -46,19 +46,18 @@
             flex-direction: column;
             justify-content: space-between;
             z-index: 10;
-            pointer-events: none;
+            pointer-events: none; /* Indispensable pour la vidéo */
         }
 
         .viq-links {
             font-size: clamp(28px, 5.5vw, 55px); 
             text-transform: uppercase;
             line-height: 0.95; 
-            pointer-events: auto;
+            pointer-events: auto; /* Réactive les interactions */
             display: flex;
             flex-direction: column;
         }
 
-        /* Base des liens et triggers */
         .viq-links a, .trigger-links {
             display: inline-block;
             color: #fff;
@@ -68,12 +67,12 @@
             cursor: pointer;
             white-space: nowrap;
             width: fit-content;
-            opacity: 1; /* Par défaut bien visible */
+            opacity: 1;
         }
 
         .brand-color { color: #b31300 !important; }
 
-        /* --- ANIMATION SWAP (Boutons CONTACT/LINKS) --- */
+        /* --- ANIMATION SWAP --- */
         .trigger-links {
             position: relative;
             overflow: hidden; 
@@ -91,31 +90,31 @@
             transform: translateY(-0.95em);
         }
 
-        /* --- LOGIQUE D'OPACITÉ (CORRIGÉE) --- */
+        /* --- LOGIQUE D'OPACITÉ (V3 - ROBUSTE) --- */
 
-        /* 1. État quand un tiroir est ouvert (fixe) */
+        /* Quand on survole n'importe quelle zone de liens (Haut ou Bas) */
+        @media(hover: hover) {
+            /* On baisse l'opacité de TOUS les liens du site dès qu'un élément est survolé */
+            .viq-master-wrapper:has(.top-block a:hover, .top-block .trigger-links:hover, .viq-bottom-zone a:hover) .viq-links a,
+            .viq-master-wrapper:has(.top-block a:hover, .top-block .trigger-links:hover, .viq-bottom-zone a:hover) .trigger-links {
+                opacity: 0.3;
+            }
+
+            /* On remet à 1 et on décale l'élément précisément survolé */
+            .viq-master-wrapper a:hover,
+            .viq-master-wrapper .trigger-links:hover {
+                opacity: 1 !important;
+                transform: translateX(15px);
+            }
+        }
+
+        /* État persistant quand un tiroir est ouvert (même sans survol) */
         .viq-master-wrapper.ui-open .top-block a, 
         .viq-master-wrapper.ui-open .top-block .trigger-links {
             opacity: 0.3;
         }
         .viq-master-wrapper.ui-open .active-trigger {
             opacity: 1 !important;
-        }
-
-        /* 2. Effet de survol PC (La règle la plus simple) */
-        @media(hover: hover) {
-            /* Dès qu'on survole le wrapper, TOUS les liens deviennent transparents */
-            .viq-master-wrapper:hover .viq-links a,
-            .viq-master-wrapper:hover .trigger-links {
-                opacity: 0.3;
-            }
-
-            /* MAIS celui qui est spécifiquement survolé redevient opaque et bouge */
-            .viq-master-wrapper .viq-links a:hover,
-            .viq-master-wrapper .trigger-links:hover {
-                opacity: 1 !important;
-                transform: translateX(15px);
-            }
         }
 
         /* --- TIROIRS & CASCADE --- */
@@ -128,7 +127,6 @@
             transform: translateY(15px);
         }
 
-        /* Délais de cascade */
         .drawer.active a:nth-of-type(1) { animation-delay: 0.05s; }
         .drawer.active a:nth-of-type(2) { animation-delay: 0.10s; }
         .drawer.active a:nth-of-type(3) { animation-delay: 0.15s; }
@@ -139,8 +137,6 @@
         .drawer.active a:nth-of-type(8) { animation-delay: 0.40s; }
         .drawer.active a:nth-of-type(9) { animation-delay: 0.45s; }
         .drawer.active a:nth-of-type(10) { animation-delay: 0.50s; }
-        .drawer.active a:nth-of-type(11) { animation-delay: 0.55s; }
-        .drawer.active a:nth-of-type(12) { animation-delay: 0.60s; }
 
         @keyframes fadeInRise { to { opacity: 1; transform: translateY(0); } }
 
@@ -153,9 +149,7 @@
             }
             .viq-bottom-zone { margin-top: auto; }
             #bg-video { object-position: 35% center; }
-            /* Stop translateX sur mobile */
-            .viq-master-wrapper .viq-links a:hover, 
-            .viq-master-wrapper .trigger-links:hover { transform: none; }
+            .viq-master-wrapper a:hover, .viq-master-wrapper .trigger-links:hover { transform: none; }
         }
     </style>
 </head>
@@ -172,13 +166,10 @@
             <div class="trigger-links" id="btn-contact" onclick="toggleSection('contact')">
                 <span class="text-swap">CONTACT<br>CLOSE —</span>
             </div>
-            
             <a href="https://votre-boutique.com" target="_blank">STORE</a>
-            
             <div class="trigger-links" id="btn-links" onclick="toggleSection('links')">
                 <span class="text-swap">LINKS<br>CLOSE —</span>
             </div>
-            
             <a href="#" class="brand-color">VIQ</a>
         </div>
 
