@@ -80,9 +80,19 @@
 </head>
 <body>
 
-    <video autoplay muted loop playsinline id="bg-video">
-        <source src="Background.mp4" type="video/mp4">
-    </video>
+<video autoplay muted loop playsinline poster="fallback.jpg" id="bg-video">
+    <source src="Background.mp4" type="video/mp4">
+</video>
+
+<script>
+    // Force la lecture sur mobile si l'autoplay est bloqué
+    window.addEventListener('touchstart', function() {
+        var video = document.querySelector('#bg-video');
+        if (video.paused) {
+            video.play();
+        }
+    }, {once: true});
+</script>
     <div class="overlay"></div>
 
     <div class="viq-container">
