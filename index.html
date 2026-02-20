@@ -57,77 +57,74 @@
             flex-direction: column;
         }
 
+        /* --- LIENS : BASE ET FLUIDITÉ --- */
         .viq-links a, .trigger-links {
             display: inline-block;
             color: #fff;
             text-decoration: none;
             margin-bottom: 4px; 
-            transition: transform 0.4s cubic-bezier(0.2, 0, 0.2, 1), opacity 0.4s ease;
+            /* Transition identique au bloc du haut pour la fluidité */
+            transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.5s ease;
             cursor: pointer;
             white-space: nowrap;
             width: fit-content;
+            opacity: 1;
         }
 
         .brand-color { color: #b31300 !important; }
 
-        /* --- ANIMATION SWAP (TEXTE) --- */
-        .trigger-links {
-            position: relative;
-            overflow: hidden; 
-            height: 0.95em; 
-        }
-        .text-swap {
-            display: block;
-            line-height: 0.95em;
-            transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-        }
+        /* --- TEXT SWAP (CONTACT/LINKS) --- */
+        .trigger-links { position: relative; overflow: hidden; height: 0.95em; }
+        .text-swap { display: block; line-height: 0.95em; transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1); }
         .active-trigger .text-swap { transform: translateY(-0.95em); }
 
-        /* --- HOVER ET OPACITÉ (PC) --- */
+        /* --- LOGIQUE D'OPACITÉ ET DÉCALAGE (VERSION FINALE) --- */
         @media(hover: hover) {
-            /* Quand on survole un lien dans n'importe quel bloc viq-links */
-            .viq-links:hover a, 
-            .viq-links:hover .trigger-links {
+            /* 1. On baisse l'opacité de TOUS les liens dès qu'on survole le menu */
+            .viq-master-wrapper:has(a:hover, .trigger-links:hover) a,
+            .viq-master-wrapper:has(a:hover, .trigger-links:hover) .trigger-links {
                 opacity: 0.3;
             }
-            /* L'élément survolé reste à 1 et se décale */
-            .viq-links a:hover, 
-            .viq-links .trigger-links:hover {
+
+            /* 2. On remet à 1 et on décale proprement l'élément survolé */
+            .viq-master-wrapper a:hover, 
+            .viq-master-wrapper .trigger-links:hover {
                 opacity: 1 !important;
-                transform: translateX(15px) !important;
+                transform: translateX(20px) !important;
             }
         }
 
-        /* État quand menu ouvert */
-        .ui-open .top-block a, .ui-open .top-block .trigger-links { opacity: 0.3; }
+        /* Verrouillage quand un tiroir est ouvert */
+        .ui-open .top-block a, 
+        .ui-open .top-block .trigger-links { opacity: 0.3; }
         .ui-open .active-trigger { opacity: 1 !important; }
 
-        /* --- TIROIRS ET ANIMATIONS --- */
+        /* --- ANIMATIONS TIROIRS --- */
         .drawer { display: none; }
-        .drawer.active { display: flex; }
-        .drawer.closing { display: flex; } /* Garde le flex pendant la fermeture */
+        .drawer.active, .drawer.closing { display: flex; }
 
-        /* Animation Entrée */
+        /* Entrée */
         .drawer.active a {
-            animation: fadeInRise 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+            animation: slideIn 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards;
             opacity: 0;
-            transform: translateY(20px);
         }
 
-        /* Animation Sortie */
+        /* Sortie */
         .drawer.closing a {
-            animation: fadeOutFall 0.4s cubic-bezier(0.19, 1, 0.22, 1) forwards !important;
+            animation: slideOut 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards !important;
         }
 
-        @keyframes fadeInRise { 
-            to { opacity: 1; transform: translateY(0); } 
-        }
-        @keyframes fadeOutFall { 
-            from { opacity: 1; transform: translateY(0); } 
-            to { opacity: 0; transform: translateY(20px); } 
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Délais Cascade (Entrée) */
+        @keyframes slideOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(30px); }
+        }
+
+        /* Cascade : Délais identiques pour l'harmonie */
         .drawer a:nth-child(1) { animation-delay: 0.05s; }
         .drawer a:nth-child(2) { animation-delay: 0.10s; }
         .drawer a:nth-child(3) { animation-delay: 0.15s; }
@@ -141,19 +138,10 @@
         .drawer a:nth-child(11) { animation-delay: 0.55s; }
         .drawer a:nth-child(12) { animation-delay: 0.60s; }
 
-        /* Délais Cascade (Sortie Inversée) */
-        .drawer.closing a:nth-child(1) { animation-delay: 0.30s; }
-        .drawer.closing a:nth-child(2) { animation-delay: 0.25s; }
-        .drawer.closing a:nth-child(3) { animation-delay: 0.20s; }
-        .drawer.closing a:nth-child(4) { animation-delay: 0.15s; }
-        .drawer.closing a:nth-child(5) { animation-delay: 0.10s; }
-        .drawer.closing a:nth-child(6) { animation-delay: 0.05s; }
-        /* ... etc pour les autres si besoin */
-
         @media (max-width: 768px) {
             .viq-master-wrapper { height: calc(100% - (var(--margin-y) * 2)); }
             .viq-bottom-zone { margin-top: auto; }
-            .viq-links a:hover, .trigger-links:hover { transform: none !important; }
+            .viq-master-wrapper a:hover, .trigger-links:hover { transform: none !important; }
         }
     </style>
 </head>
@@ -227,12 +215,11 @@
 
             drawers.forEach(drawer => {
                 if (drawer.classList.contains('active')) {
-                    drawer.classList.remove('active'); // On enlève active
-                    drawer.classList.add('closing'); // On met closing pour l'animation
-                    
+                    drawer.classList.remove('active');
+                    drawer.classList.add('closing');
                     setTimeout(() => {
                         drawer.classList.remove('closing');
-                    }, 800); 
+                    }, 1000); // Temps suffisant pour la cascade de sortie
                 }
             });
 
