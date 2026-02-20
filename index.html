@@ -79,6 +79,7 @@
         }
         #ui.dim .top > a, #ui.dim .top > .nav-btn { opacity: .3; }
         #ui.dim .top > .nav-btn.active { opacity: 1 !important; }
+        .top > a, .top > .nav-btn { will-change: opacity; }
         .drawer {
             position: absolute;
             bottom: 0; left: 0;
@@ -123,10 +124,6 @@
 
 <svg width="0" height="0" style="position:absolute">
     <defs>
-        <linearGradient id="flag-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%"   stop-color="black"/>
-            <stop offset="100%" stop-color="white"/>
-        </linearGradient>
         <filter id="wave-filter" x="-5%" y="-40%" width="120%" height="180%" color-interpolation-filters="sRGB">
             <feTurbulence type="turbulence" baseFrequency="0.03 0.07" numOctaves="3" seed="5" result="noise">
                 <animate attributeName="baseFrequency"
@@ -151,7 +148,7 @@
     <div class="links top">
         <div class="nav-btn" id="btn-links">LISTEN</div>
         <div class="nav-btn" id="btn-follow">REACH</div>
-        <a href="https://viq-shop.fourthwall.com/" target="_blank">WEAR</a>
+        <a href="https://votre-boutique.com" target="_blank">WEAR</a>
         <div class="nav-btn red" id="btn-bio">VIQ</div>
     </div>
 
@@ -162,6 +159,9 @@
             <a href="https://www.threads.com/@viqmusic" target="_blank">THREADS</a>
             <a href="https://www.facebook.com/Viqmusic" target="_blank">FACEBOOK</a>
             <a href="https://www.instagram.com/viqmusic/" target="_blank">INSTAGRAM</a>
+            <a class="bio-spacer"> </a>
+            <a href="https://drive.google.com/drive/folders/13zPAOc29mHrjve1CM-KaZwaS_TqAtFzI?usp=sharing" target="_blank">PRESS KIT</a>
+            <a href="mailto:viqmusic.promo@gmail.com">GENERAL INQUIRIES</a>
         </div>
 
         <div class="links drawer" id="linksDrawer">
@@ -180,9 +180,6 @@
             <p class="bio-text">Julien Pannetier, better known as VIQ, brings a fresh perspective to the electronic and indie music scene. Born and raised in Montmorency, France, he grew up surrounded by music — splitting his time between skateboarding and drawing inspiration from electronic pioneers such as Lorn, Justice, Daft Punk, and Mk.gee.</p>
             <p class="bio-text">Influenced by his daily life and emotions, VIQ crafts a sound that blends electronic music, hip-hop, synthwave, and dreampop. He began releasing music in 2019, quickly developing a signature style that caught the attention of California-based independent label Stratford.Ct — which he joined in 2020, releasing albums on vinyl and cassette.</p>
             <p class="bio-text">His work has been featured on several influential platforms including Lofi Girl, Electronic Gems, KALTBLUT Magazine, Stereofox, and Nightride FM. Alongside his music, he has also collaborated with the video game industry, contributing music and creative work to the gaming sector.</p>
-            <a class="bio-spacer"> </a>
-            <a href="mailto:viqmusic.promo@gmail.com">GENERAL INQUIRIES</a>
-            <a href="https://drive.google.com/drive/folders/13zPAOc29mHrjve1CM-KaZwaS_TqAtFzI?usp=sharing" target="_blank">PRESS KIT</a>
         </div>
 
     </div>
@@ -239,6 +236,19 @@ function killWave(btn) {
     btn.classList.remove('waving', 'active');
 }
 
+function setTopOpacity(activeBtn) {
+    var top = document.querySelector('.top');
+    var els = Array.from(top.querySelectorAll('a, .nav-btn'));
+    els.forEach(function(el) {
+        el.style.transition = 'opacity .25s ease, transform .25s cubic-bezier(.2,0,.2,1)';
+        if (!activeBtn) {
+            el.style.opacity = '';
+        } else {
+            el.style.opacity = (el === activeBtn) ? '1' : '0.3';
+        }
+    });
+}
+
 function kill(id) {
     timers[id].forEach(function(t) { clearTimeout(t); });
     timers[id] = [];
@@ -264,6 +274,7 @@ function openDrawer(drawer, btn) {
     drawer.classList.add('active');
     drawer.classList.remove('closing');
     ui.classList.add('dim');
+    setTopOpacity(btn);
     if (btn) startWave(btn);
     links.forEach(function(a, i) {
         var t1 = setTimeout(function() {
@@ -291,6 +302,7 @@ function closeDrawer(drawer, btn) {
     drawer.classList.remove('active');
     drawer.classList.add('closing');
     ui.classList.remove('dim');
+    setTopOpacity(null);
     if (btn) stopWave(btn);
     links.forEach(function(a, i) {
         var t = setTimeout(function() { anim(a, 'out', OUT); }, (n - 1 - i) * STEP);
