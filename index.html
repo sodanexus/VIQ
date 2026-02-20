@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             background: #000;
             color: #fff;
@@ -16,7 +15,6 @@
             overflow: hidden;
             -webkit-font-smoothing: antialiased;
         }
-
         #bg-video {
             position: fixed;
             inset: 0;
@@ -25,14 +23,12 @@
             object-position: 35% 45%;
             z-index: -2;
         }
-
         .overlay {
             position: fixed;
             inset: 0;
             background: rgba(0,0,0,.4);
             z-index: -1;
         }
-
         #ui {
             position: fixed;
             --mx: clamp(25px, 5vw, 45px);
@@ -44,20 +40,17 @@
             z-index: 10;
             pointer-events: none;
         }
-
         .top {
             flex-shrink: 0;
             pointer-events: auto;
             padding-bottom: clamp(12px, 2vh, 24px);
         }
-
         .bottom {
             flex: 1 1 0;
             min-height: 0;
             position: relative;
             overflow: hidden;
         }
-
         .links {
             font-size: clamp(28px, 5.5vw, 55px);
             text-transform: uppercase;
@@ -66,41 +59,37 @@
             display: flex;
             flex-direction: column;
         }
-
-        .links a, .btn {
+        .links a, .nav-btn {
             display: inline-block;
             color: #fff;
             text-decoration: none;
             margin-bottom: 4px;
-            transition: transform .25s cubic-bezier(.2,0,.2,1), opacity .25s ease;
             cursor: pointer;
             white-space: nowrap;
             width: fit-content;
+            transition: transform .25s cubic-bezier(.2,0,.2,1), opacity .25s ease;
         }
-
         .red { color: #b31300 !important; }
-
-        .btn {
-            position: relative;
-            overflow: hidden;
-            height: .95em;
-        }
-        .btn span {
-            display: block;
-            line-height: .95em;
-            transition: transform .5s cubic-bezier(.19,1,.22,1);
-        }
-        .btn.open span { transform: translateY(-.95em); }
+        .waving { filter: url(#wave-filter); }
 
         @media (hover: hover) {
-            .top:hover > a, .top:hover > .btn { opacity: .3; }
-            .top > a:hover, .top > .btn:hover { opacity: 1 !important; transform: translateX(15px) !important; }
+            .top:hover > a, .top:hover > .nav-btn { opacity: .3; }
+            .top > a:hover, .top > .nav-btn:hover, .top > .nav-btn.active { 
+                opacity: 1 !important; 
+                transform: translateX(15px) !important; 
+            }
             .drawer:hover > .dl { opacity: .3; }
-            .drawer > .dl:hover  { opacity: 1 !important; transform: translateX(15px) !important; }
+            .drawer > .dl:hover { opacity: 1 !important; transform: translateX(15px) !important; }
+        }
+        
+        /* Garde le décalage quand le bouton est actif */
+        .top > .nav-btn.active { 
+            transform: translateX(15px); 
+            opacity: 1 !important;
         }
 
-        #ui.dim .top > a, #ui.dim .top > .btn { opacity: .3; }
-        #ui.dim .top > .btn.open { opacity: 1 !important; }
+        #ui.dim .top > a, #ui.dim .top > .nav-btn { opacity: .3; }
+        #ui.dim .top > .nav-btn.active { opacity: 1 !important; }
 
         .drawer {
             position: absolute;
@@ -111,18 +100,42 @@
             pointer-events: none;
         }
         .drawer.active, .drawer.closing { visibility: visible; pointer-events: auto; }
-
         .drawer > a { opacity: 0; transform: translateY(18px); }
         .drawer > a.dl {
             opacity: 1; transform: translateY(0);
             transition: transform .25s cubic-bezier(.2,0,.2,1), opacity .25s ease;
         }
-
+        .bio-text {
+            font-size: clamp(14px, 2vw, 19px) !important;
+            line-height: 1.65 !important;
+            white-space: normal !important;
+            max-width: 560px;
+            text-transform: none !important;
+            text-align: justify;
+            letter-spacing: 0.01em;
+            margin-bottom: 0.75em;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(18px);
+        }
+        .bio-text.dl {
+            opacity: 1 !important; transform: translateY(0) !important;
+            transition: opacity .25s ease, transform .25s cubic-bezier(.2,0,.2,1) !important;
+        }
         @keyframes in  { from { opacity:0; transform:translateY(18px) } to { opacity:1; transform:translateY(0) } }
         @keyframes out { from { opacity:1; transform:translateY(0) } to { opacity:0; transform:translateY(18px) } }
     </style>
 </head>
 <body>
+
+<svg width="0" height="0" style="position:absolute">
+    <defs>
+        <filter id="wave-filter" x="-20%" y="-20%" width="140%" height="140%">
+            <feTurbulence type="turbulence" baseFrequency="0.015 0.04" numOctaves="2" seed="2" result="noise"/>
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="0" xChannelSelector="R" yChannelSelector="G"/>
+        </filter>
+    </defs>
+</svg>
 
 <video autoplay muted loop playsinline id="bg-video">
     <source src="Background.mp4" type="video/mp4">
@@ -131,31 +144,37 @@
 
 <div id="ui">
     <div class="links top">
-        <div class="btn" id="btn-contact"><span>CONTACT<br>CLOSE —</span></div>
-        <a href="https://votre-boutique.com" target="_blank">STORE</a>
-        <div class="btn" id="btn-links"><span>LINKS<br>CLOSE —</span></div>
-        <a href="#" class="red">VIQ</a>
+        <div class="nav-btn" id="btn-contact">CONTACT</div>
+        <div class="nav-btn" id="btn-follow">FOLLOW</div>
+        <a href="https://votre-boutique.com" target="_blank">MERCH</a>
+        <div class="nav-btn" id="btn-links">LISTEN</div>
+        <div class="nav-btn red" id="btn-bio">VIQ</div>
     </div>
 
     <div class="bottom">
+        <div class="links drawer" id="followDrawer">
+            <a href="https://www.tiktok.com/@viqmusic" target="_blank">TIK TOK</a>
+            <a href="https://www.facebook.com/Viqmusic" target="_blank">FACEBOOK</a>
+            <a href="https://www.instagram.com/viqmusic/" target="_blank">INSTAGRAM</a>
+        </div>
         <div class="links drawer" id="contactDrawer">
             <a href="mailto:viqmusic.promo@gmail.com">GENERAL INQUIRIES</a>
             <a href="https://drive.google.com/drive/folders/13zPAOc29mHrjve1CM-KaZwaS_TqAtFzI?usp=sharing" target="_blank">PRESS KIT</a>
         </div>
-
         <div class="links drawer" id="linksDrawer">
             <a href="https://tidal.com/artist/14851275" target="_blank">TIDAL</a>
-            <a href="https://www.tiktok.com/@viqmusic" target="_blank">TIKTOK</a>
+            <a href="https://music.apple.com/us/artist/viq/1467177415" target="_blank">APPLE</a>
             <a href="https://www.deezer.com/fr/artist/53988822" target="_blank">DEEZER</a>
-            <a href="https://open.spotify.com/intl-fr/artist/6XpN8mRlhuOXuvEyva4yjZ" target="_blank">SPOTIFY</a>
+            <a href="https://open.spotify.com/artist/0" target="_blank">SPOTIFY</a>
             <a href="https://music.amazon.fr/artists/B07SVHSJ37/viq" target="_blank">AMAZON</a>
-            <a href="https://www.pandora.com/artist/viq/AR7v5wJfcr9gkKX" target="_blank">PANDORA</a>
             <a href="https://www.youtube.com/c/VIQmusic" target="_blank">YOUTUBE</a>
-            <a href="https://www.facebook.com/Viqmusic" target="_blank">FACEBOOK</a>
             <a href="https://viqmusic.bandcamp.com/music" target="_blank">BANDCAMP</a>
-            <a href="https://www.instagram.com/viqmusic/" target="_blank">INSTAGRAM</a>
-            <a href="https://music.apple.com/us/artist/viq/1467177415" target="_blank">APPLE MUSIC</a>
             <a href="https://soundcloud.com/viqmusic" target="_blank">SOUNDCLOUD</a>
+        </div>
+        <div class="links drawer" id="bioDrawer">
+            <p class="bio-text">Julien Pannetier, better known as VIQ, brings a fresh perspective to the electronic and indie music scene. Born and raised in Montmorency, France, he grew up surrounded by music — splitting his time between skateboarding and drawing inspiration from electronic pioneers such as Lorn, Justice, Daft Punk, and Mk.gee.</p>
+            <p class="bio-text">Influenced by his daily life and emotions, VIQ crafts a sound that blends electronic music, hip-hop, synthwave, and dreampop. He began releasing music in 2019, quickly developing a signature style that caught the attention of California-based independent label Stratford.Ct — which he joined in 2020, releasing albums on vinyl and cassette.</p>
+            <p class="bio-text">His work has been featured on several influential platforms including Lofi Girl, Electronic Gems, KALTBLUT Magazine, Stereofox, and Nightride FM. Alongside his music, he has also collaborated with the video game industry, contributing music and creative work to the gaming sector.</p>
         </div>
     </div>
 </div>
@@ -163,10 +182,53 @@
 <script>
 var STEP = 35, IN = 300, OUT = 250;
 var ui = document.getElementById('ui');
-var timers = { contactDrawer: [], linksDrawer: [] };
+var timers = { contactDrawer: [], linksDrawer: [], bioDrawer: [], followDrawer: [] };
+
+var waveDisp = null;
+var waveRaf  = null;
+var waveVal  = 0;
+
+function getDisp() {
+    if (!waveDisp) waveDisp = document.querySelector('#wave-filter feDisplacementMap');
+    return waveDisp;
+}
+
+function startWave(btn) {
+    btn.classList.add('waving', 'active');
+    cancelAnimationFrame(waveRaf);
+    (function tick() {
+        waveVal += (6 - waveVal) * 0.04;
+        getDisp().setAttribute('scale', waveVal.toFixed(2));
+        waveRaf = requestAnimationFrame(tick);
+    })();
+}
+
+function stopWave(btn) {
+    if (!btn) return;
+    btn.classList.remove('active');
+    cancelAnimationFrame(waveRaf);
+    (function fade() {
+        waveVal += (0 - waveVal) * 0.08;
+        getDisp().setAttribute('scale', waveVal.toFixed(2));
+        if (waveVal > 0.05) {
+            waveRaf = requestAnimationFrame(fade);
+        } else {
+            getDisp().setAttribute('scale', '0');
+            btn.classList.remove('waving');
+            waveVal = 0;
+        }
+    })();
+}
+
+function killWaveEffect() {
+    cancelAnimationFrame(waveRaf);
+    waveVal = 0;
+    getDisp().setAttribute('scale', '0');
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('waving', 'active'));
+}
 
 function kill(id) {
-    timers[id].forEach(function(t) { clearTimeout(t); });
+    timers[id].forEach(t => clearTimeout(t));
     timers[id] = [];
 }
 
@@ -178,33 +240,23 @@ function anim(el, kf, ms) {
 
 function reset(a) {
     a.style.animation = '';
-    a.style.opacity = '';
+    a.style.opacity   = '';
     a.style.transform = '';
 }
 
 function openDrawer(drawer, btn) {
     var id = drawer.id;
-    var links = Array.from(drawer.querySelectorAll('a'));
+    var links = Array.from(drawer.querySelectorAll('a, p'));
     kill(id);
-
-    links.forEach(function(a) {
-        reset(a);
-        a.classList.remove('dl');
-        void a.offsetWidth;
-    });
-
+    links.forEach(a => { reset(a); a.classList.remove('dl'); void a.offsetWidth; });
     drawer.classList.add('active');
     drawer.classList.remove('closing');
     ui.classList.add('dim');
-    btn.classList.add('open');
-
-    links.forEach(function(a, i) {
-        var t1 = setTimeout(function() {
+    if (btn) startWave(btn);
+    links.forEach((a, i) => {
+        var t1 = setTimeout(() => {
             anim(a, 'in', IN);
-            var t2 = setTimeout(function() {
-                reset(a);
-                a.classList.add('dl');
-            }, IN + 20);
+            var t2 = setTimeout(() => { reset(a); a.classList.add('dl'); }, IN + 20);
             timers[id].push(t2);
         }, i * STEP);
         timers[id].push(t1);
@@ -213,11 +265,10 @@ function openDrawer(drawer, btn) {
 
 function closeDrawer(drawer, btn) {
     var id = drawer.id;
-    var links = Array.from(drawer.querySelectorAll('a'));
+    var links = Array.from(drawer.querySelectorAll('a, p'));
     var n = links.length;
     kill(id);
-
-    links.forEach(function(a) {
+    links.forEach(a => {
         var cs = getComputedStyle(a);
         a.style.animation = 'none';
         a.style.opacity = cs.opacity;
@@ -225,45 +276,63 @@ function closeDrawer(drawer, btn) {
         a.classList.remove('dl');
         void a.offsetWidth;
     });
-
     drawer.classList.remove('active');
     drawer.classList.add('closing');
-    if (btn) btn.classList.remove('open');
     ui.classList.remove('dim');
-
-    links.forEach(function(a, i) {
-        var t = setTimeout(function() { anim(a, 'out', OUT); }, (n - 1 - i) * STEP);
+    if (btn) stopWave(btn);
+    links.forEach((a, i) => {
+        var t = setTimeout(() => anim(a, 'out', OUT), (n - 1 - i) * STEP);
         timers[id].push(t);
     });
-
-    var tClean = setTimeout(function() {
+    var tClean = setTimeout(() => {
         drawer.classList.remove('closing');
-        links.forEach(function(a) { reset(a); });
+        links.forEach(reset);
     }, (n - 1) * STEP + OUT + 60);
     timers[id].push(tClean);
 }
 
+function closeAll(exceptId) {
+    var all = [
+        { d: document.getElementById('contactDrawer'), b: document.getElementById('btn-contact') },
+        { d: document.getElementById('linksDrawer'),   b: document.getElementById('btn-links') },
+        { d: document.getElementById('bioDrawer'),     b: document.getElementById('btn-bio') },
+        { d: document.getElementById('followDrawer'),  b: document.getElementById('btn-follow') }
+    ];
+    all.forEach(o => {
+        if (o.d.id !== exceptId && (o.d.classList.contains('active') || o.d.classList.contains('closing'))) {
+            o.b.classList.remove('active', 'waving');
+            closeDrawer(o.d, null);
+        }
+    });
+}
+
 function toggle(section) {
-    var isContact = section === 'contact';
-    var drawer   = document.getElementById(isContact ? 'contactDrawer' : 'linksDrawer');
-    var btn      = document.getElementById(isContact ? 'btn-contact'   : 'btn-links');
-    var other    = document.getElementById(isContact ? 'linksDrawer'   : 'contactDrawer');
-    var otherBtn = document.getElementById(isContact ? 'btn-links'     : 'btn-contact');
-
-    if (other.classList.contains('active') || other.classList.contains('closing')) {
-        closeDrawer(other, otherBtn);
-    }
-
-    if (drawer.classList.contains('active')) {
+    var map = {
+        contact: { d: 'contactDrawer', b: 'btn-contact' },
+        links:   { d: 'linksDrawer',   b: 'btn-links' },
+        bio:     { d: 'bioDrawer',     b: 'btn-bio' },
+        follow:  { d: 'followDrawer',  b: 'btn-follow' }
+    };
+    var drawer = document.getElementById(map[section].d);
+    var btn    = document.getElementById(map[section].b);
+    var isOpen = drawer.classList.contains('active');
+    
+    if (!isOpen) killWaveEffect(); 
+    
+    closeAll(isOpen ? null : map[section].d);
+    
+    if (isOpen) {
         closeDrawer(drawer, btn);
     } else {
         openDrawer(drawer, btn);
     }
 }
 
-document.getElementById('btn-contact').addEventListener('click', function() { toggle('contact'); });
-document.getElementById('btn-links').addEventListener('click', function() { toggle('links'); });
-document.addEventListener('touchstart', function() { document.getElementById('bg-video').play(); }, { once: true });
+document.getElementById('btn-contact').addEventListener('click', () => toggle('contact'));
+document.getElementById('btn-follow').addEventListener('click', () => toggle('follow'));
+document.getElementById('btn-links').addEventListener('click', () => toggle('links'));
+document.getElementById('btn-bio').addEventListener('click', () => toggle('bio'));
+document.addEventListener('touchstart', () => document.getElementById('bg-video').play(), { once: true });
 </script>
 </body>
 </html>
