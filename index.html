@@ -22,13 +22,13 @@
             top: 0; left: 0; width: 100%; height: 100%;
             object-fit: cover;
             z-index: -2;
-            object-position: center; 
+            object-position: center;
         }
 
         .overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.4); 
+            background: rgba(0, 0, 0, 0.4);
             z-index: -1;
         }
 
@@ -49,19 +49,20 @@
         }
 
         .viq-links {
-            font-size: clamp(28px, 5.5vw, 55px); 
+            font-size: clamp(28px, 5.5vw, 55px);
             text-transform: uppercase;
-            line-height: 0.95; 
+            line-height: 0.95;
             pointer-events: auto;
             display: flex;
             flex-direction: column;
         }
 
-        .viq-links a, .trigger-links {
+        .viq-links a,
+        .trigger-links {
             display: inline-block;
             color: #fff;
             text-decoration: none;
-            margin-bottom: 4px; 
+            margin-bottom: 4px;
             transition: transform 0.4s cubic-bezier(0.2, 0, 0.2, 1), opacity 0.4s ease;
             cursor: pointer;
             white-space: nowrap;
@@ -70,11 +71,11 @@
 
         .brand-color { color: #b31300 !important; }
 
-        /* --- ANIMATION SWAP (TEXTE) --- */
+        /* --- ANIMATION SWAP TEXTE --- */
         .trigger-links {
             position: relative;
-            overflow: hidden; 
-            height: 0.95em; 
+            overflow: hidden;
+            height: 0.95em;
         }
         .text-swap {
             display: block;
@@ -83,77 +84,79 @@
         }
         .active-trigger .text-swap { transform: translateY(-0.95em); }
 
-        /* --- HOVER ET OPACITÉ (PC) --- */
-        @media(hover: hover) {
-            /* Quand on survole un lien dans n'importe quel bloc viq-links */
-            .viq-links:hover a, 
-            .viq-links:hover .trigger-links {
+        /* =====================================================
+           HOVER — TOP BLOCK
+        ====================================================== */
+        @media (hover: hover) {
+            .top-block:hover > a,
+            .top-block:hover > .trigger-links {
                 opacity: 0.3;
             }
-            /* L'élément survolé reste à 1 et se décale */
-            .viq-links a:hover, 
-            .viq-links .trigger-links:hover {
+            .top-block > a:hover,
+            .top-block > .trigger-links:hover {
+                opacity: 1 !important;
+                transform: translateX(15px) !important;
+            }
+
+            /* =====================================================
+               HOVER — DRAWER
+               .drawer-link est posé par JS APRES la fin de l'animation
+               d'entree, ce qui garantit que la transition CSS reprend
+               la main (plus d'animation active qui ecrase le hover).
+            ====================================================== */
+            .drawer:hover > .drawer-link {
+                opacity: 0.3;
+            }
+            .drawer > .drawer-link:hover {
                 opacity: 1 !important;
                 transform: translateX(15px) !important;
             }
         }
 
-        /* État quand menu ouvert */
-        .ui-open .top-block a, .ui-open .top-block .trigger-links { opacity: 0.3; }
-        .ui-open .active-trigger { opacity: 1 !important; }
+        /* Estompage top block quand un menu est ouvert */
+        .ui-open .top-block > a,
+        .ui-open .top-block > .trigger-links { opacity: 0.3; }
+        .ui-open .top-block > .active-trigger { opacity: 1 !important; }
 
-        /* --- TIROIRS ET ANIMATIONS --- */
-        .drawer { display: none; }
-        .drawer.active { display: flex; }
-        .drawer.closing { display: flex; } /* Garde le flex pendant la fermeture */
+        /* --- TIROIRS --- */
+        .drawer         { display: none; }
+        .drawer.active  { display: flex; }
+        .drawer.closing { display: flex; }
 
-        /* Animation Entrée */
-        .drawer.active a {
-            animation: fadeInRise 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+        /* Etat de depart avant animation d'entree */
+        .drawer.active > a {
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(18px);
         }
 
-        /* Animation Sortie */
-        .drawer.closing a {
-            animation: fadeOutFall 0.4s cubic-bezier(0.19, 1, 0.22, 1) forwards !important;
+        /* Pendant l'animation d'ENTREE (classe posee par JS) */
+        .drawer > a.animating-in {
+            animation: fadeInRise 0.45s cubic-bezier(0.19, 1, 0.22, 1) forwards;
         }
 
-        @keyframes fadeInRise { 
-            to { opacity: 1; transform: translateY(0); } 
-        }
-        @keyframes fadeOutFall { 
-            from { opacity: 1; transform: translateY(0); } 
-            to { opacity: 0; transform: translateY(20px); } 
+        /* Pendant l'animation de SORTIE (classe posee par JS) */
+        .drawer > a.animating-out {
+            animation: fadeOutFall 0.35s cubic-bezier(0.19, 1, 0.22, 1) forwards;
         }
 
-        /* Délais Cascade (Entrée) */
-        .drawer a:nth-child(1) { animation-delay: 0.05s; }
-        .drawer a:nth-child(2) { animation-delay: 0.10s; }
-        .drawer a:nth-child(3) { animation-delay: 0.15s; }
-        .drawer a:nth-child(4) { animation-delay: 0.20s; }
-        .drawer a:nth-child(5) { animation-delay: 0.25s; }
-        .drawer a:nth-child(6) { animation-delay: 0.30s; }
-        .drawer a:nth-child(7) { animation-delay: 0.35s; }
-        .drawer a:nth-child(8) { animation-delay: 0.40s; }
-        .drawer a:nth-child(9) { animation-delay: 0.45s; }
-        .drawer a:nth-child(10) { animation-delay: 0.50s; }
-        .drawer a:nth-child(11) { animation-delay: 0.55s; }
-        .drawer a:nth-child(12) { animation-delay: 0.60s; }
+        /* Etat stable apres animation d'entree (geree par JS via .drawer-link) */
+        .drawer > a.drawer-link {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
-        /* Délais Cascade (Sortie Inversée) */
-        .drawer.closing a:nth-child(1) { animation-delay: 0.30s; }
-        .drawer.closing a:nth-child(2) { animation-delay: 0.25s; }
-        .drawer.closing a:nth-child(3) { animation-delay: 0.20s; }
-        .drawer.closing a:nth-child(4) { animation-delay: 0.15s; }
-        .drawer.closing a:nth-child(5) { animation-delay: 0.10s; }
-        .drawer.closing a:nth-child(6) { animation-delay: 0.05s; }
-        /* ... etc pour les autres si besoin */
+        @keyframes fadeInRise {
+            from { opacity: 0; transform: translateY(18px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeOutFall {
+            from { opacity: 1; transform: translateY(0); }
+            to   { opacity: 0; transform: translateY(18px); }
+        }
 
         @media (max-width: 768px) {
             .viq-master-wrapper { height: calc(100% - (var(--margin-y) * 2)); }
             .viq-bottom-zone { margin-top: auto; }
-            .viq-links a:hover, .trigger-links:hover { transform: none !important; }
         }
     </style>
 </head>
@@ -200,49 +203,110 @@
     </div>
 
     <script>
-        function toggleSection(section) {
+        const STEP_MS = 50; // ms entre chaque lien en cascade
+
+        function openDrawer(drawer, btn) {
             const wrapper = document.getElementById('masterWrapper');
-            const contactDrawer = document.getElementById('contactDrawer');
-            const linksDrawer = document.getElementById('linksDrawer');
-            const btnContact = document.getElementById('btn-contact');
-            const btnLinks = document.getElementById('btn-links');
+            const links = Array.from(drawer.querySelectorAll('a'));
 
-            const targetDrawer = (section === 'contact') ? contactDrawer : linksDrawer;
-            const targetBtn = (section === 'contact') ? btnContact : btnLinks;
-
-            if (targetDrawer.classList.contains('active')) {
-                closeAll();
-            } else {
-                closeAll();
-                targetDrawer.classList.add('active');
-                wrapper.classList.add('ui-open');
-                targetBtn.classList.add('active-trigger');
-            }
-        }
-
-        function closeAll() {
-            const wrapper = document.getElementById('masterWrapper');
-            const drawers = document.querySelectorAll('.drawer');
-            const buttons = document.querySelectorAll('.trigger-links');
-
-            drawers.forEach(drawer => {
-                if (drawer.classList.contains('active')) {
-                    drawer.classList.remove('active'); // On enlève active
-                    drawer.classList.add('closing'); // On met closing pour l'animation
-                    
-                    setTimeout(() => {
-                        drawer.classList.remove('closing');
-                    }, 800); 
-                }
+            // Reset total
+            links.forEach(a => {
+                a.classList.remove('drawer-link', 'animating-in', 'animating-out');
+                a.style.animationDelay = '';
             });
 
-            buttons.forEach(t => t.classList.remove('active-trigger'));
+            drawer.classList.add('active');
+            wrapper.classList.add('ui-open');
+            btn.classList.add('active-trigger');
+
+            // Cascade ENTREE : premier -> dernier
+            links.forEach((a, i) => {
+                const delayMs = i * STEP_MS;
+                const durationMs = 450;
+
+                setTimeout(() => {
+                    a.style.animationDelay = '0s';
+                    a.classList.add('animating-in');
+
+                    // Une fois l'animation terminee, on retire animating-in
+                    // et on pose drawer-link → la transition CSS reprend la main
+                    // ce qui permet au hover (opacity / translateX) de fonctionner
+                    setTimeout(() => {
+                        a.classList.remove('animating-in');
+                        a.classList.add('drawer-link');
+                    }, durationMs + 20);
+
+                }, delayMs);
+            });
+        }
+
+        function closeDrawer(drawer, btn) {
+            const wrapper = document.getElementById('masterWrapper');
+            const links = Array.from(drawer.querySelectorAll('a'));
+            const total = links.length;
+
+            // Retire immediatement drawer-link pour bloquer le hover pendant la sortie
+            links.forEach(a => {
+                a.classList.remove('drawer-link', 'animating-in');
+                a.style.animationDelay = '';
+            });
+
+            drawer.classList.remove('active');
+            drawer.classList.add('closing');
+            if (btn) btn.classList.remove('active-trigger');
             wrapper.classList.remove('ui-open');
+
+            // Cascade SORTIE INVERSEE : dernier -> premier
+            links.forEach((a, i) => {
+                const reverseIndex = total - 1 - i; // le dernier part en premier
+                const delayMs = reverseIndex * STEP_MS;
+                const durationMs = 350;
+
+                setTimeout(() => {
+                    a.style.animationDelay = '0s';
+                    a.classList.add('animating-out');
+                }, delayMs);
+            });
+
+            // Nettoyage apres fin complete de toutes les animations
+            const totalDurationMs = (total - 1) * STEP_MS + 350 + 100;
+            setTimeout(() => {
+                drawer.classList.remove('closing');
+                links.forEach(a => {
+                    a.classList.remove('animating-out');
+                    a.style.animationDelay = '';
+                });
+            }, totalDurationMs);
+        }
+
+        function toggleSection(section) {
+            const contactDrawer = document.getElementById('contactDrawer');
+            const linksDrawer   = document.getElementById('linksDrawer');
+            const btnContact    = document.getElementById('btn-contact');
+            const btnLinks      = document.getElementById('btn-links');
+
+            const targetDrawer = section === 'contact' ? contactDrawer : linksDrawer;
+            const targetBtn    = section === 'contact' ? btnContact    : btnLinks;
+            const otherDrawer  = section === 'contact' ? linksDrawer   : contactDrawer;
+            const otherBtn     = section === 'contact' ? btnLinks      : btnContact;
+
+            const isOpen = targetDrawer.classList.contains('active');
+
+            // Ferme l'autre tiroir si ouvert
+            if (otherDrawer.classList.contains('active')) {
+                closeDrawer(otherDrawer, otherBtn);
+            }
+
+            if (isOpen) {
+                closeDrawer(targetDrawer, targetBtn);
+            } else {
+                openDrawer(targetDrawer, targetBtn);
+            }
         }
 
         document.addEventListener('touchstart', () => {
             document.querySelector('#bg-video').play();
-        }, {once: true});
+        }, { once: true });
     </script>
 </body>
 </html>
