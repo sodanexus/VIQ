@@ -13,10 +13,9 @@
             color: #fff;
             font-family: 'Playfair Display', serif;
             min-height: 100vh;
-            overflow-y: auto;
+            overflow: hidden;
             -webkit-font-smoothing: antialiased;
         }
-        body::-webkit-scrollbar { display: none; }
 
         #bg-video {
             position: fixed;
@@ -33,7 +32,6 @@
             z-index: -1;
         }
 
-        /* --- LAYOUT --- */
         .viq-master-wrapper {
             position: fixed;
             --margin-left: clamp(25px, 5vw, 45px);
@@ -46,18 +44,19 @@
             flex-direction: column;
             justify-content: space-between;
             z-index: 10;
-            pointer-events: none; /* Indispensable pour la vidéo */
+            pointer-events: none;
         }
 
         .viq-links {
             font-size: clamp(28px, 5.5vw, 55px); 
             text-transform: uppercase;
             line-height: 0.95; 
-            pointer-events: auto; /* Réactive les interactions */
+            pointer-events: auto;
             display: flex;
             flex-direction: column;
         }
 
+        /* --- STYLE DES LIENS --- */
         .viq-links a, .trigger-links {
             display: inline-block;
             color: #fff;
@@ -67,12 +66,11 @@
             cursor: pointer;
             white-space: nowrap;
             width: fit-content;
-            opacity: 1;
         }
 
         .brand-color { color: #b31300 !important; }
 
-        /* --- ANIMATION SWAP --- */
+        /* --- ANIMATION TEXTE (CONTACT/LINKS) --- */
         .trigger-links {
             position: relative;
             overflow: hidden; 
@@ -90,34 +88,29 @@
             transform: translateY(-0.95em);
         }
 
-        /* --- LOGIQUE D'OPACITÉ (V3 - ROBUSTE) --- */
-
-        /* Quand on survole n'importe quelle zone de liens (Haut ou Bas) */
-        @media(hover: hover) {
-            /* On baisse l'opacité de TOUS les liens du site dès qu'un élément est survolé */
-            .viq-master-wrapper:has(.top-block a:hover, .top-block .trigger-links:hover, .viq-bottom-zone a:hover) .viq-links a,
-            .viq-master-wrapper:has(.top-block a:hover, .top-block .trigger-links:hover, .viq-bottom-zone a:hover) .trigger-links {
-                opacity: 0.3;
-            }
-
-            /* On remet à 1 et on décale l'élément précisément survolé */
-            .viq-master-wrapper a:hover,
-            .viq-master-wrapper .trigger-links:hover {
-                opacity: 1 !important;
-                transform: translateX(15px);
-            }
-        }
-
-        /* État persistant quand un tiroir est ouvert (même sans survol) */
-        .viq-master-wrapper.ui-open .top-block a, 
-        .viq-master-wrapper.ui-open .top-block .trigger-links {
+        /* --- CLASSES D'ÉTAT (Gérées par JS) --- */
+        
+        /* Quand on survole un élément, les autres passent en low-opacity */
+        .is-hovering-menu .viq-links a, 
+        .is-hovering-menu .trigger-links {
             opacity: 0.3;
         }
-        .viq-master-wrapper.ui-open .active-trigger {
+
+        /* L'élément précisément survolé ou actif */
+        .viq-links a:hover, 
+        .trigger-links:hover,
+        .active-trigger {
             opacity: 1 !important;
+            transform: translateX(15px);
         }
 
-        /* --- TIROIRS & CASCADE --- */
+        /* État quand un tiroir est ouvert (fixe l'opacité du menu) */
+        .ui-open .top-block a:not(.active-trigger), 
+        .ui-open .top-block .trigger-links:not(.active-trigger) {
+            opacity: 0.3;
+        }
+
+        /* --- TIROIRS --- */
         .drawer { display: none; }
         .drawer.active { display: flex; flex-direction: column; }
         
@@ -127,29 +120,22 @@
             transform: translateY(15px);
         }
 
+        /* Cascade liens tiroir */
         .drawer.active a:nth-of-type(1) { animation-delay: 0.05s; }
-        .drawer.active a:nth-of-type(2) { animation-delay: 0.10s; }
+        .drawer.active a:nth-of-type(2) { animation-delay: 0.1s; }
         .drawer.active a:nth-of-type(3) { animation-delay: 0.15s; }
-        .drawer.active a:nth-of-type(4) { animation-delay: 0.20s; }
+        .drawer.active a:nth-of-type(4) { animation-delay: 0.2s; }
         .drawer.active a:nth-of-type(5) { animation-delay: 0.25s; }
-        .drawer.active a:nth-of-type(6) { animation-delay: 0.30s; }
+        .drawer.active a:nth-of-type(6) { animation-delay: 0.3s; }
         .drawer.active a:nth-of-type(7) { animation-delay: 0.35s; }
-        .drawer.active a:nth-of-type(8) { animation-delay: 0.40s; }
-        .drawer.active a:nth-of-type(9) { animation-delay: 0.45s; }
-        .drawer.active a:nth-of-type(10) { animation-delay: 0.50s; }
+        .drawer.active a:nth-of-type(8) { animation-delay: 0.4s; }
 
         @keyframes fadeInRise { to { opacity: 1; transform: translateY(0); } }
 
-        /* --- MOBILE --- */
         @media (max-width: 768px) {
-            .viq-master-wrapper { 
-                --margin-left: 20px; 
-                --margin-y: 35px; 
-                height: calc(100% - (var(--margin-y) * 2));
-            }
+            .viq-master-wrapper { height: calc(100% - (var(--margin-y) * 2)); }
             .viq-bottom-zone { margin-top: auto; }
-            #bg-video { object-position: 35% center; }
-            .viq-master-wrapper a:hover, .viq-master-wrapper .trigger-links:hover { transform: none; }
+            .viq-links a:hover, .trigger-links:hover { transform: none; }
         }
     </style>
 </head>
@@ -161,7 +147,6 @@
     <div class="overlay"></div>
 
     <div class="viq-master-wrapper" id="masterWrapper">
-        
         <div class="viq-links top-block">
             <div class="trigger-links" id="btn-contact" onclick="toggleSection('contact')">
                 <span class="text-swap">CONTACT<br>CLOSE —</span>
@@ -176,29 +161,34 @@
         <div class="viq-bottom-zone">
             <div class="viq-links drawer" id="contactDrawer">
                 <a href="mailto:viqmusic.promo@gmail.com">GENERAL INQUIRIES</a>
-                <a href="https://drive.google.com/drive/folders/13zPAOc29mHrjve1CM-KaZwaS_TqAtFzI?usp=sharing" target="_blank">PRESS KIT</a>
+                <a href="https://drive.google.com/drive/folders/presskit" target="_blank">PRESS KIT</a>
             </div>
-
             <div class="viq-links drawer" id="linksDrawer">
-                <a href="https://tidal.com/artist/14851275" target="_blank">TIDAL</a>
-                <a href="https://www.tiktok.com/@viqmusic" target="_blank">TIKTOK</a>
-                <a href="https://www.deezer.com/fr/artist/53988822" target="_blank">DEEZER</a>
-                <a href="https://open.spotify.com/intl-fr/artist/6XpN8mRlhuOXuvEyva4yjZ" target="_blank">SPOTIFY</a>
-                <a href="https://music.amazon.fr/artists/B07SVHSJ37/viq" target="_blank">AMAZON</a>
-                <a href="https://www.pandora.com/artist/viq/AR7v5wJfcr9gkKX" target="_blank">PANDORA</a>
-                <a href="https://www.youtube.com/c/VIQmusic" target="_blank">YOUTUBE</a>
-                <a href="https://www.facebook.com/Viqmusic" target="_blank">FACEBOOK</a>
-                <a href="https://viqmusic.bandcamp.com/music" target="_blank">BANDCAMP</a>
-                <a href="https://www.instagram.com/viqmusic/" target="_blank">INSTAGRAM</a>
-                <a href="https://music.apple.com/us/artist/viq/1467177415" target="_blank">APPLE MUSIC</a>
-                <a href="https://soundcloud.com/viqmusic" target="_blank">SOUNDCLOUD</a>
+                <a href="#">SPOTIFY</a>
+                <a href="#">APPLE MUSIC</a>
+                <a href="#">YOUTUBE</a>
+                <a href="#">INSTAGRAM</a>
+                <a href="#">SOUNDCLOUD</a>
+                <a href="#">BANDCAMP</a>
             </div>
         </div>
     </div>
 
     <script>
+        const wrapper = document.getElementById('masterWrapper');
+        const allInteractive = document.querySelectorAll('.viq-links a, .trigger-links');
+
+        // GESTION DU SURVOL (HOVER) VIA JS POUR ÉVITER LES BUGS CSS
+        allInteractive.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                wrapper.classList.add('is-hovering-menu');
+            });
+            el.addEventListener('mouseleave', () => {
+                wrapper.classList.remove('is-hovering-menu');
+            });
+        });
+
         function toggleSection(section) {
-            const wrapper = document.getElementById('masterWrapper');
             const contactDrawer = document.getElementById('contactDrawer');
             const linksDrawer = document.getElementById('linksDrawer');
             const btnContact = document.getElementById('btn-contact');
@@ -224,13 +214,12 @@
         }
 
         function closeAll() {
-            const wrapper = document.getElementById('masterWrapper');
             document.querySelectorAll('.drawer').forEach(d => d.classList.remove('active'));
             document.querySelectorAll('.trigger-links').forEach(t => t.classList.remove('active-trigger'));
             wrapper.classList.remove('ui-open');
         }
 
-        document.addEventListener('touchstart', function() {
+        document.addEventListener('touchstart', () => {
             document.querySelector('#bg-video').play();
         }, {once: true});
     </script>
