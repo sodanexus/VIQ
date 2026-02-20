@@ -35,7 +35,7 @@
             "name": "Paris, France"
         },
         "sameAs": [
-            "https://open.spotify.com/intl-fr/artist/6XpN8mRlhuOXuvEyva4yjZ",
+            "https://open.spotify.com/artist/06i6mN7iU2q7i9U3u1W3vF",
             "https://music.apple.com/us/artist/viq/1467177415",
             "https://tidal.com/artist/14851275",
             "https://www.youtube.com/c/VIQmusic",
@@ -96,7 +96,6 @@
             flex: 1 1 0;
             min-height: 0;
             position: relative;
-            /* Changé de hidden à visible pour laisser le scroll fonctionner */
             overflow: visible; 
         }
         .links {
@@ -119,12 +118,17 @@
         }
         .red { color: #b31300 !important; }
         .waving { filter: url(#wave-filter); }
+
+        /* Effets au survol */
         @media (hover: hover) {
             .top:hover > a, .top:hover > .nav-btn { opacity: .3; }
             .top > a:hover, .top > .nav-btn:hover { opacity: 1 !important; transform: translateX(15px) !important; }
-            .drawer:hover > .dl { opacity: .3; }
-            .drawer > .dl:hover { opacity: 1 !important; transform: translateX(15px) !important; }
+            
+            /* Appliquer le décalage uniquement aux liens des tiroirs, SAUF la bio */
+            .drawer:not(#bioDrawer):hover > .dl { opacity: .3; }
+            .drawer:not(#bioDrawer) > .dl:hover { opacity: 1 !important; transform: translateX(15px) !important; }
         }
+
         #ui.dim .top > a, #ui.dim .top > .nav-btn { opacity: .3; }
         #ui.dim .top > .nav-btn.active { opacity: 1 !important; }
         .top > a, .top > .nav-btn { will-change: opacity; }
@@ -139,13 +143,13 @@
             max-height: 100%;
         }
         
-        /* Spécificité pour le défilement de la bio sur mobile */
         #bioDrawer {
             overflow-y: auto;
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE/Edge */
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            pointer-events: auto;
         }
-        #bioDrawer::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+        #bioDrawer::-webkit-scrollbar { display: none; }
 
         .drawer.active, .drawer.closing { visibility: visible; pointer-events: auto; }
         .drawer > a { opacity: 0; transform: translateY(18px); }
@@ -162,7 +166,7 @@
             text-align: justify;
             letter-spacing: 0.01em;
             margin-bottom: 0.75em;
-            pointer-events: auto; /* Permet le scroll sur le texte */
+            pointer-events: auto;
             opacity: 0;
             transform: translateY(18px);
         }
@@ -202,17 +206,6 @@
 <div style="position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;" aria-hidden="true">
     <h1>VIQ - Official Website</h1>
     <p>Electronic and indie music artist Julien Pannetier, known as VIQ, from Montmorency, France.</p>
-    <nav>
-        <a href="https://open.spotify.com/artist/6XpN8mRlhuOXuvEyva4yjZ">Spotify</a>
-        <a href="https://music.apple.com/us/artist/viq/1467177415">Apple Music</a>
-        <a href="https://tidal.com/artist/14851275">Tidal</a>
-        <a href="https://www.youtube.com/c/VIQmusic">YouTube</a>
-        <a href="https://soundcloud.com/viqmusic">SoundCloud</a>
-        <a href="https://viqmusic.bandcamp.com/music">Bandcamp</a>
-        <a href="https://www.instagram.com/viqmusic/">Instagram</a>
-        <a href="https://www.tiktok.com/@viqmusic">TikTok</a>
-        <a href="mailto:viqmusic.promo@gmail.com">Contact</a>
-    </nav>
 </div>
 
 <video autoplay muted loop playsinline id="bg-video">
@@ -222,10 +215,10 @@
 
 <div id="ui">
     <div class="links top">
-        <div class="nav-btn" id="btn-links">LISTEN</div>
-        <div class="nav-btn" id="btn-follow">REACH</div>
+        <a href="#listen" class="nav-btn" id="btn-links">LISTEN</a>
+        <a href="#reach" class="nav-btn" id="btn-follow">REACH</a>
         <a href="https://viq-shop.fourthwall.com/" target="_blank">WEAR</a>
-        <div class="nav-btn red" id="btn-bio">VIQ</div>
+        <a href="#bio" class="nav-btn red" id="btn-bio">VIQ</a>
     </div>
 
     <div class="bottom">
@@ -243,7 +236,7 @@
             <a href="https://tidal.com/artist/14851275" target="_blank">TIDAL</a>
             <a href="https://music.apple.com/us/artist/viq/1467177415" target="_blank">APPLE</a>
             <a href="https://www.deezer.com/fr/artist/53988822" target="_blank">DEEZER</a>
-            <a href="https://open.spotify.com/intl-fr/artist/6XpN8mRlhuOXuvEyva4yjZ" target="_blank">SPOTIFY</a>
+            <a href="https://open.spotify.com/artist/06i6mN7iU2q7i9U3u1W3vF" target="_blank">SPOTIFY</a>
             <a href="https://music.amazon.fr/artists/B07SVHSJ37/viq" target="_blank">AMAZON</a>
             <a href="https://www.youtube.com/c/VIQmusic" target="_blank">YOUTUBE</a>
             <a href="https://www.pandora.com/artist/viq/AR7v5wJfcr9gkKX" target="_blank">PANDORA</a>
@@ -266,7 +259,6 @@
 var STEP = 35, IN = 300, OUT = 250;
 var ui = document.getElementById('ui');
 var timers = { followDrawer: [], linksDrawer: [], bioDrawer: [] };
-
 var waveDisp = null;
 var waveRaf  = null;
 var waveVal  = 0;
@@ -351,7 +343,7 @@ function reset(a) {
 
 function openDrawer(drawer, btn) {
     var id    = drawer.id;
-    var links = Array.from(drawer.querySelectorAll('a, p'));
+    var links = Array.from(drawer.querySelectorAll('a, p, .bio-spacer'));
     kill(id);
     links.forEach(function(a) { reset(a); a.classList.remove('dl'); void a.offsetWidth; });
     drawer.classList.add('active');
@@ -371,7 +363,7 @@ function openDrawer(drawer, btn) {
 
 function closeDrawer(drawer, btn) {
     var id    = drawer.id;
-    var links = Array.from(drawer.querySelectorAll('a, p'));
+    var links = Array.from(drawer.querySelectorAll('a, p, .bio-spacer'));
     var n     = links.length;
     kill(id);
     links.forEach(function(a) {
@@ -394,7 +386,7 @@ function closeDrawer(drawer, btn) {
     var tClean = setTimeout(function() {
         drawer.classList.remove('closing');
         links.forEach(function(a) { reset(a); });
-        drawer.scrollTop = 0; // Remet le scroll en haut à la fermeture
+        drawer.scrollTop = 0;
     }, (n - 1) * STEP + OUT + 60);
     timers[id].push(tClean);
 }
@@ -413,7 +405,8 @@ function closeAll(exceptId) {
     });
 }
 
-function toggle(section) {
+function toggle(section, e) {
+    if (e) e.preventDefault();
     var map = {
         follow:  { d: 'followDrawer',  b: 'btn-follow' },
         links:   { d: 'linksDrawer',   b: 'btn-links' },
@@ -430,9 +423,9 @@ function toggle(section) {
     }
 }
 
-document.getElementById('btn-links').addEventListener('click', function() { toggle('links'); });
-document.getElementById('btn-follow').addEventListener('click', function() { toggle('follow'); });
-document.getElementById('btn-bio').addEventListener('click', function() { toggle('bio'); });
+document.getElementById('btn-links').addEventListener('click', function(e) { toggle('links', e); });
+document.getElementById('btn-follow').addEventListener('click', function(e) { toggle('follow', e); });
+document.getElementById('btn-bio').addEventListener('click', function(e) { toggle('bio', e); });
 document.addEventListener('touchstart', function() { document.getElementById('bg-video').play(); }, { once: true });
 </script>
 </body>
