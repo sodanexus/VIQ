@@ -13,7 +13,7 @@
             color: #fff;
             font-family: 'Playfair Display', serif;
             min-height: 100vh;
-            overflow-y: auto;
+            overflow: hidden;
             -webkit-font-smoothing: antialiased;
         }
         body::-webkit-scrollbar { display: none; }
@@ -55,14 +55,13 @@
             line-height: 0.95; 
             pointer-events: auto;
             display: flex;
-            flex-direction: column; /* Aligne verticalement sans avoir besoin de <br> */
+            flex-direction: column;
         }
 
         .viq-links a, .trigger-links {
             display: inline-block;
             color: #fff;
             text-decoration: none;
-            /* On remplace les <br> par une marge précise */
             margin-bottom: 4px; 
             transition: transform 0.4s cubic-bezier(0.2, 0, 0.2, 1), opacity 0.4s ease;
             cursor: pointer;
@@ -72,7 +71,7 @@
 
         .brand-color { color: #b31300 !important; }
 
-        /* --- ANIMATION SWAP --- */
+        /* --- ANIMATION SWAP (CONTACT/LINKS -> CLOSE) --- */
         .trigger-links {
             position: relative;
             overflow: hidden; 
@@ -89,30 +88,24 @@
             transform: translateY(-0.95em);
         }
 
-        /* --- OPACITÉ & FOCUS --- */
-        .viq-master-wrapper.ui-open .top-block a, 
-        .viq-master-wrapper.ui-open .top-block .trigger-links {
-            opacity: 0.3;
-        }
-        .viq-master-wrapper.ui-open .active-trigger {
-            opacity: 1 !important;
-        }
-
+        /* --- OPACITÉ & DÉCALAGE (HOVER PC) --- */
         @media(hover: hover) {
-            .viq-master-wrapper:has(a:hover) a,
-            .viq-master-wrapper:has(.trigger-links:hover) a,
-            .viq-master-wrapper:has(a:hover) .trigger-links,
-            .viq-master-wrapper:has(.trigger-links:hover) .trigger-links {
+            .viq-master-wrapper:has(.viq-links a:hover, .trigger-links:hover) .viq-links a,
+            .viq-master-wrapper:has(.viq-links a:hover, .trigger-links:hover) .trigger-links {
                 opacity: 0.3;
             }
-            .viq-master-wrapper a:hover,
-            .viq-master-wrapper .trigger-links:hover {
+            .viq-links a:hover, .trigger-links:hover {
                 opacity: 1 !important;
                 transform: translateX(15px);
             }
         }
 
-        /* --- TIROIRS --- */
+        /* Focus permanent quand menu ouvert */
+        .viq-master-wrapper.ui-open .top-block a, 
+        .viq-master-wrapper.ui-open .top-block .trigger-links { opacity: 0.3; }
+        .viq-master-wrapper.ui-open .active-trigger { opacity: 1 !important; }
+
+        /* --- TIROIRS (ANIMATIONS ENTRÉE/SORTIE) --- */
         .drawer { display: none; }
         .drawer.active { display: flex; flex-direction: column; }
         
@@ -122,29 +115,31 @@
             transform: translateY(15px);
         }
 
-        /* Cascade */
-        .drawer.active a:nth-of-type(1) { animation-delay: 0.05s; }
-        .drawer.active a:nth-of-type(2) { animation-delay: 0.10s; }
-        .drawer.active a:nth-of-type(3) { animation-delay: 0.15s; }
-        .drawer.active a:nth-of-type(4) { animation-delay: 0.20s; }
-        .drawer.active a:nth-of-type(5) { animation-delay: 0.25s; }
-        .drawer.active a:nth-of-type(6) { animation-delay: 0.30s; }
-        .drawer.active a:nth-of-type(7) { animation-delay: 0.35s; }
-        .drawer.active a:nth-of-type(8) { animation-delay: 0.40s; }
-        .drawer.active a:nth-of-type(9) { animation-delay: 0.45s; }
-        .drawer.active a:nth-of-type(10) { animation-delay: 0.50s; }
+        .drawer.closing a {
+            animation: fadeOutFall 0.4s cubic-bezier(0.19, 1, 0.22, 1) forwards !important;
+        }
 
         @keyframes fadeInRise { to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeOutFall { to { opacity: 0; transform: translateY(-10px); } }
 
-        /* --- MOBILE --- */
+        /* Cascade Délais */
+        .drawer a:nth-of-type(1) { animation-delay: 0.03s; }
+        .drawer a:nth-of-type(2) { animation-delay: 0.06s; }
+        .drawer a:nth-of-type(3) { animation-delay: 0.09s; }
+        .drawer a:nth-of-type(4) { animation-delay: 0.12s; }
+        .drawer a:nth-of-type(5) { animation-delay: 0.15s; }
+        .drawer a:nth-of-type(6) { animation-delay: 0.18s; }
+        .drawer a:nth-of-type(7) { animation-delay: 0.21s; }
+        .drawer a:nth-of-type(8) { animation-delay: 0.24s; }
+        .drawer a:nth-of-type(9) { animation-delay: 0.27s; }
+        .drawer a:nth-of-type(10) { animation-delay: 0.30s; }
+        .drawer a:nth-of-type(11) { animation-delay: 0.33s; }
+        .drawer a:nth-of-type(12) { animation-delay: 0.36s; }
+
         @media (max-width: 768px) {
-            .viq-master-wrapper { 
-                --margin-left: 20px; 
-                --margin-y: 35px; 
-                height: calc(100% - (var(--margin-y) * 2));
-            }
+            .viq-master-wrapper { height: calc(100% - (var(--margin-y) * 2)); }
             .viq-bottom-zone { margin-top: auto; }
-            #bg-video { object-position: 35% center; }
+            .viq-links a:hover, .trigger-links:hover { transform: none; }
         }
     </style>
 </head>
@@ -156,7 +151,6 @@
     <div class="overlay"></div>
 
     <div class="viq-master-wrapper" id="masterWrapper">
-        
         <div class="viq-links top-block">
             <div class="trigger-links" id="btn-contact" onclick="toggleSection('contact')">
                 <span class="text-swap">CONTACT<br>CLOSE —</span>
@@ -202,33 +196,38 @@
             const btnContact = document.getElementById('btn-contact');
             const btnLinks = document.getElementById('btn-links');
 
-            if (section === 'contact') {
-                const isActive = contactDrawer.classList.contains('active');
+            const targetDrawer = (section === 'contact') ? contactDrawer : linksDrawer;
+            const targetBtn = (section === 'contact') ? btnContact : btnLinks;
+
+            if (targetDrawer.classList.contains('active')) {
                 closeAll();
-                if (!isActive) {
-                    contactDrawer.classList.add('active');
-                    wrapper.classList.add('ui-open');
-                    btnContact.classList.add('active-trigger');
-                }
-            } else if (section === 'links') {
-                const isActive = linksDrawer.classList.contains('active');
-                closeAll();
-                if (!isActive) {
-                    linksDrawer.classList.add('active');
-                    wrapper.classList.add('ui-open');
-                    btnLinks.classList.add('active-trigger');
-                }
+            } else {
+                closeAll(); // On ferme d'abord l'autre s'il est ouvert
+                targetDrawer.classList.add('active');
+                wrapper.classList.add('ui-open');
+                targetBtn.classList.add('active-trigger');
             }
         }
 
         function closeAll() {
             const wrapper = document.getElementById('masterWrapper');
-            document.querySelectorAll('.drawer').forEach(d => d.classList.remove('active'));
-            document.querySelectorAll('.trigger-links').forEach(t => t.classList.remove('active-trigger'));
+            const drawers = document.querySelectorAll('.drawer');
+            const buttons = document.querySelectorAll('.trigger-links');
+
+            drawers.forEach(drawer => {
+                if (drawer.classList.contains('active')) {
+                    drawer.classList.add('closing'); 
+                    setTimeout(() => {
+                        drawer.classList.remove('active', 'closing');
+                    }, 400); // Temps de l'animation de sortie
+                }
+            });
+
+            buttons.forEach(t => t.classList.remove('active-trigger'));
             wrapper.classList.remove('ui-open');
         }
 
-        document.addEventListener('touchstart', function() {
+        document.addEventListener('touchstart', () => {
             document.querySelector('#bg-video').play();
         }, {once: true});
     </script>
