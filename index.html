@@ -9,7 +9,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background-color: #000;
+            background: #000;
             color: #fff;
             font-family: 'Playfair Display', serif;
             min-height: 100vh;
@@ -19,334 +19,239 @@
 
         #bg-video {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            inset: 0;
+            width: 100%; height: 100%;
             object-fit: cover;
             z-index: -2;
-            object-position: center;
         }
 
         .overlay {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.4);
+            inset: 0;
+            background: rgba(0,0,0,.4);
             z-index: -1;
         }
 
-        .viq-master-wrapper {
+        #ui {
             position: fixed;
-            --margin-left: clamp(25px, 5vw, 45px);
-            --margin-y: clamp(40px, 7vh, 65px);
-            top: var(--margin-y);
-            bottom: var(--margin-y);
-            left: var(--margin-left);
-            right: var(--margin-left);
+            --mx: clamp(25px, 5vw, 45px);
+            --my: clamp(40px, 7vh, 65px);
+            inset: var(--my) var(--mx);
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            overflow: hidden;
             z-index: 10;
             pointer-events: none;
         }
 
-        .viq-links {
+        .top {
+            flex-shrink: 0;
+            pointer-events: auto;
+            padding-bottom: clamp(12px, 2vh, 24px);
+        }
+
+        .bottom {
+            flex: 1 1 0;
+            min-height: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .links {
             font-size: clamp(28px, 5.5vw, 55px);
             text-transform: uppercase;
-            line-height: 0.95;
+            line-height: .95;
             pointer-events: auto;
             display: flex;
             flex-direction: column;
         }
 
-        .viq-links a,
-        .trigger-links {
+        .links a, .btn {
             display: inline-block;
             color: #fff;
             text-decoration: none;
             margin-bottom: 4px;
-            transition: transform 0.25s cubic-bezier(0.2, 0, 0.2, 1), opacity 0.25s ease;
+            transition: transform .25s cubic-bezier(.2,0,.2,1), opacity .25s ease;
             cursor: pointer;
             white-space: nowrap;
             width: fit-content;
         }
 
-        .brand-color { color: #b31300 !important; }
+        .red { color: #b31300 !important; }
 
-        .trigger-links {
+        .btn {
             position: relative;
             overflow: hidden;
-            height: 0.95em;
+            height: .95em;
         }
-        .text-swap {
+        .btn span {
             display: block;
-            line-height: 0.95em;
-            transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            line-height: .95em;
+            transition: transform .5s cubic-bezier(.19,1,.22,1);
         }
-        .active-trigger .text-swap { transform: translateY(-0.95em); }
+        .btn.open span { transform: translateY(-.95em); }
 
         @media (hover: hover) {
-            .top-block:hover > a,
-            .top-block:hover > .trigger-links {
-                opacity: 0.3;
-            }
-            .top-block > a:hover,
-            .top-block > .trigger-links:hover {
-                opacity: 1 !important;
-                transform: translateX(15px) !important;
-            }
-
-            .drawer:hover > .drawer-link {
-                opacity: 0.3;
-            }
-            .drawer > .drawer-link:hover {
-                opacity: 1 !important;
-                transform: translateX(15px) !important;
-            }
+            .top:hover > a, .top:hover > .btn { opacity: .3; }
+            .top > a:hover, .top > .btn:hover { opacity: 1 !important; transform: translateX(15px) !important; }
+            .drawer:hover > .dl { opacity: .3; }
+            .drawer > .dl:hover  { opacity: 1 !important; transform: translateX(15px) !important; }
         }
 
-        .ui-open .top-block > a,
-        .ui-open .top-block > .trigger-links { opacity: 0.3; }
-        .ui-open .top-block > .active-trigger { opacity: 1 !important; }
+        #ui.dim .top > a, #ui.dim .top > .btn { opacity: .3; }
+        #ui.dim .top > .btn.open { opacity: 1 !important; }
 
-        /* Conteneur bas : position relative pour ancrer les drawers */
-        .viq-bottom-zone {
-            position: relative;
-        }
-
-        /* Les deux drawers superposés au même endroit, ancrés en bas */
         .drawer {
+            position: absolute;
+            bottom: 0; left: 0;
             display: flex;
             flex-direction: column;
-            position: absolute;
-            bottom: 0;
-            left: 0;
             visibility: hidden;
             pointer-events: none;
         }
+        .drawer.active, .drawer.closing { visibility: visible; pointer-events: auto; }
 
-        .drawer.active,
-        .drawer.closing {
-            visibility: visible;
-            pointer-events: auto;
+        .drawer > a { opacity: 0; transform: translateY(18px); }
+        .drawer > a.dl {
+            opacity: 1; transform: translateY(0);
+            transition: transform .25s cubic-bezier(.2,0,.2,1), opacity .25s ease;
         }
 
-        /* Etat par défaut des liens = invisible, décalés */
-        .drawer > a {
-            opacity: 0;
-            transform: translateY(18px);
-            /* PAS de transition ici — géré par les animations keyframes */
-        }
-
-        /* Etat stable après animation d'entrée — transition CSS active pour le hover */
-        .drawer > a.drawer-link {
-            opacity: 1;
-            transform: translateY(0);
-            transition: transform 0.25s cubic-bezier(0.2, 0, 0.2, 1), opacity 0.25s ease;
-        }
-
-        @keyframes fadeInRise {
-            from { opacity: 0; transform: translateY(18px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeOutFall {
-            from { opacity: 1; transform: translateY(0); }
-            to   { opacity: 0; transform: translateY(18px); }
-        }
-
-        @media (max-width: 768px) {
-            .viq-master-wrapper { height: calc(100% - (var(--margin-y) * 2)); }
-            .viq-bottom-zone { margin-top: auto; }
-        }
+        @keyframes in  { from { opacity:0; transform:translateY(18px) } to { opacity:1; transform:translateY(0) } }
+        @keyframes out { from { opacity:1; transform:translateY(0) } to { opacity:0; transform:translateY(18px) } }
     </style>
 </head>
 <body>
 
-    <video autoplay muted loop playsinline id="bg-video">
-        <source src="Background.mp4" type="video/mp4">
-    </video>
-    <div class="overlay"></div>
+<video autoplay muted loop playsinline id="bg-video">
+    <source src="Background.mp4" type="video/mp4">
+</video>
+<div class="overlay"></div>
 
-    <div class="viq-master-wrapper" id="masterWrapper">
-        <div class="viq-links top-block">
-            <div class="trigger-links" id="btn-contact">
-                <span class="text-swap">CONTACT<br>CLOSE —</span>
-            </div>
-            <a href="https://votre-boutique.com" target="_blank">STORE</a>
-            <div class="trigger-links" id="btn-links">
-                <span class="text-swap">LINKS<br>CLOSE —</span>
-            </div>
-            <a href="#" class="brand-color">VIQ</a>
-        </div>
-
-        <div class="viq-bottom-zone">
-            <div class="viq-links drawer" id="contactDrawer">
-                <a href="mailto:viqmusic.promo@gmail.com">GENERAL INQUIRIES</a>
-                <a href="https://drive.google.com/drive/folders/13zPAOc29mHrjve1CM-KaZwaS_TqAtFzI?usp=sharing" target="_blank">PRESS KIT</a>
-            </div>
-
-            <div class="viq-links drawer" id="linksDrawer">
-                <a href="https://tidal.com/artist/14851275" target="_blank">TIDAL</a>
-                <a href="https://www.tiktok.com/@viqmusic" target="_blank">TIKTOK</a>
-                <a href="https://www.deezer.com/fr/artist/53988822" target="_blank">DEEZER</a>
-                <a href="https://open.spotify.com/intl-fr/artist/6XpN8mRlhuOXuvEyva4yjZ" target="_blank">SPOTIFY</a>
-                <a href="https://music.amazon.fr/artists/B07SVHSJ37/viq" target="_blank">AMAZON</a>
-                <a href="https://www.pandora.com/artist/viq/AR7v5wJfcr9gkKX" target="_blank">PANDORA</a>
-                <a href="https://www.youtube.com/c/VIQmusic" target="_blank">YOUTUBE</a>
-                <a href="https://www.facebook.com/Viqmusic" target="_blank">FACEBOOK</a>
-                <a href="https://viqmusic.bandcamp.com/music" target="_blank">BANDCAMP</a>
-                <a href="https://www.instagram.com/viqmusic/" target="_blank">INSTAGRAM</a>
-                <a href="https://music.apple.com/us/artist/viq/1467177415" target="_blank">APPLE MUSIC</a>
-                <a href="https://soundcloud.com/viqmusic" target="_blank">SOUNDCLOUD</a>
-            </div>
-        </div>
+<div id="ui">
+    <div class="links top">
+        <div class="btn" id="btn-contact"><span>CONTACT<br>CLOSE —</span></div>
+        <a href="https://votre-boutique.com" target="_blank">STORE</a>
+        <div class="btn" id="btn-links"><span>LINKS<br>CLOSE —</span></div>
+        <a href="#" class="red">VIQ</a>
     </div>
 
-    <script>
-        var STEP_MS   = 35;
-        var ANIM_IN   = 300; // durée fadeInRise  en ms
-        var ANIM_OUT  = 250; // durée fadeOutFall en ms
+    <div class="bottom">
+        <div class="links drawer" id="contactDrawer">
+            <a href="mailto:viqmusic.promo@gmail.com">GENERAL INQUIRIES</a>
+            <a href="https://drive.google.com/drive/folders/13zPAOc29mHrjve1CM-KaZwaS_TqAtFzI?usp=sharing" target="_blank">PRESS KIT</a>
+        </div>
 
-        // Timers actifs par drawer
-        var drawerTimers = { contactDrawer: [], linksDrawer: [] };
+        <div class="links drawer" id="linksDrawer">
+            <a href="https://tidal.com/artist/14851275" target="_blank">TIDAL</a>
+            <a href="https://www.tiktok.com/@viqmusic" target="_blank">TIKTOK</a>
+            <a href="https://www.deezer.com/fr/artist/53988822" target="_blank">DEEZER</a>
+            <a href="https://open.spotify.com/intl-fr/artist/6XpN8mRlhuOXuvEyva4yjZ" target="_blank">SPOTIFY</a>
+            <a href="https://music.amazon.fr/artists/B07SVHSJ37/viq" target="_blank">AMAZON</a>
+            <a href="https://www.pandora.com/artist/viq/AR7v5wJfcr9gkKX" target="_blank">PANDORA</a>
+            <a href="https://www.youtube.com/c/VIQmusic" target="_blank">YOUTUBE</a>
+            <a href="https://www.facebook.com/Viqmusic" target="_blank">FACEBOOK</a>
+            <a href="https://viqmusic.bandcamp.com/music" target="_blank">BANDCAMP</a>
+            <a href="https://www.instagram.com/viqmusic/" target="_blank">INSTAGRAM</a>
+            <a href="https://music.apple.com/us/artist/viq/1467177415" target="_blank">APPLE MUSIC</a>
+            <a href="https://soundcloud.com/viqmusic" target="_blank">SOUNDCLOUD</a>
+        </div>
+    </div>
+</div>
 
-        function clearTimers(drawerId) {
-            drawerTimers[drawerId].forEach(function(t) { clearTimeout(t); });
-            drawerTimers[drawerId] = [];
-        }
+<script>
+const STEP = 35, IN = 300, OUT = 250;
+const ui = document.getElementById('ui');
+const timers = { contactDrawer: [], linksDrawer: [] };
 
-        // Applique une animation keyframe sur un lien de façon propre
-        // en évitant tout conflit avec un state précédent
-        function animateLink(a, keyframe, duration) {
-            // Stoppe l'animation courante et force un reflow
-            a.style.animation = 'none';
-            void a.offsetWidth;
-            a.style.animation = keyframe + ' ' + duration + 'ms cubic-bezier(0.19,1,0.22,1) both';
-        }
+function kill(id) {
+    timers[id].forEach(clearTimeout);
+    timers[id] = [];
+}
 
-        function openDrawer(drawer, btn) {
-            var wrapper  = document.getElementById('masterWrapper');
-            var drawerId = drawer.id;
-            var links    = Array.from(drawer.querySelectorAll('a'));
-            var total    = links.length;
+function anim(el, kf, ms) {
+    el.style.animation = 'none';
+    void el.offsetWidth;
+    el.style.animation = `${kf} ${ms}ms cubic-bezier(.19,1,.22,1) both`;
+}
 
-            clearTimers(drawerId);
+function open(drawer, btn) {
+    const id = drawer.id;
+    const links = [...drawer.querySelectorAll('a')];
+    kill(id);
 
-            // Remet chaque lien dans son état initial propre
-            links.forEach(function(a) {
-                a.style.animation  = 'none';
-                a.style.opacity    = '';
-                a.style.transform  = '';
-                a.classList.remove('drawer-link');
-                void a.offsetWidth;
-            });
+    links.forEach(a => {
+        a.style.animation = a.style.opacity = a.style.transform = '';
+        a.classList.remove('dl');
+        void a.offsetWidth;
+    });
 
-            drawer.classList.add('active');
-            drawer.classList.remove('closing');
-            wrapper.classList.add('ui-open');
-            btn.classList.add('active-trigger');
+    drawer.classList.add('active');
+    drawer.classList.remove('closing');
+    ui.classList.add('dim');
+    btn.classList.add('open');
 
-            // Cascade entrée : du 1er au dernier (haut → bas dans le DOM)
-            links.forEach(function(a, i) {
-                var t1 = setTimeout(function() {
-                    animateLink(a, 'fadeInRise', ANIM_IN);
+    links.forEach((a, i) => {
+        const t1 = setTimeout(() => {
+            anim(a, 'in', IN);
+            const t2 = setTimeout(() => {
+                a.style.animation = a.style.opacity = a.style.transform = '';
+                a.classList.add('dl');
+            }, IN + 20);
+            timers[id].push(t2);
+        }, i * STEP);
+        timers[id].push(t1);
+    });
+}
 
-                    // Une fois l'animation terminée, on bascule en .drawer-link
-                    // pour que la transition CSS du hover reprenne la main
-                    var t2 = setTimeout(function() {
-                        a.style.animation = 'none';
-                        a.style.opacity   = '';
-                        a.style.transform = '';
-                        a.classList.add('drawer-link');
-                    }, ANIM_IN + 20);
+function close(drawer, btn) {
+    const id = drawer.id;
+    const links = [...drawer.querySelectorAll('a')];
+    const n = links.length;
+    kill(id);
 
-                    drawerTimers[drawerId].push(t2);
-                }, i * STEP_MS);
+    links.forEach(a => {
+        const cs = getComputedStyle(a);
+        a.style.animation = 'none';
+        a.style.opacity   = cs.opacity;
+        a.style.transform = cs.transform;
+        a.classList.remove('dl');
+        void a.offsetWidth;
+    });
 
-                drawerTimers[drawerId].push(t1);
-            });
-        }
+    drawer.classList.remove('active');
+    drawer.classList.add('closing');
+    btn?.classList.remove('open');
+    ui.classList.remove('dim');
 
-        function closeDrawer(drawer, btn) {
-            var wrapper  = document.getElementById('masterWrapper');
-            var drawerId = drawer.id;
-            var links    = Array.from(drawer.querySelectorAll('a'));
-            var total    = links.length;
+    links.forEach((a, i) => {
+        const t = setTimeout(() => anim(a, 'out', OUT), (n - 1 - i) * STEP);
+        timers[id].push(t);
+    });
 
-            clearTimers(drawerId);
+    const tClean = setTimeout(() => {
+        drawer.classList.remove('closing');
+        links.forEach(a => { a.style.animation = a.style.opacity = a.style.transform = ''; });
+    }, (n - 1) * STEP + OUT + 60);
+    timers[id].push(tClean);
+}
 
-            // Fige chaque lien à opacity:1 / translateY(0) AVANT de retirer
-            // les classes — évite le flash vers l'état par défaut (opacity:0)
-            links.forEach(function(a) {
-                var computed = window.getComputedStyle(a);
-                a.style.animation  = 'none';
-                a.style.opacity    = computed.opacity;
-                a.style.transform  = computed.transform;
-                a.classList.remove('drawer-link');
-                void a.offsetWidth;
-            });
+function toggle(section) {
+    const isContact = section === 'contact';
+    const drawer = document.getElementById(isContact ? 'contactDrawer' : 'linksDrawer');
+    const btn    = document.getElementById(isContact ? 'btn-contact'   : 'btn-links');
+    const other  = document.getElementById(isContact ? 'linksDrawer'   : 'contactDrawer');
+    const otherBtn = document.getElementById(isContact ? 'btn-links'   : 'btn-contact');
 
-            drawer.classList.remove('active');
-            drawer.classList.add('closing');
-            if (btn) btn.classList.remove('active-trigger');
-            wrapper.classList.remove('ui-open');
+    if (other.classList.contains('active') || other.classList.contains('closing'))
+        close(other, otherBtn);
 
-            // Cascade sortie : miroir de l'entrée = du dernier au 1er
-            links.forEach(function(a, i) {
-                var reverseIndex = total - 1 - i;
-                var t = setTimeout(function() {
-                    animateLink(a, 'fadeOutFall', ANIM_OUT);
-                }, reverseIndex * STEP_MS);
+    drawer.classList.contains('active') ? close(drawer, btn) : open(drawer, btn);
+}
 
-                drawerTimers[drawerId].push(t);
-            });
-
-            // Nettoyage final après la fin de toutes les animations
-            var totalMs = (total - 1) * STEP_MS + ANIM_OUT + 50;
-            var tClean = setTimeout(function() {
-                drawer.classList.remove('closing');
-                links.forEach(function(a) {
-                    a.style.animation = 'none';
-                    a.style.opacity   = '';
-                    a.style.transform = '';
-                });
-            }, totalMs);
-
-            drawerTimers[drawerId].push(tClean);
-        }
-
-        function toggleSection(section) {
-            var contactDrawer = document.getElementById('contactDrawer');
-            var linksDrawer   = document.getElementById('linksDrawer');
-            var btnContact    = document.getElementById('btn-contact');
-            var btnLinks      = document.getElementById('btn-links');
-
-            var targetDrawer = section === 'contact' ? contactDrawer : linksDrawer;
-            var targetBtn    = section === 'contact' ? btnContact    : btnLinks;
-            var otherDrawer  = section === 'contact' ? linksDrawer   : contactDrawer;
-            var otherBtn     = section === 'contact' ? btnLinks      : btnContact;
-
-            var isOpen = targetDrawer.classList.contains('active');
-
-            if (otherDrawer.classList.contains('active') || otherDrawer.classList.contains('closing')) {
-                closeDrawer(otherDrawer, otherBtn);
-            }
-
-            if (isOpen) {
-                closeDrawer(targetDrawer, targetBtn);
-            } else {
-                openDrawer(targetDrawer, targetBtn);
-            }
-        }
-
-        document.getElementById('btn-contact').addEventListener('click', function() {
-            toggleSection('contact');
-        });
-        document.getElementById('btn-links').addEventListener('click', function() {
-            toggleSection('links');
-        });
-
-        document.addEventListener('touchstart', function() {
-            document.querySelector('#bg-video').play();
-        }, { once: true });
-    </script>
+document.getElementById('btn-contact').addEventListener('click', () => toggle('contact'));
+document.getElementById('btn-links').addEventListener('click',   () => toggle('links'));
+document.addEventListener('touchstart', () => document.getElementById('bg-video').play(), { once: true });
+</script>
 </body>
 </html>
