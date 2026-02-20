@@ -32,20 +32,19 @@
             z-index: -1;
         }
 
-        /* CONTENEUR FIXE */
+        /* CONTENEUR FIXE SYMÉTRIQUE */
         .viq-container {
             position: fixed;
-            /* Position fluide : entre 20px et 40px selon l'écran */
-            top: clamp(20px, 4vh, 40px); 
-            left: clamp(20px, 4vw, 40px);
+            /* On utilise exactement la même valeur pour le haut et la gauche */
+            --margin-site: clamp(25px, 5vw, 45px); 
+            top: var(--margin-site); 
+            left: var(--margin-site);
             z-index: 10;
         }
 
         .viq-links {
-            /* Taille de police fluide : pas de saccade au redimensionnement */
-            font-size: clamp(24px, 4vw, 38px); 
+            font-size: clamp(24px, 4.2vw, 38px); 
             text-transform: uppercase;
-            /* line-height 1.0 pour un entre-deux parfait */
             line-height: 1.0; 
         }
 
@@ -53,8 +52,8 @@
             display: block;
             color: #fff;
             text-decoration: none;
-            /* Padding léger pour l'écartement "un poil plus" */
-            padding: 3px 0; 
+            /* Écartement "un poil plus" maîtrisé */
+            padding: 4px 0; 
             transition: transform 0.3s ease, opacity 0.3s ease;
             will-change: transform;
             white-space: nowrap;
@@ -70,8 +69,11 @@
             }
         }
 
-        /* Sur mobile, on désactive le décalage pour éviter les bugs de tactile */
+        /* MOBILE : On garde la symétrie mais on réduit un peu l'espace */
         @media (max-width: 768px) {
+            .viq-container {
+                --margin-site: 20px;
+            }
             .viq-links a:hover { transform: none; }
         }
     </style>
@@ -93,7 +95,7 @@
             <a href="https://www.youtube.com/c/VIQmusic" target="_blank">YOUTUBE</a>
             <a href="https://www.pandora.com/artist/viq/AR7v5wJfcr9gkKX" target="_blank">PANDORA</a>
             <a href="https://music.amazon.fr/artists/B07SVHSJ37/viq" target="_blank">AMAZON</a>
-            <a href="https://open.spotify.com/artist/53988822" target="_blank">SPOTIFY</a>
+            <a href="https://open.spotify.com/artist/your_id" target="_blank">SPOTIFY</a>
             <a href="https://www.deezer.com/fr/artist/53988822" target="_blank">DEEZER</a>
             <a href="https://www.tiktok.com/@viqmusic" target="_blank">TIKTOK</a>
             <a href="https://tidal.com/artist/14851275" target="_blank">TIDAL</a>
