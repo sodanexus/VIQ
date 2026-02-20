@@ -185,6 +185,9 @@
     </div>
 </div>
 
+<!-- Element invisible pour pre-compiler le filtre SVG sur iOS -->
+<div id="filter-warmup" style="position:fixed;opacity:0;pointer-events:none;filter:url(#wave-filter);width:1px;height:1px;"> </div>
+
 <script>
 var STEP = 35, IN = 300, OUT = 250;
 var ui = document.getElementById('ui');
@@ -198,6 +201,13 @@ function getDisp() {
     if (!waveDisp) waveDisp = document.getElementById('flag-disp');
     return waveDisp;
 }
+
+// Pre-chauffe le filtre SVG sur iOS des le chargement
+window.addEventListener('load', function() {
+    var d = getDisp();
+    d.setAttribute('scale', '0.01');
+    setTimeout(function() { d.setAttribute('scale', '0'); }, 100);
+});
 
 function startWave(btn) {
     btn.classList.add('waving', 'active');
