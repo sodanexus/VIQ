@@ -17,7 +17,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* FOND VIDÉO */
         #bg-video {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -32,12 +31,13 @@
             z-index: -1;
         }
 
-        /* CONTENEUR FIXE SYMÉTRIQUE */
+        /* AJUSTEMENT OPTIQUE SYMÉTRIQUE */
         .viq-container {
             position: fixed;
-            /* On utilise exactement la même valeur pour le haut et la gauche */
             --margin-site: clamp(25px, 5vw, 45px); 
-            top: var(--margin-site); 
+            
+            /* On retire 4px en haut pour compenser le vide naturel de la police */
+            top: calc(var(--margin-site) - 4px); 
             left: var(--margin-site);
             z-index: 10;
         }
@@ -52,27 +52,26 @@
             display: block;
             color: #fff;
             text-decoration: none;
-            /* Écartement "un poil plus" maîtrisé */
             padding: 4px 0; 
             transition: transform 0.3s ease, opacity 0.3s ease;
             will-change: transform;
             white-space: nowrap;
         }
 
-        /* HOVER EFFECTS */
-        @media(hover:hover) {
-            .viq-links a:hover {
-                transform: translateX(10px);
-            }
-            .viq-links:hover a:not(:hover) {
-                opacity: 0.3;
-            }
+        /* Enlever le padding du tout premier lien pour qu'il soit collé au bord haut */
+        .viq-links a:first-child {
+            padding-top: 0;
         }
 
-        /* MOBILE : On garde la symétrie mais on réduit un peu l'espace */
+        @media(hover:hover) {
+            .viq-links a:hover { transform: translateX(10px); }
+            .viq-links:hover a:not(:hover) { opacity: 0.3; }
+        }
+
         @media (max-width: 768px) {
             .viq-container {
                 --margin-site: 20px;
+                top: calc(var(--margin-site) - 2px); /* Compensation plus légère sur mobile */
             }
             .viq-links a:hover { transform: none; }
         }
@@ -95,7 +94,7 @@
             <a href="https://www.youtube.com/c/VIQmusic" target="_blank">YOUTUBE</a>
             <a href="https://www.pandora.com/artist/viq/AR7v5wJfcr9gkKX" target="_blank">PANDORA</a>
             <a href="https://music.amazon.fr/artists/B07SVHSJ37/viq" target="_blank">AMAZON</a>
-            <a href="https://open.spotify.com/artist/your_id" target="_blank">SPOTIFY</a>
+            <a href="https://open.spotify.com/artist/14851275" target="_blank">SPOTIFY</a>
             <a href="https://www.deezer.com/fr/artist/53988822" target="_blank">DEEZER</a>
             <a href="https://www.tiktok.com/@viqmusic" target="_blank">TIKTOK</a>
             <a href="https://tidal.com/artist/14851275" target="_blank">TIDAL</a>
