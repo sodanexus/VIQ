@@ -1,3 +1,285 @@
+
+
+<!DOCTYPE html> <html lang="fr"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> <title>VIQ | Official Website</title> <link href="https://fonts.googleapis.com/css2?family=Playfair+Display
+
+pasted
+
+Besoin d'aide pour verifier le code de mon site : 
+
+J'aimerai quand je clic sur LINKS ou STORE :
+
+Les bloc qui s'affiche en bas dispose de la meme animation de decalage (et sa fluidité), mais aussi le meme effet d'opacité au survol, et j'aimerai la meme animation quand les blocs du bas s'affichent en cascade, mais inversé quand on referme le tiroire !
+
+10:04
+Je vais analyser votre code et identifier les ajustements nécessaires.
+
+Problèmes identifiés :
+
+Les liens dans les drawers n'ont pas l'effet de décalage au hover (translateX(15px))
+L'effet d'opacité au survol (les autres s'estompent) ne s'applique pas dans les drawers
+L'animation de fermeture en cascade inversée ne fonctionne pas correctement car les animation-delay de .closing sont surchargés par les délais d'entrée
+Voici le code corrigé — uniquement les parties CSS et JS modifiées :
+
+
+Fichier créé, lu un fichier
+Fichier créé, lu un fichier
+
+Corrected VIQ website HTML
+index.html
+
+Presented file
+Terminé
+Voici les 3 corrections apportées :
+
+1. Hover dans les drawers — Ajout d'un bloc CSS dédié à .drawer (séparé de .viq-links) car les sélecteurs existants ne ciblaient que les .viq-links du top block. Résultat : même effet d'opacité + décalage translateX(15px) dans les tiroirs.
+
+2. Cascade d'entrée correctement scopée — Les sélecteurs sont passés de .drawer a:nth-child() à .drawer.active a:nth-child() pour que les délais d'entrée ne rentrent plus en conflit avec les délais de sortie.
+
+3. Cascade de sortie vraiment inversée — La sortie va maintenant de l'élément 12 → 1 (délai 0.00s pour le dernier, 0.55s pour le premier), créant un effet miroir fluide à la fermeture.
+
+Index
+Code · HTML 
+ca marche toujours pas, verifie tout le code, il y a forcement quelque chose qui empeche tout ca, et quite a faire une modification plus poussé pour tester
+
+10:07
+
+Reading the full HTML file to analyze all issues
+Reading the full HTML file to analyze all issues
+J'ai trouvé les vrais problèmes en analysant le code en profondeur. Voici les bugs racines :
+
+Bug 1 — Le hover des drawers est écrasé par l'animation CSS : quand .drawer.active a a animation: fadeInRise forwards, la propriété opacity et transform sont contrôlées par l'animation (via forwards). Cela bloque la transition hover. La solution : utiliser animation-fill-mode uniquement le temps de l'animation, puis la retirer via JS.
+
+Bug 2 — Le transition sur .viq-links a ne s'applique pas aux liens du drawer : les liens ont bien transition, mais l'animation CSS forwards garde la main même après la fin → le hover ne peut pas modifier opacity/transform.
+
+Bug 3 — .drawer:hover a vs .viq-links:hover a : les drawers ont la classe viq-links ET drawer, donc le sélecteur .viq-links:hover a s'applique déjà... mais le problème est que .drawer.active a avec animation forwards écrase tout.
+
+La vraie solution : retirer l'animation via JS dès qu'elle est terminée, pour rendre la main aux transitions CSS.
+
+
+Fichier créé, fichier modifié, a exécuté une commande
+Fichier créé, fichier modifié, a exécuté une commande
+
+Fully corrected VIQ website with all animation/hover bugs fixed
+index.html
+
+Replace entire file content
+
+index.html
++10
+-9
+
+Write the complete corrected file
+
+Script
+
+Presented file
+Terminé
+Voici ce qui bloquait vraiment tout, et comment c'est réglé :
+
+Le bug racine — animation: forwards verrouille tout
+
+Quand une animation CSS se termine avec forwards, elle garde la main sur les propriétés animées (opacity, transform). Ça signifie que même après la fin de l'animation d'entrée, le browser refusait de laisser la transition CSS s'appliquer au hover. C'est pour ça que translateX(15px) et le changement d'opacité ne fonctionnaient pas dans les drawers.
+
+La solution : gérer les animations entièrement en JS avec des timers
+
+L'approche est maintenant :
+
+Entrée — JS déclenche animating-in sur chaque lien avec un setTimeout échelonné (cascade). Dès que l'animation est finie, JS retire animating-in et pose drawer-link → la transition CSS reprend la main, le hover fonctionne.
+Sortie inversée — JS déclenche animating-out du dernier lien au premier (cascade miroir). L'index est inversé : reverseIndex = total - 1 - i, le dernier lien part en premier.
+Hover — Le sélecteur .drawer:hover > .drawer-link ne s'active que sur les liens portant .drawer-link, donc jamais pendant une animation. Zéro conflit.
+Index
+Code · HTML 
+MAGNIFIQUE BRAVO !
+
+10:09
+Merci, c'est super sympa ! 🎉
+
+Content que ça marche enfin comme prévu. Le vrai problème était bien vicieux — animation: forwards est un de ces bugs CSS qui se cache bien parce qu'il n'y a aucun message d'erreur, tout "semble" fonctionner visuellement mais les transitions sont silencieusement bloquées en arrière-plan.
+
+Si tu as d'autres ajustements à faire sur le site, n'hésite pas !
+
+possibilité d'accélérer un poil les animation de cascade et d'opacité ?
+
+10:13
+Facile, deux valeurs à ajuster :
+
+
+Consulté un fichier, fichier modifié, a exécuté une commande
+Consulté un fichier, fichier modifié, a exécuté une commande
+
+Check current timing values
+
+Speed up cascade step and hover opacity transition
+
+Speed up all animation timings
+bash
+
+sed -i 's/transition: transform 0.4s cubic-bezier(0.2, 0, 0.2, 1), opacity 0.4s ease;/transition: transform 0.25s cubic-bezier(0.2, 0, 0.2, 1), opacity 0.25s ease;/' /mnt/user-data/outputs/index.html
+sed -i 's/const STEP_MS = 50;/const STEP_MS = 35;/' /mnt/user-data/outputs/index.html
+# Speed up the fadeInRise and fadeOutFall durations in JS
+sed -i 's/const durationMs = 450;/const durationMs = 300;/' /mnt/user-data/outputs/index.html
+sed -i 's/animation: fadeInRise 0.45s/animation: fadeInRise 0.3s/' /mnt/user-data/outputs/index.html
+sed -i 's/animation: fadeOutFall 0.35s/animation: fadeOutFall 0.25s/' /mnt/user-data/outputs/index.html
+sed -i 's/const durationMs = 350;/const durationMs = 250;/' /mnt/user-data/outputs/index.html
+sed -i 's/+ 350 + 100;/+ 250 + 80;/' /mnt/user-data/outputs/index.html
+echo "Done"
+Sortie
+
+Done
+
+Presented file
+Terminé
+Voilà ce qui a été accéléré :
+
+Cascade : délai entre chaque lien 50ms → 35ms
+Animation entrée : 0.45s → 0.3s
+Animation sortie : 0.35s → 0.25s
+Hover (opacité + décalage) : 0.4s → 0.25s
+Si c'est encore trop lent ou trop rapide, dis-moi juste "plus vite" ou "un peu moins" et j'ajuste !
+
+Index
+Code · HTML 
+Uncaught Error: Uncaught ReferenceError: toggleSection is not defined
+10:14
+C'est une erreur classique de scope — le script est probablement parsé en mode strict ou isolé. La solution : attacher les events en JS plutôt qu'avec onclick="" dans le HTML.
+
+
+Exécuté 7 commandes
+Exécuté 7 commandes
+Le fichier est tronqué — c'est ça la vraie cause du bug. Le script est coupé en plein milieu. Je réécris tout proprement.
+
+
+A exécuté une commande, lu un fichier
+A exécuté une commande, lu un fichier
+
+Rewrite complete clean file
+
+Script
+
+Presented file
+Terminé
+Le fichier était tronqué — le script s'arrêtait en plein milieu, d'où l'erreur toggleSection is not defined. Tout est réécrit proprement, et deux choses corrigées en même temps :
+
+Plus de onclick="" dans le HTML → les events sont maintenant attachés via addEventListener en JS, ce qui règle définitivement les problèmes de scope
+Syntaxe ES5 (var, function()) pour une compatibilité maximale avec tous les environnements
+Index
+Code · HTML 
+Quand on appui rapidement sur LINKS et CONTACT, ou inversement, rapidement, les animations se chevauche
+
+10:17
+Problème classique de race condition — les setTimeout des animations précédentes continuent de tourner en arrière-plan même après fermeture. Il faut annuler les timers en cours avant d'en lancer de nouveaux.
+
+
+A exécuté une commande, lu un fichier
+A exécuté une commande, lu un fichier
+La correction repose sur deux mécanismes :
+
+1. clearDrawerTimers(drawerId) — Chaque drawer a maintenant son propre tableau de timers (drawerTimers). Avant toute nouvelle animation, tous les setTimeout en cours sont annulés via clearTimeout. Plus aucun timer fantôme qui continue à poser des classes après qu'on ait changé de drawer.
+
+2. resetLinks(links) + void a.offsetWidth — Après annulation des timers, on nettoie toutes les classes d'animation sur chaque lien, et on force un reflow DOM (offsetWidth). Ça garantit que si on re-déclenche la même animation immédiatement, le browser la repart bien depuis zéro plutôt que de l'ignorer.
+
+3. Vérification classList.contains('closing') — toggleSection détecte maintenant aussi si l'autre drawer est en train de se fermer (pas seulement s'il est ouvert) pour l'interrompre proprement.
+
+Index
+Code · HTML 
+si j'appui rapidement sur links puis toute suite apres contact, il y a GENERAL INQUIRIES et PRESS KIT qui patiente la fin de l'animation  en haut de TIDAL, pour ensuite se loger au bon endroit en bas d'un coup sec. 
+
+Ce qui rends la chose peu fluide.
+
+10:20
+Le problème vient du fait que les deux drawers sont dans le même conteneur .viq-bottom-zone et s'empilent l'un sous l'autre pendant la transition. CONTACT attend que LINKS finisse de disparaître avant de se positionner correctement.
+
+La solution : mettre les deux drawers en position: absolute au même endroit, comme ça ils se superposent au lieu de se pousser.
+
+
+A exécuté une commande, lu un fichier
+A exécuté une commande, lu un fichier
+Le vrai problème était structurel : les deux drawers étaient dans le flux normal (display: flex / none), donc quand LINKS était encore visible en train de disparaître, CONTACT s'ajoutait en dessous dans le DOM et attendait que LINKS libère de la place.
+
+La fix : les drawers sont maintenant en position: absolute; bottom: 0 dans un conteneur position: relative. Ils se superposent exactement au même endroit, sans jamais se pousser l'un l'autre. Le passage de l'un à l'autre est immédiat et fluide.
+
+Index
+Code · HTML 
+ok c'est bon, l'effet de cascade est etrange dans le tiroire links, il est different par rapport au tiroir contact qui lui est bon
+
+10:23
+Le problème vient du fait que LINKS a 12 éléments — avec position: absolute et bottom: 0, les liens s'empilent du bas vers le haut. Donc le premier lien (TIDAL) est tout en bas, et l'animation cascade part dans le mauvais sens visuellement.
+
+Il faut inverser l'ordre de la cascade pour LINKS : partir du dernier élément vers le premier à l'ouverture, et l'inverse à la fermeture.
+
+En fait la vraie solution propre : inverser l'index de délai selon le nombre d'éléments, comme ça peu importe le nombre de liens, ça part toujours du bas vers le haut.
+
+
+Exécuté 2 commandes
+Exécuté 2 commandes
+Le problème est clair : avec bottom: 0, le DOM est inversé visuellement — le lien index 0 (TIDAL) est affiché en bas, et le index 11 (SOUNDCLOUD) en haut. Donc la cascade 0 → 11 part du bas vers le haut, ce qui est incohérent avec CONTACT qui lui part du haut vers le bas (seulement 2 liens, moins visible).
+
+La fix : inverser les délais à l'ouverture — le dernier lien du DOM part en premier (délai 0), le premier part en dernier.
+
+
+Exécuté 2 commandes, lu un fichier
+Exécuté 2 commandes, lu un fichier
+Le problème était logique : avec position: absolute; bottom: 0, le dernier lien du DOM (SOUNDCLOUD) est visuellement en haut, et le premier (TIDAL) est en bas. Donc la cascade i = 0 → 11 partait du bas vers le haut, à l'opposé de ce que l'œil attendait.
+
+La correction :
+
+Ouverture : délai basé sur reverseIndex = total - 1 - i → SOUNDCLOUD (haut) s'anime en premier, TIDAL (bas) en dernier. Cascade propre du haut vers le bas.
+Fermeture : délai basé sur i directement → TIDAL (bas) disparaît en premier, cascade miroir vers le haut.
+Index
+Code · HTML 
+nan c'est pas ca que je voulais dire, reviens en arrière. 
+Ce que je veux dire, c'est que l'animation de fermeture en cascade n'est pas normal, on dirait que les textes s'efface instant, qu'il y a une sorte d'opacité qui reste et disparait je ne sais pas trop comment decrire mais peux tu la comparer avec l'animation d'ouverture ?
+
+10:26
+Compris. Le problème est que à la fermeture, les liens ont déjà opacity: 1; transform: translateY(0) via .drawer-link, mais quand on lance animating-out, l'animation fadeOutFall repart de from { opacity: 1 } — sauf que resetLinks() retire .drawer-link avant de lancer l'animation, ce qui fait que le lien passe brièvement par l'état par défaut opacity: 0; transform: translateY(18px) avant que l'animation démarre. D'où le flash.
+
+La fix : ne pas appeler resetLinks avant la sortie, juste retirer les classes d'animation proprement.
+
+
+Exécuté 2 commandes
+Exécuté 2 commandes
+
+Fix closing animation flash by preserving visual state before animating out
+
+Script
+
+Fix closeDrawer with proper visual state preservation
+
+Script
+Terminé
+Le fichier a déjà une version partielle de ma tentative précédente. Je réécris tout le fichier proprement d'un bloc.
+
+
+A exécuté une commande, lu un fichier
+A exécuté une commande, lu un fichier
+
+Rewrite cleanly with proper open/close animation symmetry
+
+Script
+
+Presented file
+Terminé
+Le vrai bug était celui-là : à la fermeture, resetLinks() remettait les liens en opacity: 0; transform: translateY(18px) (l'état CSS par défaut de .drawer > a) avant que l'animation de sortie démarre. Ce flash instantané vers l'invisible était ce que tu voyais.
+
+La correction clé dans closeDrawer :
+
+js
+var computed = window.getComputedStyle(a);
+a.style.opacity   = computed.opacity;    // fige à 1
+a.style.transform = computed.transform; // fige à translateY(0)
+On lit l'état visuel réel du lien au moment du clic, on le grave en inline style, puis seulement ensuite on retire les classes. L'animation fadeOutFall part donc toujours d'un état visible, exactement comme fadeInRise part toujours d'un état invisible. Les deux animations sont maintenant parfaitement symétriques.
+
+Index
+Code · HTML 
+
+
+
+
+
+Claude est une IA et peut faire des erreurs. Veuillez vérifier les réponses.
+Index · HTML
+Copier
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -32,7 +314,6 @@
             z-index: -1;
         }
 
-        /* --- LAYOUT --- */
         .viq-master-wrapper {
             position: fixed;
             --margin-left: clamp(25px, 5vw, 45px);
@@ -63,7 +344,7 @@
             color: #fff;
             text-decoration: none;
             margin-bottom: 4px;
-            transition: transform 0.4s cubic-bezier(0.2, 0, 0.2, 1), opacity 0.4s ease;
+            transition: transform 0.25s cubic-bezier(0.2, 0, 0.2, 1), opacity 0.25s ease;
             cursor: pointer;
             white-space: nowrap;
             width: fit-content;
@@ -71,7 +352,6 @@
 
         .brand-color { color: #b31300 !important; }
 
-        /* --- ANIMATION SWAP TEXTE --- */
         .trigger-links {
             position: relative;
             overflow: hidden;
@@ -84,9 +364,6 @@
         }
         .active-trigger .text-swap { transform: translateY(-0.95em); }
 
-        /* =====================================================
-           HOVER — TOP BLOCK
-        ====================================================== */
         @media (hover: hover) {
             .top-block:hover > a,
             .top-block:hover > .trigger-links {
@@ -98,12 +375,6 @@
                 transform: translateX(15px) !important;
             }
 
-            /* =====================================================
-               HOVER — DRAWER
-               .drawer-link est posé par JS APRES la fin de l'animation
-               d'entree, ce qui garantit que la transition CSS reprend
-               la main (plus d'animation active qui ecrase le hover).
-            ====================================================== */
             .drawer:hover > .drawer-link {
                 opacity: 0.3;
             }
@@ -113,42 +384,51 @@
             }
         }
 
-        /* Estompage top block quand un menu est ouvert */
         .ui-open .top-block > a,
         .ui-open .top-block > .trigger-links { opacity: 0.3; }
         .ui-open .top-block > .active-trigger { opacity: 1 !important; }
 
-        /* --- TIROIRS --- */
-        .drawer         { display: none; }
-        .drawer.active  { display: flex; }
-        .drawer.closing { display: flex; }
+        /* Conteneur bas : position relative pour ancrer les drawers */
+        .viq-bottom-zone {
+            position: relative;
+        }
 
-        /* Etat de depart avant animation d'entree */
-        .drawer.active > a {
+        /* Les deux drawers superposés au même endroit, ancrés en bas */
+        .drawer {
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .drawer.active,
+        .drawer.closing {
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        /* Etat par défaut des liens = invisible, décalés */
+        .drawer > a {
             opacity: 0;
             transform: translateY(18px);
+            /* PAS de transition ici — géré par les animations keyframes */
         }
 
-        /* Pendant l'animation d'ENTREE (classe posee par JS) */
-        .drawer > a.animating-in {
-            animation: fadeInRise 0.45s cubic-bezier(0.19, 1, 0.22, 1) forwards;
-        }
-
-        /* Pendant l'animation de SORTIE (classe posee par JS) */
-        .drawer > a.animating-out {
-            animation: fadeOutFall 0.35s cubic-bezier(0.19, 1, 0.22, 1) forwards;
-        }
-
-        /* Etat stable apres animation d'entree (geree par JS via .drawer-link) */
+        /* Etat stable après animation d'entrée — transition CSS active pour le hover */
         .drawer > a.drawer-link {
             opacity: 1;
             transform: translateY(0);
+            transition: transform 0.25s cubic-bezier(0.2, 0, 0.2, 1), opacity 0.25s ease;
         }
 
         @keyframes fadeInRise {
             from { opacity: 0; transform: translateY(18px); }
             to   { opacity: 1; transform: translateY(0); }
         }
+
         @keyframes fadeOutFall {
             from { opacity: 1; transform: translateY(0); }
             to   { opacity: 0; transform: translateY(18px); }
@@ -169,11 +449,11 @@
 
     <div class="viq-master-wrapper" id="masterWrapper">
         <div class="viq-links top-block">
-            <div class="trigger-links" id="btn-contact" onclick="toggleSection('contact')">
+            <div class="trigger-links" id="btn-contact">
                 <span class="text-swap">CONTACT<br>CLOSE —</span>
             </div>
             <a href="https://votre-boutique.com" target="_blank">STORE</a>
-            <div class="trigger-links" id="btn-links" onclick="toggleSection('links')">
+            <div class="trigger-links" id="btn-links">
                 <span class="text-swap">LINKS<br>CLOSE —</span>
             </div>
             <a href="#" class="brand-color">VIQ</a>
@@ -203,52 +483,87 @@
     </div>
 
     <script>
-        const STEP_MS = 50; // ms entre chaque lien en cascade
+        var STEP_MS   = 35;
+        var ANIM_IN   = 300; // durée fadeInRise  en ms
+        var ANIM_OUT  = 250; // durée fadeOutFall en ms
+
+        // Timers actifs par drawer
+        var drawerTimers = { contactDrawer: [], linksDrawer: [] };
+
+        function clearTimers(drawerId) {
+            drawerTimers[drawerId].forEach(function(t) { clearTimeout(t); });
+            drawerTimers[drawerId] = [];
+        }
+
+        // Applique une animation keyframe sur un lien de façon propre
+        // en évitant tout conflit avec un state précédent
+        function animateLink(a, keyframe, duration) {
+            // Stoppe l'animation courante et force un reflow
+            a.style.animation = 'none';
+            void a.offsetWidth;
+            a.style.animation = keyframe + ' ' + duration + 'ms cubic-bezier(0.19,1,0.22,1) both';
+        }
 
         function openDrawer(drawer, btn) {
-            const wrapper = document.getElementById('masterWrapper');
-            const links = Array.from(drawer.querySelectorAll('a'));
+            var wrapper  = document.getElementById('masterWrapper');
+            var drawerId = drawer.id;
+            var links    = Array.from(drawer.querySelectorAll('a'));
+            var total    = links.length;
 
-            // Reset total
-            links.forEach(a => {
-                a.classList.remove('drawer-link', 'animating-in', 'animating-out');
-                a.style.animationDelay = '';
+            clearTimers(drawerId);
+
+            // Remet chaque lien dans son état initial propre
+            links.forEach(function(a) {
+                a.style.animation  = 'none';
+                a.style.opacity    = '';
+                a.style.transform  = '';
+                a.classList.remove('drawer-link');
+                void a.offsetWidth;
             });
 
             drawer.classList.add('active');
+            drawer.classList.remove('closing');
             wrapper.classList.add('ui-open');
             btn.classList.add('active-trigger');
 
-            // Cascade ENTREE : premier -> dernier
-            links.forEach((a, i) => {
-                const delayMs = i * STEP_MS;
-                const durationMs = 450;
+            // Cascade entrée : du 1er au dernier (haut → bas dans le DOM)
+            links.forEach(function(a, i) {
+                var t1 = setTimeout(function() {
+                    animateLink(a, 'fadeInRise', ANIM_IN);
 
-                setTimeout(() => {
-                    a.style.animationDelay = '0s';
-                    a.classList.add('animating-in');
-
-                    // Une fois l'animation terminee, on retire animating-in
-                    // et on pose drawer-link → la transition CSS reprend la main
-                    // ce qui permet au hover (opacity / translateX) de fonctionner
-                    setTimeout(() => {
-                        a.classList.remove('animating-in');
+                    // Une fois l'animation terminée, on bascule en .drawer-link
+                    // pour que la transition CSS du hover reprenne la main
+                    var t2 = setTimeout(function() {
+                        a.style.animation = 'none';
+                        a.style.opacity   = '';
+                        a.style.transform = '';
                         a.classList.add('drawer-link');
-                    }, durationMs + 20);
+                    }, ANIM_IN + 20);
 
-                }, delayMs);
+                    drawerTimers[drawerId].push(t2);
+                }, i * STEP_MS);
+
+                drawerTimers[drawerId].push(t1);
             });
         }
 
         function closeDrawer(drawer, btn) {
-            const wrapper = document.getElementById('masterWrapper');
-            const links = Array.from(drawer.querySelectorAll('a'));
-            const total = links.length;
+            var wrapper  = document.getElementById('masterWrapper');
+            var drawerId = drawer.id;
+            var links    = Array.from(drawer.querySelectorAll('a'));
+            var total    = links.length;
 
-            // Retire immediatement drawer-link pour bloquer le hover pendant la sortie
-            links.forEach(a => {
-                a.classList.remove('drawer-link', 'animating-in');
-                a.style.animationDelay = '';
+            clearTimers(drawerId);
+
+            // Fige chaque lien à opacity:1 / translateY(0) AVANT de retirer
+            // les classes — évite le flash vers l'état par défaut (opacity:0)
+            links.forEach(function(a) {
+                var computed = window.getComputedStyle(a);
+                a.style.animation  = 'none';
+                a.style.opacity    = computed.opacity;
+                a.style.transform  = computed.transform;
+                a.classList.remove('drawer-link');
+                void a.offsetWidth;
             });
 
             drawer.classList.remove('active');
@@ -256,44 +571,44 @@
             if (btn) btn.classList.remove('active-trigger');
             wrapper.classList.remove('ui-open');
 
-            // Cascade SORTIE INVERSEE : dernier -> premier
-            links.forEach((a, i) => {
-                const reverseIndex = total - 1 - i; // le dernier part en premier
-                const delayMs = reverseIndex * STEP_MS;
-                const durationMs = 350;
+            // Cascade sortie : miroir de l'entrée = du dernier au 1er
+            links.forEach(function(a, i) {
+                var reverseIndex = total - 1 - i;
+                var t = setTimeout(function() {
+                    animateLink(a, 'fadeOutFall', ANIM_OUT);
+                }, reverseIndex * STEP_MS);
 
-                setTimeout(() => {
-                    a.style.animationDelay = '0s';
-                    a.classList.add('animating-out');
-                }, delayMs);
+                drawerTimers[drawerId].push(t);
             });
 
-            // Nettoyage apres fin complete de toutes les animations
-            const totalDurationMs = (total - 1) * STEP_MS + 350 + 100;
-            setTimeout(() => {
+            // Nettoyage final après la fin de toutes les animations
+            var totalMs = (total - 1) * STEP_MS + ANIM_OUT + 50;
+            var tClean = setTimeout(function() {
                 drawer.classList.remove('closing');
-                links.forEach(a => {
-                    a.classList.remove('animating-out');
-                    a.style.animationDelay = '';
+                links.forEach(function(a) {
+                    a.style.animation = 'none';
+                    a.style.opacity   = '';
+                    a.style.transform = '';
                 });
-            }, totalDurationMs);
+            }, totalMs);
+
+            drawerTimers[drawerId].push(tClean);
         }
 
         function toggleSection(section) {
-            const contactDrawer = document.getElementById('contactDrawer');
-            const linksDrawer   = document.getElementById('linksDrawer');
-            const btnContact    = document.getElementById('btn-contact');
-            const btnLinks      = document.getElementById('btn-links');
+            var contactDrawer = document.getElementById('contactDrawer');
+            var linksDrawer   = document.getElementById('linksDrawer');
+            var btnContact    = document.getElementById('btn-contact');
+            var btnLinks      = document.getElementById('btn-links');
 
-            const targetDrawer = section === 'contact' ? contactDrawer : linksDrawer;
-            const targetBtn    = section === 'contact' ? btnContact    : btnLinks;
-            const otherDrawer  = section === 'contact' ? linksDrawer   : contactDrawer;
-            const otherBtn     = section === 'contact' ? btnLinks      : btnContact;
+            var targetDrawer = section === 'contact' ? contactDrawer : linksDrawer;
+            var targetBtn    = section === 'contact' ? btnContact    : btnLinks;
+            var otherDrawer  = section === 'contact' ? linksDrawer   : contactDrawer;
+            var otherBtn     = section === 'contact' ? btnLinks      : btnContact;
 
-            const isOpen = targetDrawer.classList.contains('active');
+            var isOpen = targetDrawer.classList.contains('active');
 
-            // Ferme l'autre tiroir si ouvert
-            if (otherDrawer.classList.contains('active')) {
+            if (otherDrawer.classList.contains('active') || otherDrawer.classList.contains('closing')) {
                 closeDrawer(otherDrawer, otherBtn);
             }
 
@@ -304,7 +619,14 @@
             }
         }
 
-        document.addEventListener('touchstart', () => {
+        document.getElementById('btn-contact').addEventListener('click', function() {
+            toggleSection('contact');
+        });
+        document.getElementById('btn-links').addEventListener('click', function() {
+            toggleSection('links');
+        });
+
+        document.addEventListener('touchstart', function() {
             document.querySelector('#bg-video').play();
         }, { once: true });
     </script>
