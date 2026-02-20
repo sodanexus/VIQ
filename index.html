@@ -56,7 +56,7 @@
             color: #fff;
             text-decoration: none;
             padding: 2px 0; 
-            transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1), opacity 0.3s ease;
+            transition: transform 0.4s cubic-bezier(0.2, 0, 0.2, 1), opacity 0.4s ease;
             cursor: pointer;
             white-space: nowrap;
             user-select: none;
@@ -65,51 +65,71 @@
 
         .brand-color { color: #b31300 !important; }
 
-        /* LOGIQUE D'OPACITÉ QUAND UN TIROIR EST OUVERT */
+        /* GESTION DE L'OPACITÉ (PC & MOBILE) */
+        /* Quand un tiroir est ouvert, on baisse l'opacité du menu sauf l'actif */
         .viq-master-wrapper.ui-open .top-block a, 
         .viq-master-wrapper.ui-open .top-block .trigger-links {
             opacity: 0.3;
         }
-
-        /* On garde allumé uniquement celui qui est actif */
         .viq-master-wrapper.ui-open .active-trigger {
             opacity: 1 !important;
         }
 
-        /* EFFET DE FOCUS AU SURVOL */
-        .viq-master-wrapper:has(a:hover) a,
-        .viq-master-wrapper:has(.trigger-links:hover) a,
-        .viq-master-wrapper:has(a:hover) .trigger-links,
-        .viq-master-wrapper:has(.trigger-links:hover) .trigger-links {
-            opacity: 0.3;
+        /* EFFET DE SURVOL (PC UNIQUEMENT) */
+        @media(hover: hover) {
+            .viq-master-wrapper:has(a:hover) a,
+            .viq-master-wrapper:has(.trigger-links:hover) a,
+            .viq-master-wrapper:has(a:hover) .trigger-links,
+            .viq-master-wrapper:has(.trigger-links:hover) .trigger-links {
+                opacity: 0.3;
+            }
+            .viq-master-wrapper a:hover,
+            .viq-master-wrapper .trigger-links:hover {
+                opacity: 1 !important;
+                transform: translateX(15px);
+            }
         }
 
-        .viq-master-wrapper a:hover,
-        .viq-master-wrapper .trigger-links:hover {
-            opacity: 1 !important;
-            transform: translateX(15px);
-        }
-
-        /* BLOCS TIROIRS (BAS) */
+        /* SYSTÈME DE TIROIR & ANIMATION CASCADE */
         .drawer {
-            display: none; /* Masqué par défaut */
-            opacity: 0;
-            transform: translateY(30px);
+            display: none;
             pointer-events: none;
-            transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
         .drawer.active {
             display: block;
-            opacity: 1;
-            transform: translateY(0);
             pointer-events: auto;
+        }
+
+        /* Animation des liens un par un */
+        .drawer.active a {
+            animation: fadeInRise 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+            opacity: 0;
+            transform: translateY(15px);
+        }
+
+        /* Décalage pour l'effet cascade */
+        .drawer.active a:nth-child(1) { animation-delay: 0.1s; }
+        .drawer.active a:nth-child(3) { animation-delay: 0.15s; } /* nth-child(3) car le <br> compte comme un enfant */
+        .drawer.active a:nth-child(5) { animation-delay: 0.2s; }
+        .drawer.active a:nth-child(7) { animation-delay: 0.25s; }
+        .drawer.active a:nth-child(9) { animation-delay: 0.3s; }
+        .drawer.active a:nth-child(11) { animation-delay: 0.35s; }
+        .drawer.active a:nth-child(13) { animation-delay: 0.4s; }
+        .drawer.active a:nth-child(15) { animation-delay: 0.45s; }
+
+        @keyframes fadeInRise {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @media (max-width: 768px) {
             .viq-master-wrapper { --margin-left: 20px; --margin-y: 30px; gap: 40px; justify-content: flex-start; }
             #bg-video { object-position: 35% center; }
-            .viq-links a:hover, .viq-links .trigger-links:hover { transform: none; }
+            /* On désactive le décalage horizontal sur mobile pour éviter les bugs de scroll */
+            .viq-links a:active { opacity: 0.7; }
         }
     </style>
 </head>
@@ -162,10 +182,8 @@
             const btnContact = document.getElementById('btn-contact');
             const btnLinks = document.getElementById('btn-links');
 
-            // Si on clique sur CONTACT
             if (section === 'contact') {
                 const isActive = contactDrawer.classList.contains('active');
-                // Fermer tout
                 closeAll();
                 if (!isActive) {
                     contactDrawer.classList.add('active');
@@ -173,11 +191,8 @@
                     btnContact.classList.add('active-trigger');
                     btnContact.innerHTML = "CLOSE —";
                 }
-            } 
-            // Si on clique sur LINKS
-            else if (section === 'links') {
+            } else if (section === 'links') {
                 const isActive = linksDrawer.classList.contains('active');
-                // Fermer tout
                 closeAll();
                 if (!isActive) {
                     linksDrawer.classList.add('active');
@@ -192,11 +207,9 @@
             const wrapper = document.getElementById('masterWrapper');
             const drawers = document.querySelectorAll('.drawer');
             const triggers = document.querySelectorAll('.trigger-links');
-            
             drawers.forEach(d => d.classList.remove('active'));
             triggers.forEach(t => t.classList.remove('active-trigger'));
             wrapper.classList.remove('ui-open');
-            
             document.getElementById('btn-contact').innerHTML = "CONTACT";
             document.getElementById('btn-links').innerHTML = "LINKS";
         }
