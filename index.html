@@ -32,64 +32,71 @@
             z-index: -1;
         }
 
-        /* LE CONTENEUR MAÎTRE (Toute la hauteur) */
+        /* CONTENEUR PRINCIPAL */
         .viq-master-wrapper {
             position: fixed;
             --margin-left: clamp(25px, 5vw, 45px);
             --margin-y: clamp(40px, 7vh, 65px);
-            
             top: var(--margin-y);
             bottom: var(--margin-y);
             left: var(--margin-left);
-            
             display: flex;
             flex-direction: column;
-            justify-content: space-between; /* Pousse un bloc en haut, l'autre en bas */
+            justify-content: space-between;
             z-index: 10;
-            pointer-events: none; /* Pour ne pas bloquer les clics au milieu */
         }
 
         .viq-links {
-            pointer-events: auto; /* Réactive les clics sur les liens uniquement */
             font-size: clamp(28px, 5.5vw, 55px); 
             text-transform: uppercase;
             line-height: 0.95; 
         }
 
-        .viq-links a {
+        .viq-links a, .trigger-links {
             display: block;
             color: #fff;
             text-decoration: none;
             padding: 2px 0; 
             transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1), opacity 0.3s ease;
-            will-change: transform;
+            cursor: pointer;
             white-space: nowrap;
+            user-select: none;
         }
 
-        .brand-color {
-            color: #b31300 !important;
+        .brand-color { color: #b31300 !important; }
+
+        /* ANIMATION DU BLOC BAS */
+        .bottom-block {
+            opacity: 0;
+            transform: translateY(30px);
+            pointer-events: none;
+            transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
-        /* L'ANIMATION LIÉE : 
-           Quand on survole n'importe quel lien dans le MASTER WRAPPER, 
-           tous les autres liens (en haut ET en bas) perdent en opacité */
-        .viq-master-wrapper:hover a:not(:hover) {
+        .bottom-block.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        /* EFFET DE FOCUS GLOBAL */
+        .viq-master-wrapper:hover a:not(:hover),
+        .viq-master-wrapper:hover .trigger-links:not(:hover) {
             opacity: 0.3;
         }
 
         @media(hover:hover) {
-            .viq-links a:hover { transform: translateX(15px); }
+            .viq-links a:hover, .trigger-links:hover { transform: translateX(15px); }
         }
 
-        /* MOBILE */
+        /* AJUSTEMENTS MOBILE */
         @media (max-width: 768px) {
-            .viq-master-wrapper {
-                --margin-left: 20px;
-                --margin-y: 30px;
-                /* Empêche le chevauchement si l'écran est minuscule */
-                justify-content: flex-start; 
-                gap: 40px; 
-                overflow-y: auto; /* Permet de scroller si l'écran est vraiment trop petit */
+            .viq-master-wrapper { 
+                --margin-left: 20px; 
+                --margin-y: 30px; 
+                gap: 40px;
+                justify-content: flex-start;
+                overflow-y: auto; /* Sécurité si la liste est longue */
             }
             #bg-video { object-position: 35% center; }
             .viq-links a:hover { transform: none; }
@@ -108,10 +115,11 @@
         <div class="viq-links">
             <a href="mailto:votre@email.com">CONTACT</a>
             <a href="https://votre-boutique.com" target="_blank">STORE</a>
+            <div class="trigger-links" id="btn-links" onclick="toggleLinks()">LINKS</div>
             <a href="#" class="brand-color">VIQ</a>
         </div>
 
-        <div class="viq-links">
+        <div class="viq-links bottom-block" id="linksBlock">
             <a href="https://tidal.com/artist/14851275" target="_blank">TIDAL</a>
             <a href="https://www.tiktok.com/@viqmusic" target="_blank">TIKTOK</a>
             <a href="https://www.deezer.com/fr/artist/53988822" target="_blank">DEEZER</a>
@@ -129,6 +137,20 @@
     </div>
 
     <script>
+        function toggleLinks() {
+            const block = document.getElementById('linksBlock');
+            const trigger = document.getElementById('btn-links');
+            
+            block.classList.toggle('active');
+            
+            if (block.classList.contains('active')) {
+                trigger.innerHTML = "CLOSE —";
+            } else {
+                trigger.innerHTML = "LINKS";
+            }
+        }
+
+        // Force play sur mobile
         document.addEventListener('touchstart', function() {
             document.querySelector('#bg-video').play();
         }, {once: true});
