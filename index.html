@@ -32,28 +32,25 @@
             z-index: -1;
         }
 
-        /* VARIABLES DE MARGES */
-        :root {
+        /* LE CONTENEUR MAÎTRE (Toute la hauteur) */
+        .viq-master-wrapper {
+            position: fixed;
             --margin-left: clamp(25px, 5vw, 45px);
             --margin-y: clamp(40px, 7vh, 65px);
-            --viq-red: #b31300; /* Ta couleur spécifique */
-        }
-
-        .viq-container {
-            position: fixed;
-            left: var(--margin-left);
-            z-index: 10;
-        }
-
-        .viq-top {
-            top: calc(var(--margin-y) - 10px); 
-        }
-
-        .viq-bottom {
+            
+            top: var(--margin-y);
             bottom: var(--margin-y);
+            left: var(--margin-left);
+            
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Pousse un bloc en haut, l'autre en bas */
+            z-index: 10;
+            pointer-events: none; /* Pour ne pas bloquer les clics au milieu */
         }
 
         .viq-links {
+            pointer-events: auto; /* Réactive les clics sur les liens uniquement */
             font-size: clamp(28px, 5.5vw, 55px); 
             text-transform: uppercase;
             line-height: 0.95; 
@@ -69,24 +66,32 @@
             white-space: nowrap;
         }
 
-        /* Couleur spécifique pour VIQ */
         .brand-color {
-            color: var(--viq-red) !important;
+            color: #b31300 !important;
+        }
+
+        /* L'ANIMATION LIÉE : 
+           Quand on survole n'importe quel lien dans le MASTER WRAPPER, 
+           tous les autres liens (en haut ET en bas) perdent en opacité */
+        .viq-master-wrapper:hover a:not(:hover) {
+            opacity: 0.3;
         }
 
         @media(hover:hover) {
             .viq-links a:hover { transform: translateX(15px); }
-            .viq-links:hover a:not(:hover) { opacity: 0.3; }
         }
 
+        /* MOBILE */
         @media (max-width: 768px) {
-            :root {
+            .viq-master-wrapper {
                 --margin-left: 20px;
                 --margin-y: 30px;
+                /* Empêche le chevauchement si l'écran est minuscule */
+                justify-content: flex-start; 
+                gap: 40px; 
+                overflow-y: auto; /* Permet de scroller si l'écran est vraiment trop petit */
             }
-            #bg-video {
-                object-position: 35% center; 
-            }
+            #bg-video { object-position: 35% center; }
             .viq-links a:hover { transform: none; }
         }
     </style>
@@ -98,15 +103,14 @@
     </video>
     <div class="overlay"></div>
 
-    <div class="viq-container viq-top">
+    <div class="viq-master-wrapper">
+        
         <div class="viq-links">
             <a href="mailto:votre@email.com">CONTACT</a>
             <a href="https://votre-boutique.com" target="_blank">STORE</a>
             <a href="#" class="brand-color">VIQ</a>
         </div>
-    </div>
 
-    <div class="viq-container viq-bottom">
         <div class="viq-links">
             <a href="https://tidal.com/artist/14851275" target="_blank">TIDAL</a>
             <a href="https://www.tiktok.com/@viqmusic" target="_blank">TIKTOK</a>
@@ -121,6 +125,7 @@
             <a href="https://music.apple.com/us/artist/viq/1467177415" target="_blank">APPLE MUSIC</a>
             <a href="https://soundcloud.com/viqmusic" target="_blank">SOUNDCLOUD</a>
         </div>
+
     </div>
 
     <script>
