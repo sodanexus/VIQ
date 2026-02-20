@@ -6,7 +6,6 @@
     <title>VIQ | Official Website</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400&display=swap" rel="stylesheet">
     <style>
-        /* RESET */
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
@@ -15,6 +14,7 @@
             font-family: 'Playfair Display', serif;
             min-height: 100vh;
             overflow: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
         /* FOND VIDÉO */
@@ -32,29 +32,32 @@
             z-index: -1;
         }
 
-        /* CONTENEUR FIGÉ */
+        /* CONTENEUR FIXE */
         .viq-container {
             position: fixed;
-            top: 40px; 
-            left: 40px;
+            /* Position fluide : entre 20px et 40px selon l'écran */
+            top: clamp(20px, 4vh, 40px); 
+            left: clamp(20px, 4vw, 40px);
             z-index: 10;
         }
 
         .viq-links {
-            /* On utilise une taille fixe pour éviter les saccades de calcul responsive */
-            font-size: 38px; 
+            /* Taille de police fluide : pas de saccade au redimensionnement */
+            font-size: clamp(24px, 4vw, 38px); 
             text-transform: uppercase;
-            line-height: 0.9; /* Liens beaucoup plus serrés */
+            /* line-height 1.0 pour un entre-deux parfait */
+            line-height: 1.0; 
         }
 
         .viq-links a {
             display: block;
             color: #fff;
             text-decoration: none;
-            padding: 2px 0; /* Espace vertical réduit au minimum */
-            /* Transition simplifiée au maximum pour la fluidité */
-            transition: transform 0.3s ease-out, opacity 0.3s ease;
+            /* Padding léger pour l'écartement "un poil plus" */
+            padding: 3px 0; 
+            transition: transform 0.3s ease, opacity 0.3s ease;
             will-change: transform;
+            white-space: nowrap;
         }
 
         /* HOVER EFFECTS */
@@ -67,10 +70,9 @@
             }
         }
 
-        /* RESPONSIVE MOBILE SIMPLE */
+        /* Sur mobile, on désactive le décalage pour éviter les bugs de tactile */
         @media (max-width: 768px) {
-            .viq-container { top: 20px; left: 20px; }
-            .viq-links { font-size: 26px; }
+            .viq-links a:hover { transform: none; }
         }
     </style>
 </head>
@@ -91,7 +93,7 @@
             <a href="https://www.youtube.com/c/VIQmusic" target="_blank">YOUTUBE</a>
             <a href="https://www.pandora.com/artist/viq/AR7v5wJfcr9gkKX" target="_blank">PANDORA</a>
             <a href="https://music.amazon.fr/artists/B07SVHSJ37/viq" target="_blank">AMAZON</a>
-            <a href="https://open.spotify.com/artist/6vW9mpxP7YIn9D9m8H77lO" target="_blank">SPOTIFY</a>
+            <a href="https://open.spotify.com/artist/53988822" target="_blank">SPOTIFY</a>
             <a href="https://www.deezer.com/fr/artist/53988822" target="_blank">DEEZER</a>
             <a href="https://www.tiktok.com/@viqmusic" target="_blank">TIKTOK</a>
             <a href="https://tidal.com/artist/14851275" target="_blank">TIDAL</a>
