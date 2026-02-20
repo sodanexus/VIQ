@@ -6,93 +6,122 @@
     <title>VIQ | Official Website</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400&display=swap" rel="stylesheet">
     <style>
-        /* --- STYLES DE BASE (Inchangés) --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            background-color: #000; color: #fff;
+            background-color: #000;
+            color: #fff;
             font-family: 'Playfair Display', serif;
-            min-height: 100vh; overflow-y: auto;
+            min-height: 100vh;
+            overflow-y: auto;
             -webkit-font-smoothing: antialiased;
         }
         body::-webkit-scrollbar { display: none; }
 
         #bg-video {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover; z-index: -2; object-position: center; 
-        }
-        .overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.4); z-index: -1;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
+            z-index: -2;
+            object-position: center; 
         }
 
-        /* --- LAYOUT --- */
+        .overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4); 
+            z-index: -1;
+        }
+
+        /* --- LAYOUT PRINCIPAL --- */
         .viq-master-wrapper {
             position: fixed;
             --margin-left: clamp(25px, 5vw, 45px);
             --margin-y: clamp(40px, 7vh, 65px);
-            top: var(--margin-y); bottom: var(--margin-y);
-            left: var(--margin-left); right: var(--margin-left);
-            display: flex; flex-direction: column;
-            justify-content: space-between; z-index: 10;
+            top: var(--margin-y);
+            bottom: var(--margin-y);
+            left: var(--margin-left);
+            right: var(--margin-left);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 10;
             pointer-events: none;
         }
 
         .viq-links {
             font-size: clamp(28px, 5.5vw, 55px); 
-            text-transform: uppercase; line-height: 0.95; 
+            text-transform: uppercase;
+            line-height: 0.95; 
             pointer-events: auto;
         }
 
         .viq-links a, .trigger-links {
-            display: inline-block; color: #fff;
-            text-decoration: none; padding: 2px 0; 
+            display: inline-block;
+            color: #fff;
+            text-decoration: none;
+            padding: 2px 0; 
             transition: transform 0.4s cubic-bezier(0.2, 0, 0.2, 1), opacity 0.4s ease;
-            cursor: pointer; white-space: nowrap; width: fit-content;
+            cursor: pointer;
+            white-space: nowrap;
+            width: fit-content;
         }
 
         .brand-color { color: #b31300 !important; }
 
-        /* --- ANIMATION DU BOUTON (CONTACT/LINKS -> CLOSE) --- */
+        /* --- ANIMATION SWAP (CONTACT/LINKS -> CLOSE) --- */
         .trigger-links {
             position: relative;
-            overflow: hidden; /* Pour cacher le texte qui sort */
-            vertical-align: bottom;
+            overflow: hidden; 
+            height: 0.95em; /* Force la hauteur d'une seule ligne */
+            display: block; 
         }
 
-        /* On crée un conteneur interne pour le texte pour l'animer */
         .text-swap {
             display: block;
+            line-height: 0.95em;
             transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
-        /* État quand on clique (Le texte monte) */
+        /* Décale le texte vers le haut pour montrer la 2ème ligne */
         .active-trigger .text-swap {
-            transform: translateY(-105%);
+            transform: translateY(-0.95em);
         }
 
         /* --- OPACITÉ & FOCUS --- */
         .viq-master-wrapper.ui-open .top-block a, 
-        .viq-master-wrapper.ui-open .top-block .trigger-links { opacity: 0.3; }
-        .viq-master-wrapper.ui-open .active-trigger { opacity: 1 !important; }
+        .viq-master-wrapper.ui-open .top-block .trigger-links {
+            opacity: 0.3;
+        }
+        .viq-master-wrapper.ui-open .active-trigger {
+            opacity: 1 !important;
+        }
 
         @media(hover: hover) {
             .viq-master-wrapper:has(a:hover) a,
             .viq-master-wrapper:has(.trigger-links:hover) a,
             .viq-master-wrapper:has(a:hover) .trigger-links,
-            .viq-master-wrapper:has(.trigger-links:hover) .trigger-links { opacity: 0.3; }
-            .viq-master-wrapper a:hover, .viq-master-wrapper .trigger-links:hover {
-                opacity: 1 !important; transform: translateX(15px);
+            .viq-master-wrapper:has(.trigger-links:hover) .trigger-links {
+                opacity: 0.3;
+            }
+            .viq-master-wrapper a:hover,
+            .viq-master-wrapper .trigger-links:hover {
+                opacity: 1 !important;
+                transform: translateX(15px);
             }
         }
 
         /* --- TIROIRS & CASCADE --- */
         .drawer { display: none; }
         .drawer.active { display: block; }
+        
         .drawer.active a {
             animation: fadeInRise 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards;
-            opacity: 0; transform: translateY(15px);
+            opacity: 0;
+            transform: translateY(15px);
         }
 
+        /* Cascade pour tous les liens (jusqu'à 15 liens supportés) */
         .drawer.active a:nth-of-type(1) { animation-delay: 0.05s; }
         .drawer.active a:nth-of-type(2) { animation-delay: 0.10s; }
         .drawer.active a:nth-of-type(3) { animation-delay: 0.15s; }
@@ -105,13 +134,19 @@
         .drawer.active a:nth-of-type(10) { animation-delay: 0.50s; }
         .drawer.active a:nth-of-type(11) { animation-delay: 0.55s; }
         .drawer.active a:nth-of-type(12) { animation-delay: 0.60s; }
+        .drawer.active a:nth-of-type(13) { animation-delay: 0.65s; }
+        .drawer.active a:nth-of-type(14) { animation-delay: 0.70s; }
+        .drawer.active a:nth-of-type(15) { animation-delay: 0.75s; }
 
         @keyframes fadeInRise { to { opacity: 1; transform: translateY(0); } }
 
+        /* --- MOBILE --- */
         @media (max-width: 768px) {
             .viq-master-wrapper { 
-                --margin-left: 20px; --margin-y: 35px; 
-                height: calc(100% - (var(--margin-y) * 2)); position: fixed;
+                --margin-left: 20px; 
+                --margin-y: 35px; 
+                height: calc(100% - (var(--margin-y) * 2));
+                position: fixed;
             }
             .viq-bottom-zone { margin-top: auto; }
             #bg-video { object-position: 35% center; }
@@ -126,6 +161,7 @@
     <div class="overlay"></div>
 
     <div class="viq-master-wrapper" id="masterWrapper">
+        
         <div class="viq-links top-block">
             <div class="trigger-links" id="btn-contact" onclick="toggleSection('contact')">
                 <span class="text-swap">CONTACT<br>CLOSE —</span>
