@@ -65,18 +65,18 @@
 
         .brand-color { color: #b31300 !important; }
 
-        /* --- LOGIQUE D'OPACITÉ LORSQUE LINKS EST OUVERT --- */
-        
-        /* On baisse l'opacité de tout le bloc du haut quand c'est actif... */
-        .viq-master-wrapper.links-open .top-block a {
+        /* LOGIQUE D'OPACITÉ QUAND UN TIROIR EST OUVERT */
+        .viq-master-wrapper.ui-open .top-block a, 
+        .viq-master-wrapper.ui-open .top-block .trigger-links {
             opacity: 0.3;
         }
-        /* ...SAUF pour le bouton de fermeture (trigger-links) */
-        .viq-master-wrapper.links-open .trigger-links {
+
+        /* On garde allumé uniquement celui qui est actif */
+        .viq-master-wrapper.ui-open .active-trigger {
             opacity: 1 !important;
         }
 
-        /* --- LOGIQUE DE FOCUS AU SURVOL (RESTE ACTIVE) --- */
+        /* EFFET DE FOCUS AU SURVOL */
         .viq-master-wrapper:has(a:hover) a,
         .viq-master-wrapper:has(.trigger-links:hover) a,
         .viq-master-wrapper:has(a:hover) .trigger-links,
@@ -90,27 +90,24 @@
             transform: translateX(15px);
         }
 
-        /* ANIMATION DU BLOC BAS */
-        .bottom-block {
+        /* BLOCS TIROIRS (BAS) */
+        .drawer {
+            display: none; /* Masqué par défaut */
             opacity: 0;
             transform: translateY(30px);
             pointer-events: none;
             transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
-        .bottom-block.active {
+        .drawer.active {
+            display: block;
             opacity: 1;
             transform: translateY(0);
             pointer-events: auto;
         }
 
         @media (max-width: 768px) {
-            .viq-master-wrapper { 
-                --margin-left: 20px; 
-                --margin-y: 30px; 
-                gap: 40px;
-                justify-content: flex-start;
-            }
+            .viq-master-wrapper { --margin-left: 20px; --margin-y: 30px; gap: 40px; justify-content: flex-start; }
             #bg-video { object-position: 35% center; }
             .viq-links a:hover, .viq-links .trigger-links:hover { transform: none; }
         }
@@ -126,39 +123,82 @@
     <div class="viq-master-wrapper" id="masterWrapper">
         
         <div class="viq-links top-block">
-            <a href="mailto:votre@email.com">CONTACT</a><br>
+            <div class="trigger-links" id="btn-contact" onclick="toggleSection('contact')">CONTACT</div><br>
             <a href="https://votre-boutique.com" target="_blank">STORE</a><br>
-            <div class="trigger-links" id="btn-links" onclick="toggleLinks()">LINKS</div><br>
+            <div class="trigger-links" id="btn-links" onclick="toggleSection('links')">LINKS</div><br>
             <a href="#" class="brand-color">VIQ</a>
         </div>
 
-        <div class="viq-links bottom-block" id="linksBlock">
-            <a href="https://tidal.com/artist/14851275" target="_blank">TIDAL</a><br>
-            <a href="https://www.tiktok.com/@viqmusic" target="_blank">TIKTOK</a><br>
-            <a href="https://www.deezer.com/fr/artist/53988822" target="_blank">DEEZER</a><br>
-            <a href="https://open.spotify.com/intl-fr/artist/6XpN8mRlhuOXuvEyva4yjZ" target="_blank">SPOTIFY</a><br>
-            <a href="https://music.amazon.fr/artists/B07SVHSJ37/viq" target="_blank">AMAZON</a><br>
-            <a href="https://www.pandora.com/artist/viq/AR7v5wJfcr9gkKX" target="_blank">PANDORA</a><br>
-            <a href="https://www.youtube.com/c/VIQmusic" target="_blank">YOUTUBE</a><br>
-            <a href="https://www.facebook.com/Viqmusic" target="_blank">FACEBOOK</a><br>
-            <a href="https://viqmusic.bandcamp.com/music" target="_blank">BANDCAMP</a><br>
-            <a href="https://www.instagram.com/viqmusic/" target="_blank">INSTAGRAM</a><br>
-            <a href="https://music.apple.com/us/artist/viq/1467177415" target="_blank">APPLE MUSIC</a><br>
-            <a href="https://soundcloud.com/viqmusic" target="_blank">SOUNDCLOUD</a>
-        </div>
+        <div class="viq-bottom-zone">
+            
+            <div class="viq-links drawer" id="contactDrawer">
+                <a href="mailto:viqmusic.promo@gmail.com">GENERAL INQUIRIES</a><br>
+                <a href="https://drive.google.com/drive/folders/13zPAOc29mHrjve1CM-KaZwaS_TqAtFzI?usp=sharing" target="_blank">PRESS KIT</a>
+            </div>
 
+            <div class="viq-links drawer" id="linksDrawer">
+                <a href="https://tidal.com/artist/14851275" target="_blank">TIDAL</a><br>
+                <a href="https://www.tiktok.com/@viqmusic" target="_blank">TIKTOK</a><br>
+                <a href="https://www.deezer.com/fr/artist/53988822" target="_blank">DEEZER</a><br>
+                <a href="https://open.spotify.com/intl-fr/artist/6XpN8mRlhuOXuvEyva4yjZ" target="_blank">SPOTIFY</a><br>
+                <a href="https://music.amazon.fr/artists/B07SVHSJ37/viq" target="_blank">AMAZON</a><br>
+                <a href="https://www.pandora.com/artist/viq/AR7v5wJfcr9gkKX" target="_blank">PANDORA</a><br>
+                <a href="https://www.youtube.com/c/VIQmusic" target="_blank">YOUTUBE</a><br>
+                <a href="https://www.facebook.com/Viqmusic" target="_blank">FACEBOOK</a><br>
+                <a href="https://viqmusic.bandcamp.com/music" target="_blank">BANDCAMP</a><br>
+                <a href="https://www.instagram.com/viqmusic/" target="_blank">INSTAGRAM</a><br>
+                <a href="https://music.apple.com/us/artist/viq/1467177415" target="_blank">APPLE MUSIC</a><br>
+                <a href="https://soundcloud.com/viqmusic" target="_blank">SOUNDCLOUD</a>
+            </div>
+            
+        </div>
     </div>
 
     <script>
-        function toggleLinks() {
-            const block = document.getElementById('linksBlock');
-            const trigger = document.getElementById('btn-links');
+        function toggleSection(section) {
             const wrapper = document.getElementById('masterWrapper');
+            const contactDrawer = document.getElementById('contactDrawer');
+            const linksDrawer = document.getElementById('linksDrawer');
+            const btnContact = document.getElementById('btn-contact');
+            const btnLinks = document.getElementById('btn-links');
+
+            // Si on clique sur CONTACT
+            if (section === 'contact') {
+                const isActive = contactDrawer.classList.contains('active');
+                // Fermer tout
+                closeAll();
+                if (!isActive) {
+                    contactDrawer.classList.add('active');
+                    wrapper.classList.add('ui-open');
+                    btnContact.classList.add('active-trigger');
+                    btnContact.innerHTML = "CLOSE —";
+                }
+            } 
+            // Si on clique sur LINKS
+            else if (section === 'links') {
+                const isActive = linksDrawer.classList.contains('active');
+                // Fermer tout
+                closeAll();
+                if (!isActive) {
+                    linksDrawer.classList.add('active');
+                    wrapper.classList.add('ui-open');
+                    btnLinks.classList.add('active-trigger');
+                    btnLinks.innerHTML = "CLOSE —";
+                }
+            }
+        }
+
+        function closeAll() {
+            const wrapper = document.getElementById('masterWrapper');
+            const drawers = document.querySelectorAll('.drawer');
+            const triggers = document.querySelectorAll('.trigger-links');
             
-            block.classList.toggle('active');
-            wrapper.classList.toggle('links-open'); // Ajoute/Enlève la classe de contrôle
+            drawers.forEach(d => d.classList.remove('active'));
+            triggers.forEach(t => t.classList.remove('active-trigger'));
+            wrapper.classList.remove('ui-open');
             
-            trigger.innerHTML = block.classList.contains('active') ? "CLOSE —" : "LINKS";
+            document.getElementById('btn-contact').innerHTML = "CONTACT";
+            document.getElementById('btn-links').innerHTML = "LINKS";
         }
 
         document.addEventListener('touchstart', function() {
