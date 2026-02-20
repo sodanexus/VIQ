@@ -31,13 +31,14 @@
             z-index: -1;
         }
 
-        /* AJUSTEMENT OPTIQUE SYMÉTRIQUE */
+        /* POSITIONNEMENT BAS GAUCHE SYMÉTRIQUE */
         .viq-container {
             position: fixed;
             --margin-site: clamp(25px, 5vw, 45px); 
             
-            /* On retire 4px en haut pour compenser le vide naturel de la police */
-            top: calc(var(--margin-site) - 4px); 
+            /* On utilise bottom au lieu de top */
+            /* On retire 6px pour compenser le "descendant" des lettres comme le L ou le K */
+            bottom: calc(var(--margin-site) - 6px); 
             left: var(--margin-site);
             z-index: 10;
         }
@@ -58,9 +59,9 @@
             white-space: nowrap;
         }
 
-        /* Enlever le padding du tout premier lien pour qu'il soit collé au bord haut */
-        .viq-links a:first-child {
-            padding-top: 0;
+        /* Supprime l'espace sous le dernier lien pour coller au bord bas */
+        .viq-links a:last-child {
+            padding-bottom: 0;
         }
 
         @media(hover:hover) {
@@ -71,7 +72,7 @@
         @media (max-width: 768px) {
             .viq-container {
                 --margin-site: 20px;
-                top: calc(var(--margin-site) - 2px); /* Compensation plus légère sur mobile */
+                bottom: calc(var(--margin-site) - 3px);
             }
             .viq-links a:hover { transform: none; }
         }
@@ -86,18 +87,18 @@
 
     <div class="viq-container">
         <div class="viq-links">
-            <a href="https://soundcloud.com/viqmusic" target="_blank">SOUNDCLOUD</a>
-            <a href="https://music.apple.com/us/artist/viq/1467177415" target="_blank">APPLE MUSIC</a>
-            <a href="https://www.instagram.com/viqmusic/" target="_blank">INSTAGRAM</a>
-            <a href="https://viqmusic.bandcamp.com/music" target="_blank">BANDCAMP</a>
-            <a href="https://www.facebook.com/Viqmusic" target="_blank">FACEBOOK</a>
-            <a href="https://www.youtube.com/c/VIQmusic" target="_blank">YOUTUBE</a>
-            <a href="https://www.pandora.com/artist/viq/AR7v5wJfcr9gkKX" target="_blank">PANDORA</a>
-            <a href="https://music.amazon.fr/artists/B07SVHSJ37/viq" target="_blank">AMAZON</a>
-            <a href="https://open.spotify.com/artist/14851275" target="_blank">SPOTIFY</a>
-            <a href="https://www.deezer.com/fr/artist/53988822" target="_blank">DEEZER</a>
-            <a href="https://www.tiktok.com/@viqmusic" target="_blank">TIKTOK</a>
             <a href="https://tidal.com/artist/14851275" target="_blank">TIDAL</a>
+            <a href="https://www.tiktok.com/@viqmusic" target="_blank">TIKTOK</a>
+            <a href="https://www.deezer.com/fr/artist/53988822" target="_blank">DEEZER</a>
+            <a href="https://open.spotify.com/artist/14851275" target="_blank">SPOTIFY</a>
+            <a href="https://music.amazon.fr/artists/B07SVHSJ37/viq" target="_blank">AMAZON</a>
+            <a href="https://www.pandora.com/artist/viq/AR7v5wJfcr9gkKX" target="_blank">PANDORA</a>
+            <a href="https://www.youtube.com/c/VIQmusic" target="_blank">YOUTUBE</a>
+            <a href="https://www.facebook.com/Viqmusic" target="_blank">FACEBOOK</a>
+            <a href="https://viqmusic.bandcamp.com/music" target="_blank">BANDCAMP</a>
+            <a href="https://www.instagram.com/viqmusic/" target="_blank">INSTAGRAM</a>
+            <a href="https://music.apple.com/us/artist/viq/1467177415" target="_blank">APPLE MUSIC</a>
+            <a href="https://soundcloud.com/viqmusic" target="_blank">SOUNDCLOUD</a>
         </div>
     </div>
 
