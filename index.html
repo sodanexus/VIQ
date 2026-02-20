@@ -31,48 +31,45 @@
             z-index: -1;
         }
 
-        /* POSITIONNEMENT BAS GAUCHE SYMÉTRIQUE */
+        /* POSITIONNEMENT BAS GAUCHE */
         .viq-container {
             position: fixed;
             --margin-site: clamp(25px, 5vw, 45px); 
-            
-            /* On utilise bottom au lieu de top */
-            /* On retire 6px pour compenser le "descendant" des lettres comme le L ou le K */
-            bottom: calc(var(--margin-site) - 6px); 
+            bottom: calc(var(--margin-site) - 8px); /* Ajusté pour la police plus grande */
             left: var(--margin-site);
             z-index: 10;
         }
 
         .viq-links {
-            font-size: clamp(24px, 4.2vw, 38px); 
+            /* TAILLE AUGMENTÉE : Max 55px au lieu de 38px */
+            font-size: clamp(28px, 5.5vw, 55px); 
             text-transform: uppercase;
-            line-height: 1.0; 
+            line-height: 0.95; /* Un poil plus serré pour compenser la taille */
         }
 
         .viq-links a {
             display: block;
             color: #fff;
             text-decoration: none;
-            padding: 4px 0; 
+            padding: 2px 0; /* Padding réduit pour garder un bloc compact malgré la grande taille */
             transition: transform 0.3s ease, opacity 0.3s ease;
             will-change: transform;
             white-space: nowrap;
         }
 
-        /* Supprime l'espace sous le dernier lien pour coller au bord bas */
         .viq-links a:last-child {
             padding-bottom: 0;
         }
 
         @media(hover:hover) {
-            .viq-links a:hover { transform: translateX(10px); }
+            .viq-links a:hover { transform: translateX(15px); }
             .viq-links:hover a:not(:hover) { opacity: 0.3; }
         }
 
         @media (max-width: 768px) {
             .viq-container {
                 --margin-site: 20px;
-                bottom: calc(var(--margin-site) - 3px);
+                bottom: calc(var(--margin-site) - 4px);
             }
             .viq-links a:hover { transform: none; }
         }
@@ -90,7 +87,7 @@
             <a href="https://tidal.com/artist/14851275" target="_blank">TIDAL</a>
             <a href="https://www.tiktok.com/@viqmusic" target="_blank">TIKTOK</a>
             <a href="https://www.deezer.com/fr/artist/53988822" target="_blank">DEEZER</a>
-            <a href="https://open.spotify.com/artist/14851275" target="_blank">SPOTIFY</a>
+            <a href="YOUR_SPOTIFY_LINK" target="_blank">SPOTIFY</a>
             <a href="https://music.amazon.fr/artists/B07SVHSJ37/viq" target="_blank">AMAZON</a>
             <a href="https://www.pandora.com/artist/viq/AR7v5wJfcr9gkKX" target="_blank">PANDORA</a>
             <a href="https://www.youtube.com/c/VIQmusic" target="_blank">YOUTUBE</a>
