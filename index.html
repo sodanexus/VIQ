@@ -13,70 +13,53 @@
             color: #fff;
             font-family: 'Playfair Display', serif;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            padding-left: 8%;
-            overflow: hidden;
         }
 
-        /* CONFIGURATION VIDÉO PLEIN ÉCRAN */
+        /* VIDÉO ET OVERLAY (Idem précédent) */
         #bg-video {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* Remplace le background-size: cover */
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
             z-index: -2;
         }
-
-        /* LE VOILE SOMBRE (Ajuste le 0.5 pour assombrir plus ou moins) */
         .overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.5); 
             z-index: -1;
         }
 
-        /* EFFET DE GRAIN ANALOGIQUE */
-        .grain {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: url('https://upload.wikimedia.org/wikipedia/commons/7/76/1k_Grain_Noise.jpg');
-            opacity: 0.03;
-            pointer-events: none;
-            z-index: 0;
+        /* BLOC DE LIENS FIGÉ EN HAUT À GAUCHE */
+        .viq-container {
+            position: fixed; /* Fige le bloc */
+            top: 40px;      /* Distance du haut */
+            left: 40px;     /* Distance de la gauche */
+            z-index: 10;
         }
 
-        /* MENU VIQ */
         .viq-links {
-            font: 400 clamp(28px, 6vw, 50px) 'Playfair Display', serif;
+            font: 400 clamp(24px, 5vw, 45px) 'Playfair Display', serif;
             text-transform: uppercase;
             width: fit-content;
             line-height: 1.1;
-            position: relative;
-            z-index: 2;
         }
 
         .viq-links a {
             display: block;
             color: #fff;
             text-decoration: none;
-            padding: 4px 0;
+            padding: 3px 0;
             transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
         }
 
-        /* Navigation Header */
+        /* Header : STORE | VIQ | CONTACT */
         .viq-nav-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
             width: 100%;
             font-size: 0.55em;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             letter-spacing: 2px;
         }
 
@@ -88,14 +71,16 @@
             opacity: 1 !important;
         }
 
+        /* Effets au survol */
         @media(hover:hover) {
-            .viq-links > a:hover { transform: translateX(20px); }
+            .viq-links > a:hover { transform: translateX(15px); }
             .viq-links:hover a:not(:hover):not(.viq-brand) { opacity: 0.25; }
         }
 
+        /* Ajustements Mobile */
         @media (max-width: 600px) {
-            body { padding-left: 5%; align-items: flex-end; padding-bottom: 15%; }
-            .viq-links { font-size: clamp(24px, 9vw, 35px); }
+            .viq-container { top: 20px; left: 20px; }
+            .viq-links { font-size: 24px; }
         }
     </style>
 </head>
@@ -104,29 +89,29 @@
     <video autoplay muted loop playsinline id="bg-video">
         <source src="Background.mp4" type="video/mp4">
     </video>
-
     <div class="overlay"></div>
-    <div class="grain"></div>
 
-    <div class="viq-links">
-        <nav class="viq-nav-top">
-            <a href="store.html">STORE</a>
-            <a href="index.html" class="viq-brand">VIQ</a>
-            <a href="contact.html">CONTACT</a>
-        </nav>
+    <div class="viq-container">
+        <div class="viq-links">
+            <nav class="viq-nav-top">
+                <a href="store.html">STORE</a>
+                <a href="index.html" class="viq-brand">VIQ</a>
+                <a href="contact.html">CONTACT</a>
+            </nav>
 
-        <a href="https://soundcloud.com/viqmusic" target="_blank">SOUNDCLOUD</a>
-        <a href="https://music.apple.com/us/artist/viq/1467177415" target="_blank">APPLE MUSIC</a>
-        <a href="https://www.instagram.com/viqmusic/" target="_blank">INSTAGRAM</a>
-        <a href="https://viqmusic.bandcamp.com/music" target="_blank">BANDCAMP</a>
-        <a href="https://www.facebook.com/Viqmusic" target="_blank">FACEBOOK</a>
-        <a href="https://www.youtube.com/c/VIQmusic" target="_blank">YOUTUBE</a>
-        <a href="https://www.pandora.com/artist/viq/AR7v5wJfcr9gkKX" target="_blank">PANDORA</a>
-        <a href="https://music.amazon.fr/artists/B07SVHSJ37/viq" target="_blank">AMAZON</a>
-        <a href="https://open.spotify.com/intl-fr/artist/6XpN8mRlhuOXuvEyva4yjZ" target="_blank">SPOTIFY</a>
-        <a href="https://www.deezer.com/fr/artist/53988822" target="_blank">DEEZER</a>
-        <a href="https://www.tiktok.com/@viqmusic" target="_blank">TIKTOK</a>
-        <a href="https://tidal.com/artist/14851275" target="_blank">TIDAL</a>
+            <a href="https://soundcloud.com/viqmusic" target="_blank">SOUNDCLOUD</a>
+            <a href="https://music.apple.com/us/artist/viq/1467177415" target="_blank">APPLE MUSIC</a>
+            <a href="https://www.instagram.com/viqmusic/" target="_blank">INSTAGRAM</a>
+            <a href="https://viqmusic.bandcamp.com/music" target="_blank">BANDCAMP</a>
+            <a href="https://www.facebook.com/Viqmusic" target="_blank">FACEBOOK</a>
+            <a href="https://www.youtube.com/c/VIQmusic" target="_blank">YOUTUBE</a>
+            <a href="https://www.pandora.com/artist/viq/AR7v5wJfcr9gkKX" target="_blank">PANDORA</a>
+            <a href="https://music.amazon.fr/artists/B07SVHSJ37/viq" target="_blank">AMAZON</a>
+            <a href="https://open.spotify.com/intl-fr/artist/6XpN8mRlhuOXuvEyva4yjZ" target="_blank">SPOTIFY</a>
+            <a href="https://www.deezer.com/fr/artist/53988822" target="_blank">DEEZER</a>
+            <a href="https://www.tiktok.com/@viqmusic" target="_blank">TIKTOK</a>
+            <a href="https://tidal.com/artist/14851275" target="_blank">TIDAL</a>
+        </div>
     </div>
 
 </body>
