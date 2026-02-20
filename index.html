@@ -5,14 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>VIQ | Official Website</title>
 
-    <!-- SEO -->
     <meta name="description" content="VIQ is an electronic and indie music artist from Montmorency, France. Blending synthwave, dreampop, and hip-hop, signed to Stratford.Ct. Stream on Spotify, Apple Music, Tidal and more.">
     <meta name="keywords" content="VIQ, VIQ music, electronic music, indie, synthwave, dreampop, Stratford.Ct, Julien Pannetier, Montmorency">
     <meta name="author" content="VIQ">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://www.viqmusic.net/">
 
-    <!-- Open Graph (Facebook, Instagram, iMessage) -->
     <meta property="og:title" content="VIQ | Official Website">
     <meta property="og:description" content="Electronic and indie music artist from France. Stream now on Spotify, Apple Music, Tidal and more.">
     <meta property="og:type" content="website">
@@ -20,13 +18,11 @@
     <meta property="og:image" content="https://www.viqmusic.net/og-image.jpg">
     <meta property="og:locale" content="en_US">
 
-    <!-- Twitter / X -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="VIQ | Official Website">
     <meta name="twitter:description" content="Electronic and indie music artist from France. Stream now on Spotify, Apple Music, Tidal and more.">
     <meta name="twitter:image" content="https://www.viqmusic.net/og-image.jpg">
 
-    <!-- Schema.org structured data -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -100,7 +96,8 @@
             flex: 1 1 0;
             min-height: 0;
             position: relative;
-            overflow: hidden;
+            /* Changé de hidden à visible pour laisser le scroll fonctionner */
+            overflow: visible; 
         }
         .links {
             font-size: clamp(38px, 6.5vw, 65px);
@@ -131,6 +128,7 @@
         #ui.dim .top > a, #ui.dim .top > .nav-btn { opacity: .3; }
         #ui.dim .top > .nav-btn.active { opacity: 1 !important; }
         .top > a, .top > .nav-btn { will-change: opacity; }
+        
         .drawer {
             position: absolute;
             bottom: 0; left: 0;
@@ -138,7 +136,17 @@
             flex-direction: column;
             visibility: hidden;
             pointer-events: none;
+            max-height: 100%;
         }
+        
+        /* Spécificité pour le défilement de la bio sur mobile */
+        #bioDrawer {
+            overflow-y: auto;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE/Edge */
+        }
+        #bioDrawer::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+
         .drawer.active, .drawer.closing { visibility: visible; pointer-events: auto; }
         .drawer > a { opacity: 0; transform: translateY(18px); }
         .drawer > a.dl {
@@ -154,7 +162,7 @@
             text-align: justify;
             letter-spacing: 0.01em;
             margin-bottom: 0.75em;
-            pointer-events: none;
+            pointer-events: auto; /* Permet le scroll sur le texte */
             opacity: 0;
             transform: translateY(18px);
         }
@@ -165,6 +173,7 @@
         .bio-spacer {
             pointer-events: none !important;
             height: 0.6em;
+            flex-shrink: 0;
             cursor: default !important;
         }
         @keyframes in  { from { opacity:0; transform:translateY(18px) } to { opacity:1; transform:translateY(0) } }
@@ -182,7 +191,7 @@
                     dur="3s" repeatCount="indefinite"/>
             </feTurbulence>
             <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0" result="noise2"/>
-            <feImage result="mask" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='20'%3E%3CdefinItions%3E%3ClinearGradient id='g' x1='0' x2='1'%3E%3Cstop offset='0' stop-color='black'/%3E%3Cstop offset='1' stop-color='white'/%3E%3C/linearGradient%3E%3C/definitions%3E%3Crect width='200' height='20' fill='url(%23g)'/%3E%3C/svg%3E"/>
+            <feImage result="mask" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='20'%3E%3Cdefinitions%3E%3ClinearGradient id='g' x1='0' x2='1'%3E%3Cstop offset='0' stop-color='black'/%3E%3Cstop offset='1' stop-color='white'/%3E%3C/linearGradient%3E%3C/definitions%3E%3Crect width='200' height='20' fill='url(%23g)'/%3E%3C/svg%3E"/>
             <feComposite in="noise2" in2="mask" operator="arithmetic" k2="1" k3="1" result="modulated"/>
             <feDisplacementMap in="SourceGraphic" in2="modulated" scale="0"
                 xChannelSelector="R" yChannelSelector="G" id="flag-disp"/>
@@ -190,7 +199,6 @@
     </defs>
 </svg>
 
-<!-- Contenu semantique pour les moteurs de recherche -->
 <div style="position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;" aria-hidden="true">
     <h1>VIQ - Official Website</h1>
     <p>Electronic and indie music artist Julien Pannetier, known as VIQ, from Montmorency, France.</p>
@@ -221,7 +229,6 @@
     </div>
 
     <div class="bottom">
-
         <div class="links drawer" id="followDrawer">
             <a href="https://www.tiktok.com/@viqmusic" target="_blank">TIK TOK</a>
             <a href="https://www.threads.com/@viqmusic" target="_blank">THREADS</a>
@@ -248,12 +255,11 @@
             <p class="bio-text">Julien Pannetier, better known as VIQ, brings a fresh perspective to the electronic and indie music scene. Born and raised in Montmorency, France, he grew up surrounded by music — splitting his time between skateboarding and drawing inspiration from electronic pioneers such as Lorn, Justice, Daft Punk, and Mk.gee.</p>
             <p class="bio-text">Influenced by his daily life and emotions, VIQ crafts a sound that blends electronic music, hip-hop, synthwave, and dreampop. He began releasing music in 2019, quickly developing a signature style that caught the attention of California-based independent label Stratford.Ct — which he joined in 2020, releasing albums on vinyl and cassette.</p>
             <p class="bio-text">His work has been featured on several influential platforms including Lofi Girl, Electronic Gems, KALTBLUT Magazine, Stereofox, and Nightride FM. Alongside his music, he has also collaborated with the video game industry, contributing music and creative work to the gaming sector.</p>
+            <div class="bio-spacer"></div>
         </div>
-
     </div>
 </div>
 
-<!-- Element invisible pour pre-compiler le filtre SVG sur iOS -->
 <div id="filter-warmup" style="position:fixed;opacity:0;pointer-events:none;filter:url(#wave-filter);width:1px;height:1px;"> </div>
 
 <script>
@@ -270,7 +276,6 @@ function getDisp() {
     return waveDisp;
 }
 
-// Pre-chauffe le filtre SVG sur iOS des le chargement
 window.addEventListener('load', function() {
     var d = getDisp();
     d.setAttribute('scale', '0.01');
@@ -389,6 +394,7 @@ function closeDrawer(drawer, btn) {
     var tClean = setTimeout(function() {
         drawer.classList.remove('closing');
         links.forEach(function(a) { reset(a); });
+        drawer.scrollTop = 0; // Remet le scroll en haut à la fermeture
     }, (n - 1) * STEP + OUT + 60);
     timers[id].push(tClean);
 }
