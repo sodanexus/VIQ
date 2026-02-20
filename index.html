@@ -55,14 +55,13 @@
             line-height: 0.95; 
             pointer-events: auto;
             display: flex;
-            flex-direction: column; /* Aligne verticalement sans avoir besoin de <br> */
+            flex-direction: column;
         }
 
         .viq-links a, .trigger-links {
             display: inline-block;
             color: #fff;
             text-decoration: none;
-            /* On remplace les <br> par une marge précise */
             margin-bottom: 4px; 
             transition: transform 0.4s cubic-bezier(0.2, 0, 0.2, 1), opacity 0.4s ease;
             cursor: pointer;
@@ -77,6 +76,7 @@
             position: relative;
             overflow: hidden; 
             height: 0.95em; 
+            display: block;
         }
 
         .text-swap {
@@ -89,7 +89,9 @@
             transform: translateY(-0.95em);
         }
 
-        /* --- OPACITÉ & FOCUS --- */
+        /* --- OPACITÉ & FOCUS (PC UNIQUEMENT) --- */
+        
+        /* 1. État quand un tiroir est ouvert */
         .viq-master-wrapper.ui-open .top-block a, 
         .viq-master-wrapper.ui-open .top-block .trigger-links {
             opacity: 0.3;
@@ -98,13 +100,17 @@
             opacity: 1 !important;
         }
 
+        /* 2. Effet de survol Global (Menu + Tiroirs) */
         @media(hover: hover) {
-            .viq-master-wrapper:has(a:hover) a,
-            .viq-master-wrapper:has(.trigger-links:hover) a,
+            /* Si un lien ou un trigger n'importe où est survolé, on baisse tout le reste */
+            .viq-master-wrapper:has(a:hover) .viq-links a,
             .viq-master-wrapper:has(a:hover) .trigger-links,
+            .viq-master-wrapper:has(.trigger-links:hover) .viq-links a,
             .viq-master-wrapper:has(.trigger-links:hover) .trigger-links {
                 opacity: 0.3;
             }
+
+            /* On force l'opacité 1 et le décalage sur l'élément survolé */
             .viq-master-wrapper a:hover,
             .viq-master-wrapper .trigger-links:hover {
                 opacity: 1 !important;
@@ -112,7 +118,7 @@
             }
         }
 
-        /* --- TIROIRS --- */
+        /* --- TIROIRS & CASCADE --- */
         .drawer { display: none; }
         .drawer.active { display: flex; flex-direction: column; }
         
@@ -122,7 +128,7 @@
             transform: translateY(15px);
         }
 
-        /* Cascade */
+        /* Délais de cascade pour les liens du tiroir */
         .drawer.active a:nth-of-type(1) { animation-delay: 0.05s; }
         .drawer.active a:nth-of-type(2) { animation-delay: 0.10s; }
         .drawer.active a:nth-of-type(3) { animation-delay: 0.15s; }
@@ -133,6 +139,8 @@
         .drawer.active a:nth-of-type(8) { animation-delay: 0.40s; }
         .drawer.active a:nth-of-type(9) { animation-delay: 0.45s; }
         .drawer.active a:nth-of-type(10) { animation-delay: 0.50s; }
+        .drawer.active a:nth-of-type(11) { animation-delay: 0.55s; }
+        .drawer.active a:nth-of-type(12) { animation-delay: 0.60s; }
 
         @keyframes fadeInRise { to { opacity: 1; transform: translateY(0); } }
 
@@ -142,9 +150,12 @@
                 --margin-left: 20px; 
                 --margin-y: 35px; 
                 height: calc(100% - (var(--margin-y) * 2));
+                position: fixed;
             }
             .viq-bottom-zone { margin-top: auto; }
             #bg-video { object-position: 35% center; }
+            /* Désactiver le translateX sur mobile pour éviter les soucis de largeur */
+            .viq-master-wrapper a:hover, .viq-master-wrapper .trigger-links:hover { transform: none; }
         }
     </style>
 </head>
