@@ -22,6 +22,8 @@
             top: 0; left: 0; width: 100%; height: 100%;
             object-fit: cover;
             z-index: -2;
+            /* Position par défaut sur PC */
+            object-position: center; 
         }
 
         .overlay {
@@ -61,7 +63,12 @@
             .viq-links:hover a:not(:hover) { opacity: 0.3; }
         }
 
+        /* AJUSTEMENTS MOBILE */
         @media (max-width: 768px) {
+            #bg-video {
+                /* C'est ici qu'on recadre l'œil au centre */
+                object-position: 35% center; 
+            }
             .viq-container {
                 --margin-left: 20px;
                 --margin-bottom: 30px; 
@@ -95,7 +102,6 @@
     </div>
 
     <script>
-        // Force le play sur mobile si l'autoplay est bloqué
         document.addEventListener('touchstart', function() {
             document.querySelector('#bg-video').play();
         }, {once: true});
