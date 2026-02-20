@@ -31,34 +31,37 @@
             z-index: -1;
         }
 
-        /* POSITIONNEMENT BAS GAUCHE */
+        /* POSITIONNEMENT BAS GAUCHE - SÉCURISÉ POUR L'INFOBULLE */
         .viq-container {
             position: fixed;
-            --margin-site: clamp(25px, 5vw, 45px); 
-            bottom: calc(var(--margin-site) - 8px); /* Ajusté pour la police plus grande */
-            left: var(--margin-site);
+            --margin-left: clamp(25px, 5vw, 45px); 
+            /* On augmente la marge du bas spécifiquement (60px max) pour éviter l'infobulle Chrome */
+            --margin-bottom: clamp(40px, 7vh, 65px); 
+            
+            bottom: var(--margin-bottom);
+            left: var(--margin-left);
             z-index: 10;
         }
 
         .viq-links {
-            /* TAILLE AUGMENTÉE : Max 55px au lieu de 38px */
             font-size: clamp(28px, 5.5vw, 55px); 
             text-transform: uppercase;
-            line-height: 0.95; /* Un poil plus serré pour compenser la taille */
+            line-height: 0.95; 
         }
 
         .viq-links a {
             display: block;
             color: #fff;
             text-decoration: none;
-            padding: 2px 0; /* Padding réduit pour garder un bloc compact malgré la grande taille */
+            padding: 2px 0; 
             transition: transform 0.3s ease, opacity 0.3s ease;
             will-change: transform;
             white-space: nowrap;
         }
 
+        /* On garde un padding léger même sur le dernier pour l'équilibre visuel avec la marge augmentée */
         .viq-links a:last-child {
-            padding-bottom: 0;
+            padding-bottom: 2px;
         }
 
         @media(hover:hover) {
@@ -68,8 +71,8 @@
 
         @media (max-width: 768px) {
             .viq-container {
-                --margin-site: 20px;
-                bottom: calc(var(--margin-site) - 4px);
+                --margin-left: 20px;
+                --margin-bottom: 30px; /* Sur mobile pas d'infobulle, on peut redescendre un peu */
             }
             .viq-links a:hover { transform: none; }
         }
