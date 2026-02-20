@@ -22,7 +22,6 @@
             top: 0; left: 0; width: 100%; height: 100%;
             object-fit: cover;
             z-index: -2;
-            /* Position par défaut sur PC */
             object-position: center; 
         }
 
@@ -33,13 +32,28 @@
             z-index: -1;
         }
 
+        /* VARIABLES DE MARGES COMMUNES */
+        :root {
+            --margin-left: clamp(25px, 5vw, 45px);
+            --margin-y: clamp(40px, 7vh, 65px);
+        }
+
+        /* STYLE COMMUN POUR LES CONTENEURS */
         .viq-container {
             position: fixed;
-            --margin-left: clamp(25px, 5vw, 45px); 
-            --margin-bottom: clamp(40px, 7vh, 65px); 
-            bottom: var(--margin-bottom);
             left: var(--margin-left);
             z-index: 10;
+        }
+
+        /* BLOC DU HAUT */
+        .viq-top {
+            /* On ajuste un peu le top pour compenser l'ascendante de la police */
+            top: calc(var(--margin-y) - 10px); 
+        }
+
+        /* BLOC DU BAS */
+        .viq-bottom {
+            bottom: var(--margin-y);
         }
 
         .viq-links {
@@ -53,25 +67,25 @@
             color: #fff;
             text-decoration: none;
             padding: 2px 0; 
-            transition: transform 0.3s ease, opacity 0.3s ease;
+            transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1), opacity 0.3s ease;
             will-change: transform;
             white-space: nowrap;
         }
 
+        /* EFFETS AU SURVOL */
         @media(hover:hover) {
             .viq-links a:hover { transform: translateX(15px); }
             .viq-links:hover a:not(:hover) { opacity: 0.3; }
         }
 
-        /* AJUSTEMENTS MOBILE */
+        /* MOBILE */
         @media (max-width: 768px) {
-            #bg-video {
-                /* C'est ici qu'on recadre l'œil au centre */
-                object-position: 35% center; 
-            }
-            .viq-container {
+            :root {
                 --margin-left: 20px;
-                --margin-bottom: 30px; 
+                --margin-y: 30px;
+            }
+            #bg-video {
+                object-position: 35% center; 
             }
             .viq-links a:hover { transform: none; }
         }
@@ -84,7 +98,14 @@
     </video>
     <div class="overlay"></div>
 
-    <div class="viq-container">
+    <div class="viq-container viq-top">
+        <div class="viq-links">
+            <a href="mailto:votre@email.com">CONTACT</a>
+            <a href="https://votre-boutique.com" target="_blank">STORE</a>
+        </div>
+    </div>
+
+    <div class="viq-container viq-bottom">
         <div class="viq-links">
             <a href="https://tidal.com/artist/14851275" target="_blank">TIDAL</a>
             <a href="https://www.tiktok.com/@viqmusic" target="_blank">TIKTOK</a>
