@@ -43,7 +43,6 @@
             flex-direction: column;
             justify-content: space-between;
             z-index: 10;
-            /* On enlève le pointer-events: none car on va gérer ça proprement */
         }
 
         .viq-links {
@@ -53,7 +52,7 @@
         }
 
         .viq-links a, .trigger-links {
-            display: inline-block; /* Crucial : le lien ne prend que la largeur de son texte */
+            display: inline-block;
             color: #fff;
             text-decoration: none;
             padding: 2px 0; 
@@ -61,13 +60,23 @@
             cursor: pointer;
             white-space: nowrap;
             user-select: none;
-            width: fit-content; /* S'assure que la zone réactive colle au texte */
+            width: fit-content;
         }
 
         .brand-color { color: #b31300 !important; }
 
-        /* L'ASTUCE : L'effet d'opacité ne s'active QUE si on survole un lien précis */
-        /* "Si le wrapper contient un lien survolé, baisse l'opacité de tous les liens..." */
+        /* --- LOGIQUE D'OPACITÉ LORSQUE LINKS EST OUVERT --- */
+        
+        /* On baisse l'opacité de tout le bloc du haut quand c'est actif... */
+        .viq-master-wrapper.links-open .top-block a {
+            opacity: 0.3;
+        }
+        /* ...SAUF pour le bouton de fermeture (trigger-links) */
+        .viq-master-wrapper.links-open .trigger-links {
+            opacity: 1 !important;
+        }
+
+        /* --- LOGIQUE DE FOCUS AU SURVOL (RESTE ACTIVE) --- */
         .viq-master-wrapper:has(a:hover) a,
         .viq-master-wrapper:has(.trigger-links:hover) a,
         .viq-master-wrapper:has(a:hover) .trigger-links,
@@ -75,13 +84,13 @@
             opacity: 0.3;
         }
 
-        /* "...Sauf celui qui est réellement sous la souris" */
         .viq-master-wrapper a:hover,
         .viq-master-wrapper .trigger-links:hover {
             opacity: 1 !important;
             transform: translateX(15px);
         }
 
+        /* ANIMATION DU BLOC BAS */
         .bottom-block {
             opacity: 0;
             transform: translateY(30px);
@@ -114,8 +123,9 @@
     </video>
     <div class="overlay"></div>
 
-    <div class="viq-master-wrapper">
-        <div class="viq-links">
+    <div class="viq-master-wrapper" id="masterWrapper">
+        
+        <div class="viq-links top-block">
             <a href="mailto:votre@email.com">CONTACT</a><br>
             <a href="https://votre-boutique.com" target="_blank">STORE</a><br>
             <div class="trigger-links" id="btn-links" onclick="toggleLinks()">LINKS</div><br>
@@ -136,15 +146,21 @@
             <a href="https://music.apple.com/us/artist/viq/1467177415" target="_blank">APPLE MUSIC</a><br>
             <a href="https://soundcloud.com/viqmusic" target="_blank">SOUNDCLOUD</a>
         </div>
+
     </div>
 
     <script>
         function toggleLinks() {
             const block = document.getElementById('linksBlock');
             const trigger = document.getElementById('btn-links');
+            const wrapper = document.getElementById('masterWrapper');
+            
             block.classList.toggle('active');
+            wrapper.classList.toggle('links-open'); // Ajoute/Enlève la classe de contrôle
+            
             trigger.innerHTML = block.classList.contains('active') ? "CLOSE —" : "LINKS";
         }
+
         document.addEventListener('touchstart', function() {
             document.querySelector('#bg-video').play();
         }, {once: true});
