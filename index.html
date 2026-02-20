@@ -32,26 +32,23 @@
             z-index: -1;
         }
 
-        /* VARIABLES DE MARGES COMMUNES */
+        /* VARIABLES DE MARGES */
         :root {
             --margin-left: clamp(25px, 5vw, 45px);
             --margin-y: clamp(40px, 7vh, 65px);
+            --viq-red: #b31300; /* Ta couleur spécifique */
         }
 
-        /* STYLE COMMUN POUR LES CONTENEURS */
         .viq-container {
             position: fixed;
             left: var(--margin-left);
             z-index: 10;
         }
 
-        /* BLOC DU HAUT */
         .viq-top {
-            /* On ajuste un peu le top pour compenser l'ascendante de la police */
             top: calc(var(--margin-y) - 10px); 
         }
 
-        /* BLOC DU BAS */
         .viq-bottom {
             bottom: var(--margin-y);
         }
@@ -72,13 +69,16 @@
             white-space: nowrap;
         }
 
-        /* EFFETS AU SURVOL */
+        /* Couleur spécifique pour VIQ */
+        .brand-color {
+            color: var(--viq-red) !important;
+        }
+
         @media(hover:hover) {
             .viq-links a:hover { transform: translateX(15px); }
             .viq-links:hover a:not(:hover) { opacity: 0.3; }
         }
 
-        /* MOBILE */
         @media (max-width: 768px) {
             :root {
                 --margin-left: 20px;
@@ -102,6 +102,7 @@
         <div class="viq-links">
             <a href="mailto:votre@email.com">CONTACT</a>
             <a href="https://votre-boutique.com" target="_blank">STORE</a>
+            <a href="#" class="brand-color">VIQ</a>
         </div>
     </div>
 
