@@ -16,7 +16,6 @@
             overflow: hidden;
             -webkit-font-smoothing: antialiased;
         }
-        body::-webkit-scrollbar { display: none; }
 
         #bg-video {
             position: fixed;
@@ -67,11 +66,12 @@
             cursor: pointer;
             white-space: nowrap;
             width: fit-content;
+            opacity: 1;
         }
 
         .brand-color { color: #b31300 !important; }
 
-        /* --- ANIMATION SWAP (CONTACT/LINKS -> CLOSE) --- */
+        /* --- ANIMATION SWAP --- */
         .trigger-links {
             position: relative;
             overflow: hidden; 
@@ -88,53 +88,58 @@
             transform: translateY(-0.95em);
         }
 
-        /* --- OPACITÉ & DÉCALAGE (HOVER PC) --- */
+        /* --- EFFETS DE SURVOL (HOVER) --- */
         @media(hover: hover) {
-            .viq-master-wrapper:has(.viq-links a:hover, .trigger-links:hover) .viq-links a,
-            .viq-master-wrapper:has(.viq-links a:hover, .trigger-links:hover) .trigger-links {
+            /* Quand on survole un lien, on réduit l'opacité des autres */
+            .viq-links:hover a, 
+            .viq-links:hover .trigger-links {
                 opacity: 0.3;
             }
-            .viq-links a:hover, .trigger-links:hover {
+            /* L'élément survolé reste opaque et se décale */
+            .viq-links a:hover, 
+            .viq-links .trigger-links:hover {
                 opacity: 1 !important;
                 transform: translateX(15px);
             }
         }
 
-        /* Focus permanent quand menu ouvert */
-        .viq-master-wrapper.ui-open .top-block a, 
-        .viq-master-wrapper.ui-open .top-block .trigger-links { opacity: 0.3; }
-        .viq-master-wrapper.ui-open .active-trigger { opacity: 1 !important; }
+        /* Fix opacité quand tiroir ouvert */
+        .ui-open .top-block a, 
+        .ui-open .top-block .trigger-links { opacity: 0.3; }
+        .ui-open .active-trigger { opacity: 1 !important; }
 
-        /* --- TIROIRS (ANIMATIONS ENTRÉE/SORTIE) --- */
+        /* --- TIROIRS (ANIMATIONS) --- */
         .drawer { display: none; }
         .drawer.active { display: flex; flex-direction: column; }
         
+        /* Entrée : Monte et apparaît */
         .drawer.active a {
-            animation: fadeInRise 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+            animation: fadeInRise 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
             opacity: 0;
-            transform: translateY(15px);
+            transform: translateY(20px);
         }
 
+        /* Sortie : Descend et s'efface */
         .drawer.closing a {
-            animation: fadeOutFall 0.4s cubic-bezier(0.19, 1, 0.22, 1) forwards !important;
+            animation: fadeOutFall 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards !important;
         }
 
         @keyframes fadeInRise { to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeOutFall { to { opacity: 0; transform: translateY(-10px); } }
+        @keyframes fadeOutFall { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(20px); } }
 
-        /* Cascade Délais */
-        .drawer a:nth-of-type(1) { animation-delay: 0.03s; }
-        .drawer a:nth-of-type(2) { animation-delay: 0.06s; }
-        .drawer a:nth-of-type(3) { animation-delay: 0.09s; }
-        .drawer a:nth-of-type(4) { animation-delay: 0.12s; }
-        .drawer a:nth-of-type(5) { animation-delay: 0.15s; }
-        .drawer a:nth-of-type(6) { animation-delay: 0.18s; }
-        .drawer a:nth-of-type(7) { animation-delay: 0.21s; }
-        .drawer a:nth-of-type(8) { animation-delay: 0.24s; }
-        .drawer a:nth-of-type(9) { animation-delay: 0.27s; }
-        .drawer a:nth-of-type(10) { animation-delay: 0.30s; }
-        .drawer a:nth-of-type(11) { animation-delay: 0.33s; }
-        .drawer a:nth-of-type(12) { animation-delay: 0.36s; }
+        /* Cascade (Délais identiques pour entrée et sortie) */
+        .drawer a:nth-of-type(1) { animation-delay: 0.05s; }
+        .drawer a:nth-of-type(2) { animation-delay: 0.10s; }
+        .drawer a:nth-of-type(3) { animation-delay: 0.15s; }
+        .drawer a:nth-of-type(4) { animation-delay: 0.20s; }
+        .drawer a:nth-of-type(5) { animation-delay: 0.25s; }
+        .drawer a:nth-of-type(6) { animation-delay: 0.30s; }
+        .drawer a:nth-of-type(7) { animation-delay: 0.35s; }
+        .drawer a:nth-of-type(8) { animation-delay: 0.40s; }
+        .drawer a:nth-of-type(9) { animation-delay: 0.45s; }
+        .drawer a:nth-of-type(10) { animation-delay: 0.50s; }
+        .drawer a:nth-of-type(11) { animation-delay: 0.55s; }
+        .drawer a:nth-of-type(12) { animation-delay: 0.60s; }
 
         @media (max-width: 768px) {
             .viq-master-wrapper { height: calc(100% - (var(--margin-y) * 2)); }
@@ -155,13 +160,10 @@
             <div class="trigger-links" id="btn-contact" onclick="toggleSection('contact')">
                 <span class="text-swap">CONTACT<br>CLOSE —</span>
             </div>
-            
             <a href="https://votre-boutique.com" target="_blank">STORE</a>
-            
             <div class="trigger-links" id="btn-links" onclick="toggleSection('links')">
                 <span class="text-swap">LINKS<br>CLOSE —</span>
             </div>
-            
             <a href="#" class="brand-color">VIQ</a>
         </div>
 
@@ -202,7 +204,7 @@
             if (targetDrawer.classList.contains('active')) {
                 closeAll();
             } else {
-                closeAll(); // On ferme d'abord l'autre s'il est ouvert
+                closeAll();
                 targetDrawer.classList.add('active');
                 wrapper.classList.add('ui-open');
                 targetBtn.classList.add('active-trigger');
@@ -216,10 +218,11 @@
 
             drawers.forEach(drawer => {
                 if (drawer.classList.contains('active')) {
-                    drawer.classList.add('closing'); 
+                    drawer.classList.add('closing');
+                    // On laisse l'animation se finir avant de cacher complètement le bloc
                     setTimeout(() => {
                         drawer.classList.remove('active', 'closing');
-                    }, 400); // Temps de l'animation de sortie
+                    }, 600); 
                 }
             });
 
