@@ -90,12 +90,10 @@
 
         /* --- EFFETS DE SURVOL (HOVER) --- */
         @media(hover: hover) {
-            /* Quand on survole un lien, on réduit l'opacité des autres */
             .viq-links:hover a, 
             .viq-links:hover .trigger-links {
                 opacity: 0.3;
             }
-            /* L'élément survolé reste opaque et se décale */
             .viq-links a:hover, 
             .viq-links .trigger-links:hover {
                 opacity: 1 !important;
@@ -103,7 +101,6 @@
             }
         }
 
-        /* Fix opacité quand tiroir ouvert */
         .ui-open .top-block a, 
         .ui-open .top-block .trigger-links { opacity: 0.3; }
         .ui-open .active-trigger { opacity: 1 !important; }
@@ -112,22 +109,22 @@
         .drawer { display: none; }
         .drawer.active { display: flex; flex-direction: column; }
         
-        /* Entrée : Monte et apparaît */
+        /* Entrée */
         .drawer.active a {
             animation: fadeInRise 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
             opacity: 0;
             transform: translateY(20px);
         }
 
-        /* Sortie : Descend et s'efface */
+        /* Sortie */
         .drawer.closing a {
-            animation: fadeOutFall 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards !important;
+            animation: fadeOutFall 0.4s cubic-bezier(0.19, 1, 0.22, 1) forwards !important;
         }
 
         @keyframes fadeInRise { to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeOutFall { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(20px); } }
 
-        /* Cascade (Délais identiques pour entrée et sortie) */
+        /* Cascade à l'ouverture (1 à 12) */
         .drawer a:nth-of-type(1) { animation-delay: 0.05s; }
         .drawer a:nth-of-type(2) { animation-delay: 0.10s; }
         .drawer a:nth-of-type(3) { animation-delay: 0.15s; }
@@ -140,6 +137,20 @@
         .drawer a:nth-of-type(10) { animation-delay: 0.50s; }
         .drawer a:nth-of-type(11) { animation-delay: 0.55s; }
         .drawer a:nth-of-type(12) { animation-delay: 0.60s; }
+
+        /* Cascade à la fermeture (Inversée pour que ça parte proprement) */
+        .drawer.closing a:nth-of-type(1) { animation-delay: 0.30s; }
+        .drawer.closing a:nth-of-type(2) { animation-delay: 0.27s; }
+        .drawer.closing a:nth-of-type(3) { animation-delay: 0.24s; }
+        .drawer.closing a:nth-of-type(4) { animation-delay: 0.21s; }
+        .drawer.closing a:nth-of-type(5) { animation-delay: 0.18s; }
+        .drawer.closing a:nth-of-type(6) { animation-delay: 0.15s; }
+        .drawer.closing a:nth-of-type(7) { animation-delay: 0.12s; }
+        .drawer.closing a:nth-of-type(8) { animation-delay: 0.09s; }
+        .drawer.closing a:nth-of-type(9) { animation-delay: 0.06s; }
+        .drawer.closing a:nth-of-type(10) { animation-delay: 0.03s; }
+        .drawer.closing a:nth-of-type(11) { animation-delay: 0.01s; }
+        .drawer.closing a:nth-of-type(12) { animation-delay: 0s; }
 
         @media (max-width: 768px) {
             .viq-master-wrapper { height: calc(100% - (var(--margin-y) * 2)); }
@@ -219,10 +230,10 @@
             drawers.forEach(drawer => {
                 if (drawer.classList.contains('active')) {
                     drawer.classList.add('closing');
-                    // On laisse l'animation se finir avant de cacher complètement le bloc
+                    // On attend un peu plus que le délai de cascade total (0.3s + 0.4s d'anim)
                     setTimeout(() => {
                         drawer.classList.remove('active', 'closing');
-                    }, 600); 
+                    }, 800); 
                 }
             });
 
