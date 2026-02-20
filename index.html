@@ -17,7 +17,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* VIDÉO DE FOND */
         #bg-video {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -25,19 +24,13 @@
             z-index: -2;
         }
 
-        /* COUCHE DE GRAIN (TEXTURE) */
-        .grain {
+        .overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4); 
             z-index: -1;
-            pointer-events: none; /* Laisse passer les clics */
-            /* Génération du grain via SVG */
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-            opacity: 0.08; /* Ajuste l'intensité du grain ici (0.05 à 0.15) */
-            filter: contrast(150%) brightness(100%);
         }
 
-        /* BLOC BAS GAUCHE */
         .viq-container {
             position: fixed;
             --margin-left: clamp(25px, 5vw, 45px); 
@@ -63,7 +56,6 @@
             white-space: nowrap;
         }
 
-        /* EFFETS */
         @media(hover:hover) {
             .viq-links a:hover { transform: translateX(15px); }
             .viq-links:hover a:not(:hover) { opacity: 0.3; }
@@ -83,8 +75,7 @@
     <video autoplay muted loop playsinline id="bg-video">
         <source src="Background.mp4" type="video/mp4">
     </video>
-
-    <div class="grain"></div>
+    <div class="overlay"></div>
 
     <div class="viq-container">
         <div class="viq-links">
@@ -104,6 +95,7 @@
     </div>
 
     <script>
+        // Force le play sur mobile si l'autoplay est bloqué
         document.addEventListener('touchstart', function() {
             document.querySelector('#bg-video').play();
         }, {once: true});
