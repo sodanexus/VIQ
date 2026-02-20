@@ -6,34 +6,54 @@
     <title>VIQ | Official Website</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* Reset et base */
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            background-color: #0a0a0a; /* Noir profond */
+            background-color: #000;
             color: #fff;
             font-family: 'Playfair Display', serif;
-            overflow-x: hidden;
             min-height: 100vh;
             display: flex;
-            align-items: center; /* Centre le menu verticalement */
-            padding-left: 10%; /* Marge à gauche pour le style */
+            align-items: center;
+            padding-left: 8%;
+            overflow: hidden;
         }
 
-        /* Effet de Grain Analogique (Optionnel mais très VIQ) */
-        body::before {
-            content: "";
+        /* CONFIGURATION VIDÉO PLEIN ÉCRAN */
+        #bg-video {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: url('https://upload.wikimedia.org/wikipedia/commons/7/76/1k_Grain_Noise.jpg');
-            opacity: 0.04;
-            pointer-events: none;
-            z-index: 10;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Remplace le background-size: cover */
+            z-index: -2;
         }
 
-        /* Conteneur principal */
+        /* LE VOILE SOMBRE (Ajuste le 0.5 pour assombrir plus ou moins) */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); 
+            z-index: -1;
+        }
+
+        /* EFFET DE GRAIN ANALOGIQUE */
+        .grain {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://upload.wikimedia.org/wikipedia/commons/7/76/1k_Grain_Noise.jpg');
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* MENU VIQ */
         .viq-links {
-            font: 400 clamp(30px, 7vw, 55px) 'Playfair Display', serif;
+            font: 400 clamp(28px, 6vw, 50px) 'Playfair Display', serif;
             text-transform: uppercase;
             width: fit-content;
             line-height: 1.1;
@@ -49,7 +69,7 @@
             transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
         }
 
-        /* Bandeau du haut : STORE | VIQ | CONTACT */
+        /* Navigation Header */
         .viq-nav-top {
             display: flex;
             justify-content: space-between;
@@ -62,35 +82,31 @@
 
         .viq-nav-top a { display: inline-block; }
 
-        /* Style spécifique pour VIQ (Rouge Signature) */
         .viq-nav-top a.viq-brand {
             color: #c91504;
             font-weight: 700;
             opacity: 1 !important;
         }
 
-        /* Hover Effects */
         @media(hover:hover) {
-            /* Seule la liste principale se décale */
-            .viq-links > a:hover {
-                transform: translateX(25px);
-                color: #fff;
-            }
-
-            /* Tout s'efface sauf l'élément survolé et le logo VIQ */
-            .viq-links:hover a:not(:hover):not(.viq-brand) {
-                opacity: 0.2;
-            }
+            .viq-links > a:hover { transform: translateX(20px); }
+            .viq-links:hover a:not(:hover):not(.viq-brand) { opacity: 0.25; }
         }
 
-        /* Adaptabilité Mobile */
         @media (max-width: 600px) {
-            body { padding-left: 5%; }
-            .viq-links { font-size: clamp(25px, 10vw, 40px); }
+            body { padding-left: 5%; align-items: flex-end; padding-bottom: 15%; }
+            .viq-links { font-size: clamp(24px, 9vw, 35px); }
         }
     </style>
 </head>
 <body>
+
+    <video autoplay muted loop playsinline id="bg-video">
+        <source src="Background.mp4" type="video/mp4">
+    </video>
+
+    <div class="overlay"></div>
+    <div class="grain"></div>
 
     <div class="viq-links">
         <nav class="viq-nav-top">
