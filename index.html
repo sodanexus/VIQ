@@ -35,7 +35,7 @@
             "name": "Paris, France"
         },
         "sameAs": [
-            "https://open.spotify.com/artist/06i6mN7iU2q7i9U3u1W3vF",
+            "https://open.spotify.com/artist/6XpN8mRlhuOXuvEyva4yjZ",
             "https://music.apple.com/us/artist/viq/1467177415",
             "https://tidal.com/artist/14851275",
             "https://www.youtube.com/c/VIQmusic",
@@ -119,12 +119,9 @@
         .red { color: #b31300 !important; }
         .waving { filter: url(#wave-filter); }
 
-        /* Effets au survol */
         @media (hover: hover) {
             .top:hover > a, .top:hover > .nav-btn { opacity: .3; }
             .top > a:hover, .top > .nav-btn:hover { opacity: 1 !important; transform: translateX(15px) !important; }
-            
-            /* Appliquer le décalage uniquement aux liens des tiroirs, SAUF la bio */
             .drawer:not(#bioDrawer):hover > .dl { opacity: .3; }
             .drawer:not(#bioDrawer) > .dl:hover { opacity: 1 !important; transform: translateX(15px) !important; }
         }
@@ -182,6 +179,16 @@
         }
         @keyframes in  { from { opacity:0; transform:translateY(18px) } to { opacity:1; transform:translateY(0) } }
         @keyframes out { from { opacity:1; transform:translateY(0) } to { opacity:0; transform:translateY(18px) } }
+
+        #filter-warmup {
+            position: fixed;
+            top: 0; left: 0;
+            width: 1px; height: 1px;
+            opacity: 0.001;
+            pointer-events: none;
+            filter: url(#wave-filter);
+            will-change: filter;
+        }
     </style>
 </head>
 <body>
@@ -189,9 +196,9 @@
 <svg width="0" height="0" style="position:absolute">
     <defs>
         <filter id="wave-filter" x="-5%" y="-40%" width="120%" height="180%" color-interpolation-filters="sRGB">
-            <feTurbulence type="turbulence" baseFrequency="0.03 0.07" numOctaves="3" seed="5" result="noise">
+            <feTurbulence type="turbulence" baseFrequency="0.02 0.05" numOctaves="2" seed="5" result="noise">
                 <animate attributeName="baseFrequency"
-                    values="0.03 0.07;0.025 0.055;0.032 0.065;0.03 0.07"
+                    values="0.02 0.05;0.015 0.045;0.022 0.055;0.02 0.05"
                     dur="3s" repeatCount="indefinite"/>
             </feTurbulence>
             <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0" result="noise2"/>
@@ -253,7 +260,7 @@
     </div>
 </div>
 
-<div id="filter-warmup" style="position:fixed;opacity:0;pointer-events:none;filter:url(#wave-filter);width:1px;height:1px;"> </div>
+<div id="filter-warmup"></div>
 
 <script>
 var STEP = 35, IN = 300, OUT = 250;
@@ -272,6 +279,12 @@ window.addEventListener('load', function() {
     var d = getDisp();
     d.setAttribute('scale', '0.01');
     setTimeout(function() { d.setAttribute('scale', '0'); }, 100);
+
+    setInterval(function() {
+        if (!waveRaf) { 
+            d.setAttribute('scale', (Math.random() * 0.001).toFixed(4)); 
+        }
+    }, 1000);
 });
 
 function startWave(btn) {
