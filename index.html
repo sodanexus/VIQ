@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>VIQ | Official Website</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400&display=swap" rel="stylesheet">
     <style>
@@ -13,9 +13,11 @@
             color: #fff;
             font-family: 'Playfair Display', serif;
             min-height: 100vh;
-            overflow: hidden;
+            /* On permet le scroll sur mobile si la liste est longue, mais on cache la barre */
+            overflow-y: auto;
             -webkit-font-smoothing: antialiased;
         }
+        body::-webkit-scrollbar { display: none; }
 
         #bg-video {
             position: fixed;
@@ -32,6 +34,7 @@
             z-index: -1;
         }
 
+        /* CONTENEUR MAÎTRE */
         .viq-master-wrapper {
             position: fixed;
             --margin-left: clamp(25px, 5vw, 45px);
@@ -39,16 +42,19 @@
             top: var(--margin-y);
             bottom: var(--margin-y);
             left: var(--margin-left);
+            right: var(--margin-left); /* Pour bien définir la zone */
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             z-index: 10;
+            pointer-events: none; /* Laisse passer les clics au centre */
         }
 
         .viq-links {
             font-size: clamp(28px, 5.5vw, 55px); 
             text-transform: uppercase;
             line-height: 0.95; 
+            pointer-events: auto; /* Réactive les clics sur les textes */
         }
 
         .viq-links a, .trigger-links {
@@ -59,14 +65,12 @@
             transition: transform 0.4s cubic-bezier(0.2, 0, 0.2, 1), opacity 0.4s ease;
             cursor: pointer;
             white-space: nowrap;
-            user-select: none;
             width: fit-content;
         }
 
         .brand-color { color: #b31300 !important; }
 
-        /* GESTION DE L'OPACITÉ (PC & MOBILE) */
-        /* Quand un tiroir est ouvert, on baisse l'opacité du menu sauf l'actif */
+        /* OPACITÉ QUAND OUVERT */
         .viq-master-wrapper.ui-open .top-block a, 
         .viq-master-wrapper.ui-open .top-block .trigger-links {
             opacity: 0.3;
@@ -75,7 +79,7 @@
             opacity: 1 !important;
         }
 
-        /* EFFET DE SURVOL (PC UNIQUEMENT) */
+        /* SURVOL PC */
         @media(hover: hover) {
             .viq-master-wrapper:has(a:hover) a,
             .viq-master-wrapper:has(.trigger-links:hover) a,
@@ -90,46 +94,43 @@
             }
         }
 
-        /* SYSTÈME DE TIROIR & ANIMATION CASCADE */
-        .drawer {
-            display: none;
-            pointer-events: none;
-        }
-
-        .drawer.active {
-            display: block;
-            pointer-events: auto;
-        }
-
-        /* Animation des liens un par un */
+        /* ANIMATION CASCADE ÉTENDUE */
+        .drawer { display: none; }
+        .drawer.active { display: block; }
         .drawer.active a {
             animation: fadeInRise 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards;
             opacity: 0;
             transform: translateY(15px);
         }
 
-        /* Décalage pour l'effet cascade */
-        .drawer.active a:nth-child(1) { animation-delay: 0.1s; }
-        .drawer.active a:nth-child(3) { animation-delay: 0.15s; } /* nth-child(3) car le <br> compte comme un enfant */
-        .drawer.active a:nth-child(5) { animation-delay: 0.2s; }
-        .drawer.active a:nth-child(7) { animation-delay: 0.25s; }
-        .drawer.active a:nth-child(9) { animation-delay: 0.3s; }
-        .drawer.active a:nth-child(11) { animation-delay: 0.35s; }
-        .drawer.active a:nth-child(13) { animation-delay: 0.4s; }
-        .drawer.active a:nth-child(15) { animation-delay: 0.45s; }
+        /* On couvre jusqu'à 12 liens (24 enfants avec les <br>) */
+        .drawer.active a:nth-of-type(1) { animation-delay: 0.05s; }
+        .drawer.active a:nth-of-type(2) { animation-delay: 0.10s; }
+        .drawer.active a:nth-of-type(3) { animation-delay: 0.15s; }
+        .drawer.active a:nth-of-type(4) { animation-delay: 0.20s; }
+        .drawer.active a:nth-of-type(5) { animation-delay: 0.25s; }
+        .drawer.active a:nth-of-type(6) { animation-delay: 0.30s; }
+        .drawer.active a:nth-of-type(7) { animation-delay: 0.35s; }
+        .drawer.active a:nth-of-type(8) { animation-delay: 0.40s; }
+        .drawer.active a:nth-of-type(9) { animation-delay: 0.45s; }
+        .drawer.active a:nth-of-type(10) { animation-delay: 0.50s; }
+        .drawer.active a:nth-of-type(11) { animation-delay: 0.55s; }
+        .drawer.active a:nth-of-type(12) { animation-delay: 0.60s; }
 
-        @keyframes fadeInRise {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+        @keyframes fadeInRise { to { opacity: 1; transform: translateY(0); } }
 
+        /* MOBILE FIX */
         @media (max-width: 768px) {
-            .viq-master-wrapper { --margin-left: 20px; --margin-y: 30px; gap: 40px; justify-content: flex-start; }
+            .viq-master-wrapper { 
+                --margin-left: 20px; 
+                --margin-y: 35px; 
+                height: calc(100% - (var(--margin-y) * 2)); /* Force la hauteur */
+                position: fixed;
+            }
+            .viq-bottom-zone {
+                margin-top: auto; /* Pousse les tiroirs vers le bas */
+            }
             #bg-video { object-position: 35% center; }
-            /* On désactive le décalage horizontal sur mobile pour éviter les bugs de scroll */
-            .viq-links a:active { opacity: 0.7; }
         }
     </style>
 </head>
@@ -141,7 +142,6 @@
     <div class="overlay"></div>
 
     <div class="viq-master-wrapper" id="masterWrapper">
-        
         <div class="viq-links top-block">
             <div class="trigger-links" id="btn-contact" onclick="toggleSection('contact')">CONTACT</div><br>
             <a href="https://votre-boutique.com" target="_blank">STORE</a><br>
@@ -150,7 +150,6 @@
         </div>
 
         <div class="viq-bottom-zone">
-            
             <div class="viq-links drawer" id="contactDrawer">
                 <a href="mailto:viqmusic.promo@gmail.com">GENERAL INQUIRIES</a><br>
                 <a href="https://drive.google.com/drive/folders/13zPAOc29mHrjve1CM-KaZwaS_TqAtFzI?usp=sharing" target="_blank">PRESS KIT</a>
@@ -170,7 +169,6 @@
                 <a href="https://music.apple.com/us/artist/viq/1467177415" target="_blank">APPLE MUSIC</a><br>
                 <a href="https://soundcloud.com/viqmusic" target="_blank">SOUNDCLOUD</a>
             </div>
-            
         </div>
     </div>
 
@@ -205,10 +203,8 @@
 
         function closeAll() {
             const wrapper = document.getElementById('masterWrapper');
-            const drawers = document.querySelectorAll('.drawer');
-            const triggers = document.querySelectorAll('.trigger-links');
-            drawers.forEach(d => d.classList.remove('active'));
-            triggers.forEach(t => t.classList.remove('active-trigger'));
+            document.querySelectorAll('.drawer').forEach(d => d.classList.remove('active'));
+            document.querySelectorAll('.trigger-links').forEach(t => t.classList.remove('active-trigger'));
             wrapper.classList.remove('ui-open');
             document.getElementById('btn-contact').innerHTML = "CONTACT";
             document.getElementById('btn-links').innerHTML = "LINKS";
@@ -218,6 +214,5 @@
             document.querySelector('#bg-video').play();
         }, {once: true});
     </script>
-
 </body>
 </html>
