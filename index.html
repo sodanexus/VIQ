@@ -32,7 +32,6 @@
             z-index: -1;
         }
 
-        /* CONTENEUR PRINCIPAL */
         .viq-master-wrapper {
             position: fixed;
             --margin-left: clamp(25px, 5vw, 45px);
@@ -44,6 +43,7 @@
             flex-direction: column;
             justify-content: space-between;
             z-index: 10;
+            /* On enlève le pointer-events: none car on va gérer ça proprement */
         }
 
         .viq-links {
@@ -53,7 +53,7 @@
         }
 
         .viq-links a, .trigger-links {
-            display: block;
+            display: inline-block; /* Crucial : le lien ne prend que la largeur de son texte */
             color: #fff;
             text-decoration: none;
             padding: 2px 0; 
@@ -61,11 +61,27 @@
             cursor: pointer;
             white-space: nowrap;
             user-select: none;
+            width: fit-content; /* S'assure que la zone réactive colle au texte */
         }
 
         .brand-color { color: #b31300 !important; }
 
-        /* ANIMATION DU BLOC BAS */
+        /* L'ASTUCE : L'effet d'opacité ne s'active QUE si on survole un lien précis */
+        /* "Si le wrapper contient un lien survolé, baisse l'opacité de tous les liens..." */
+        .viq-master-wrapper:has(a:hover) a,
+        .viq-master-wrapper:has(.trigger-links:hover) a,
+        .viq-master-wrapper:has(a:hover) .trigger-links,
+        .viq-master-wrapper:has(.trigger-links:hover) .trigger-links {
+            opacity: 0.3;
+        }
+
+        /* "...Sauf celui qui est réellement sous la souris" */
+        .viq-master-wrapper a:hover,
+        .viq-master-wrapper .trigger-links:hover {
+            opacity: 1 !important;
+            transform: translateX(15px);
+        }
+
         .bottom-block {
             opacity: 0;
             transform: translateY(30px);
@@ -79,27 +95,15 @@
             pointer-events: auto;
         }
 
-        /* EFFET DE FOCUS GLOBAL */
-        .viq-master-wrapper:hover a:not(:hover),
-        .viq-master-wrapper:hover .trigger-links:not(:hover) {
-            opacity: 0.3;
-        }
-
-        @media(hover:hover) {
-            .viq-links a:hover, .trigger-links:hover { transform: translateX(15px); }
-        }
-
-        /* AJUSTEMENTS MOBILE */
         @media (max-width: 768px) {
             .viq-master-wrapper { 
                 --margin-left: 20px; 
                 --margin-y: 30px; 
                 gap: 40px;
                 justify-content: flex-start;
-                overflow-y: auto; /* Sécurité si la liste est longue */
             }
             #bg-video { object-position: 35% center; }
-            .viq-links a:hover { transform: none; }
+            .viq-links a:hover, .viq-links .trigger-links:hover { transform: none; }
         }
     </style>
 </head>
@@ -111,46 +115,36 @@
     <div class="overlay"></div>
 
     <div class="viq-master-wrapper">
-        
         <div class="viq-links">
-            <a href="mailto:votre@email.com">CONTACT</a>
-            <a href="https://votre-boutique.com" target="_blank">STORE</a>
-            <div class="trigger-links" id="btn-links" onclick="toggleLinks()">LINKS</div>
+            <a href="mailto:votre@email.com">CONTACT</a><br>
+            <a href="https://votre-boutique.com" target="_blank">STORE</a><br>
+            <div class="trigger-links" id="btn-links" onclick="toggleLinks()">LINKS</div><br>
             <a href="#" class="brand-color">VIQ</a>
         </div>
 
         <div class="viq-links bottom-block" id="linksBlock">
-            <a href="https://tidal.com/artist/14851275" target="_blank">TIDAL</a>
-            <a href="https://www.tiktok.com/@viqmusic" target="_blank">TIKTOK</a>
-            <a href="https://www.deezer.com/fr/artist/53988822" target="_blank">DEEZER</a>
-            <a href="https://open.spotify.com/intl-fr/artist/6XpN8mRlhuOXuvEyva4yjZ" target="_blank">SPOTIFY</a>
-            <a href="https://music.amazon.fr/artists/B07SVHSJ37/viq" target="_blank">AMAZON</a>
-            <a href="https://www.pandora.com/artist/viq/AR7v5wJfcr9gkKX" target="_blank">PANDORA</a>
-            <a href="https://www.youtube.com/c/VIQmusic" target="_blank">YOUTUBE</a>
-            <a href="https://www.facebook.com/Viqmusic" target="_blank">FACEBOOK</a>
-            <a href="https://viqmusic.bandcamp.com/music" target="_blank">BANDCAMP</a>
-            <a href="https://www.instagram.com/viqmusic/" target="_blank">INSTAGRAM</a>
-            <a href="https://music.apple.com/us/artist/viq/1467177415" target="_blank">APPLE MUSIC</a>
+            <a href="https://tidal.com/artist/14851275" target="_blank">TIDAL</a><br>
+            <a href="https://www.tiktok.com/@viqmusic" target="_blank">TIKTOK</a><br>
+            <a href="https://www.deezer.com/fr/artist/53988822" target="_blank">DEEZER</a><br>
+            <a href="https://open.spotify.com/intl-fr/artist/6XpN8mRlhuOXuvEyva4yjZ" target="_blank">SPOTIFY</a><br>
+            <a href="https://music.amazon.fr/artists/B07SVHSJ37/viq" target="_blank">AMAZON</a><br>
+            <a href="https://www.pandora.com/artist/viq/AR7v5wJfcr9gkKX" target="_blank">PANDORA</a><br>
+            <a href="https://www.youtube.com/c/VIQmusic" target="_blank">YOUTUBE</a><br>
+            <a href="https://www.facebook.com/Viqmusic" target="_blank">FACEBOOK</a><br>
+            <a href="https://viqmusic.bandcamp.com/music" target="_blank">BANDCAMP</a><br>
+            <a href="https://www.instagram.com/viqmusic/" target="_blank">INSTAGRAM</a><br>
+            <a href="https://music.apple.com/us/artist/viq/1467177415" target="_blank">APPLE MUSIC</a><br>
             <a href="https://soundcloud.com/viqmusic" target="_blank">SOUNDCLOUD</a>
         </div>
-
     </div>
 
     <script>
         function toggleLinks() {
             const block = document.getElementById('linksBlock');
             const trigger = document.getElementById('btn-links');
-            
             block.classList.toggle('active');
-            
-            if (block.classList.contains('active')) {
-                trigger.innerHTML = "CLOSE —";
-            } else {
-                trigger.innerHTML = "LINKS";
-            }
+            trigger.innerHTML = block.classList.contains('active') ? "CLOSE —" : "LINKS";
         }
-
-        // Force play sur mobile
         document.addEventListener('touchstart', function() {
             document.querySelector('#bg-video').play();
         }, {once: true});
