@@ -13,9 +13,10 @@
             color: #fff;
             font-family: 'Playfair Display', serif;
             min-height: 100vh;
-            overflow: hidden;
+            overflow-y: auto;
             -webkit-font-smoothing: antialiased;
         }
+        body::-webkit-scrollbar { display: none; }
 
         #bg-video {
             position: fixed;
@@ -32,6 +33,7 @@
             z-index: -1;
         }
 
+        /* --- LAYOUT --- */
         .viq-master-wrapper {
             position: fixed;
             --margin-left: clamp(25px, 5vw, 45px);
@@ -53,14 +55,14 @@
             line-height: 0.95; 
             pointer-events: auto;
             display: flex;
-            flex-direction: column;
+            flex-direction: column; /* Aligne verticalement sans avoir besoin de <br> */
         }
 
-        /* --- STYLE DES LIENS --- */
         .viq-links a, .trigger-links {
             display: inline-block;
             color: #fff;
             text-decoration: none;
+            /* On remplace les <br> par une marge précise */
             margin-bottom: 4px; 
             transition: transform 0.4s cubic-bezier(0.2, 0, 0.2, 1), opacity 0.4s ease;
             cursor: pointer;
@@ -70,12 +72,11 @@
 
         .brand-color { color: #b31300 !important; }
 
-        /* --- ANIMATION TEXTE (CONTACT/LINKS) --- */
+        /* --- ANIMATION SWAP --- */
         .trigger-links {
             position: relative;
             overflow: hidden; 
             height: 0.95em; 
-            display: block;
         }
 
         .text-swap {
@@ -88,26 +89,27 @@
             transform: translateY(-0.95em);
         }
 
-        /* --- CLASSES D'ÉTAT (Gérées par JS) --- */
-        
-        /* Quand on survole un élément, les autres passent en low-opacity */
-        .is-hovering-menu .viq-links a, 
-        .is-hovering-menu .trigger-links {
+        /* --- OPACITÉ & FOCUS --- */
+        .viq-master-wrapper.ui-open .top-block a, 
+        .viq-master-wrapper.ui-open .top-block .trigger-links {
             opacity: 0.3;
         }
-
-        /* L'élément précisément survolé ou actif */
-        .viq-links a:hover, 
-        .trigger-links:hover,
-        .active-trigger {
+        .viq-master-wrapper.ui-open .active-trigger {
             opacity: 1 !important;
-            transform: translateX(15px);
         }
 
-        /* État quand un tiroir est ouvert (fixe l'opacité du menu) */
-        .ui-open .top-block a:not(.active-trigger), 
-        .ui-open .top-block .trigger-links:not(.active-trigger) {
-            opacity: 0.3;
+        @media(hover: hover) {
+            .viq-master-wrapper:has(a:hover) a,
+            .viq-master-wrapper:has(.trigger-links:hover) a,
+            .viq-master-wrapper:has(a:hover) .trigger-links,
+            .viq-master-wrapper:has(.trigger-links:hover) .trigger-links {
+                opacity: 0.3;
+            }
+            .viq-master-wrapper a:hover,
+            .viq-master-wrapper .trigger-links:hover {
+                opacity: 1 !important;
+                transform: translateX(15px);
+            }
         }
 
         /* --- TIROIRS --- */
@@ -120,22 +122,29 @@
             transform: translateY(15px);
         }
 
-        /* Cascade liens tiroir */
+        /* Cascade */
         .drawer.active a:nth-of-type(1) { animation-delay: 0.05s; }
-        .drawer.active a:nth-of-type(2) { animation-delay: 0.1s; }
+        .drawer.active a:nth-of-type(2) { animation-delay: 0.10s; }
         .drawer.active a:nth-of-type(3) { animation-delay: 0.15s; }
-        .drawer.active a:nth-of-type(4) { animation-delay: 0.2s; }
+        .drawer.active a:nth-of-type(4) { animation-delay: 0.20s; }
         .drawer.active a:nth-of-type(5) { animation-delay: 0.25s; }
-        .drawer.active a:nth-of-type(6) { animation-delay: 0.3s; }
+        .drawer.active a:nth-of-type(6) { animation-delay: 0.30s; }
         .drawer.active a:nth-of-type(7) { animation-delay: 0.35s; }
-        .drawer.active a:nth-of-type(8) { animation-delay: 0.4s; }
+        .drawer.active a:nth-of-type(8) { animation-delay: 0.40s; }
+        .drawer.active a:nth-of-type(9) { animation-delay: 0.45s; }
+        .drawer.active a:nth-of-type(10) { animation-delay: 0.50s; }
 
         @keyframes fadeInRise { to { opacity: 1; transform: translateY(0); } }
 
+        /* --- MOBILE --- */
         @media (max-width: 768px) {
-            .viq-master-wrapper { height: calc(100% - (var(--margin-y) * 2)); }
+            .viq-master-wrapper { 
+                --margin-left: 20px; 
+                --margin-y: 35px; 
+                height: calc(100% - (var(--margin-y) * 2));
+            }
             .viq-bottom-zone { margin-top: auto; }
-            .viq-links a:hover, .trigger-links:hover { transform: none; }
+            #bg-video { object-position: 35% center; }
         }
     </style>
 </head>
@@ -147,48 +156,47 @@
     <div class="overlay"></div>
 
     <div class="viq-master-wrapper" id="masterWrapper">
+        
         <div class="viq-links top-block">
             <div class="trigger-links" id="btn-contact" onclick="toggleSection('contact')">
                 <span class="text-swap">CONTACT<br>CLOSE —</span>
             </div>
+            
             <a href="https://votre-boutique.com" target="_blank">STORE</a>
+            
             <div class="trigger-links" id="btn-links" onclick="toggleSection('links')">
                 <span class="text-swap">LINKS<br>CLOSE —</span>
             </div>
+            
             <a href="#" class="brand-color">VIQ</a>
         </div>
 
         <div class="viq-bottom-zone">
             <div class="viq-links drawer" id="contactDrawer">
                 <a href="mailto:viqmusic.promo@gmail.com">GENERAL INQUIRIES</a>
-                <a href="https://drive.google.com/drive/folders/presskit" target="_blank">PRESS KIT</a>
+                <a href="https://drive.google.com/drive/folders/13zPAOc29mHrjve1CM-KaZwaS_TqAtFzI?usp=sharing" target="_blank">PRESS KIT</a>
             </div>
+
             <div class="viq-links drawer" id="linksDrawer">
-                <a href="#">SPOTIFY</a>
-                <a href="#">APPLE MUSIC</a>
-                <a href="#">YOUTUBE</a>
-                <a href="#">INSTAGRAM</a>
-                <a href="#">SOUNDCLOUD</a>
-                <a href="#">BANDCAMP</a>
+                <a href="https://tidal.com/artist/14851275" target="_blank">TIDAL</a>
+                <a href="https://www.tiktok.com/@viqmusic" target="_blank">TIKTOK</a>
+                <a href="https://www.deezer.com/fr/artist/53988822" target="_blank">DEEZER</a>
+                <a href="https://open.spotify.com/intl-fr/artist/6XpN8mRlhuOXuvEyva4yjZ" target="_blank">SPOTIFY</a>
+                <a href="https://music.amazon.fr/artists/B07SVHSJ37/viq" target="_blank">AMAZON</a>
+                <a href="https://www.pandora.com/artist/viq/AR7v5wJfcr9gkKX" target="_blank">PANDORA</a>
+                <a href="https://www.youtube.com/c/VIQmusic" target="_blank">YOUTUBE</a>
+                <a href="https://www.facebook.com/Viqmusic" target="_blank">FACEBOOK</a>
+                <a href="https://viqmusic.bandcamp.com/music" target="_blank">BANDCAMP</a>
+                <a href="https://www.instagram.com/viqmusic/" target="_blank">INSTAGRAM</a>
+                <a href="https://music.apple.com/us/artist/viq/1467177415" target="_blank">APPLE MUSIC</a>
+                <a href="https://soundcloud.com/viqmusic" target="_blank">SOUNDCLOUD</a>
             </div>
         </div>
     </div>
 
     <script>
-        const wrapper = document.getElementById('masterWrapper');
-        const allInteractive = document.querySelectorAll('.viq-links a, .trigger-links');
-
-        // GESTION DU SURVOL (HOVER) VIA JS POUR ÉVITER LES BUGS CSS
-        allInteractive.forEach(el => {
-            el.addEventListener('mouseenter', () => {
-                wrapper.classList.add('is-hovering-menu');
-            });
-            el.addEventListener('mouseleave', () => {
-                wrapper.classList.remove('is-hovering-menu');
-            });
-        });
-
         function toggleSection(section) {
+            const wrapper = document.getElementById('masterWrapper');
             const contactDrawer = document.getElementById('contactDrawer');
             const linksDrawer = document.getElementById('linksDrawer');
             const btnContact = document.getElementById('btn-contact');
@@ -214,12 +222,13 @@
         }
 
         function closeAll() {
+            const wrapper = document.getElementById('masterWrapper');
             document.querySelectorAll('.drawer').forEach(d => d.classList.remove('active'));
             document.querySelectorAll('.trigger-links').forEach(t => t.classList.remove('active-trigger'));
             wrapper.classList.remove('ui-open');
         }
 
-        document.addEventListener('touchstart', () => {
+        document.addEventListener('touchstart', function() {
             document.querySelector('#bg-video').play();
         }, {once: true});
     </script>
