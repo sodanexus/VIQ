@@ -22,6 +22,7 @@
             inset: 0;
             width: 100%; height: 100%;
             object-fit: cover;
+            object-position: 35% 45%;
             z-index: -2;
         }
 
@@ -160,28 +161,34 @@
 </div>
 
 <script>
-const STEP = 35, IN = 300, OUT = 250;
-const ui = document.getElementById('ui');
-const timers = { contactDrawer: [], linksDrawer: [] };
+var STEP = 35, IN = 300, OUT = 250;
+var ui = document.getElementById('ui');
+var timers = { contactDrawer: [], linksDrawer: [] };
 
 function kill(id) {
-    timers[id].forEach(clearTimeout);
+    timers[id].forEach(function(t) { clearTimeout(t); });
     timers[id] = [];
 }
 
 function anim(el, kf, ms) {
     el.style.animation = 'none';
     void el.offsetWidth;
-    el.style.animation = `${kf} ${ms}ms cubic-bezier(.19,1,.22,1) both`;
+    el.style.animation = kf + ' ' + ms + 'ms cubic-bezier(.19,1,.22,1) both';
 }
 
-function open(drawer, btn) {
-    const id = drawer.id;
-    const links = [...drawer.querySelectorAll('a')];
+function reset(a) {
+    a.style.animation = '';
+    a.style.opacity = '';
+    a.style.transform = '';
+}
+
+function openDrawer(drawer, btn) {
+    var id = drawer.id;
+    var links = Array.from(drawer.querySelectorAll('a'));
     kill(id);
 
-    links.forEach(a => {
-        a.style.animation = a.style.opacity = a.style.transform = '';
+    links.forEach(function(a) {
+        reset(a);
         a.classList.remove('dl');
         void a.offsetWidth;
     });
@@ -191,11 +198,11 @@ function open(drawer, btn) {
     ui.classList.add('dim');
     btn.classList.add('open');
 
-    links.forEach((a, i) => {
-        const t1 = setTimeout(() => {
+    links.forEach(function(a, i) {
+        var t1 = setTimeout(function() {
             anim(a, 'in', IN);
-            const t2 = setTimeout(() => {
-                a.style.animation = a.style.opacity = a.style.transform = '';
+            var t2 = setTimeout(function() {
+                reset(a);
                 a.classList.add('dl');
             }, IN + 20);
             timers[id].push(t2);
@@ -204,16 +211,16 @@ function open(drawer, btn) {
     });
 }
 
-function close(drawer, btn) {
-    const id = drawer.id;
-    const links = [...drawer.querySelectorAll('a')];
-    const n = links.length;
+function closeDrawer(drawer, btn) {
+    var id = drawer.id;
+    var links = Array.from(drawer.querySelectorAll('a'));
+    var n = links.length;
     kill(id);
 
-    links.forEach(a => {
-        const cs = getComputedStyle(a);
+    links.forEach(function(a) {
+        var cs = getComputedStyle(a);
         a.style.animation = 'none';
-        a.style.opacity   = cs.opacity;
+        a.style.opacity = cs.opacity;
         a.style.transform = cs.transform;
         a.classList.remove('dl');
         void a.offsetWidth;
@@ -221,37 +228,42 @@ function close(drawer, btn) {
 
     drawer.classList.remove('active');
     drawer.classList.add('closing');
-    btn?.classList.remove('open');
+    if (btn) btn.classList.remove('open');
     ui.classList.remove('dim');
 
-    links.forEach((a, i) => {
-        const t = setTimeout(() => anim(a, 'out', OUT), (n - 1 - i) * STEP);
+    links.forEach(function(a, i) {
+        var t = setTimeout(function() { anim(a, 'out', OUT); }, (n - 1 - i) * STEP);
         timers[id].push(t);
     });
 
-    const tClean = setTimeout(() => {
+    var tClean = setTimeout(function() {
         drawer.classList.remove('closing');
-        links.forEach(a => { a.style.animation = a.style.opacity = a.style.transform = ''; });
+        links.forEach(function(a) { reset(a); });
     }, (n - 1) * STEP + OUT + 60);
     timers[id].push(tClean);
 }
 
 function toggle(section) {
-    const isContact = section === 'contact';
-    const drawer = document.getElementById(isContact ? 'contactDrawer' : 'linksDrawer');
-    const btn    = document.getElementById(isContact ? 'btn-contact'   : 'btn-links');
-    const other  = document.getElementById(isContact ? 'linksDrawer'   : 'contactDrawer');
-    const otherBtn = document.getElementById(isContact ? 'btn-links'   : 'btn-contact');
+    var isContact = section === 'contact';
+    var drawer   = document.getElementById(isContact ? 'contactDrawer' : 'linksDrawer');
+    var btn      = document.getElementById(isContact ? 'btn-contact'   : 'btn-links');
+    var other    = document.getElementById(isContact ? 'linksDrawer'   : 'contactDrawer');
+    var otherBtn = document.getElementById(isContact ? 'btn-links'     : 'btn-contact');
 
-    if (other.classList.contains('active') || other.classList.contains('closing'))
-        close(other, otherBtn);
+    if (other.classList.contains('active') || other.classList.contains('closing')) {
+        closeDrawer(other, otherBtn);
+    }
 
-    drawer.classList.contains('active') ? close(drawer, btn) : open(drawer, btn);
+    if (drawer.classList.contains('active')) {
+        closeDrawer(drawer, btn);
+    } else {
+        openDrawer(drawer, btn);
+    }
 }
 
-document.getElementById('btn-contact').addEventListener('click', () => toggle('contact'));
-document.getElementById('btn-links').addEventListener('click',   () => toggle('links'));
-document.addEventListener('touchstart', () => document.getElementById('bg-video').play(), { once: true });
+document.getElementById('btn-contact').addEventListener('click', function() { toggle('contact'); });
+document.getElementById('btn-links').addEventListener('click', function() { toggle('links'); });
+document.addEventListener('touchstart', function() { document.getElementById('bg-video').play(); }, { once: true });
 </script>
 </body>
 </html>
