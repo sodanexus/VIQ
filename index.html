@@ -58,6 +58,7 @@
             flex-direction: column;
         }
 
+        /* Base des liens et triggers */
         .viq-links a, .trigger-links {
             display: inline-block;
             color: #fff;
@@ -67,11 +68,12 @@
             cursor: pointer;
             white-space: nowrap;
             width: fit-content;
+            opacity: 1; /* Par défaut bien visible */
         }
 
         .brand-color { color: #b31300 !important; }
 
-        /* --- ANIMATION SWAP --- */
+        /* --- ANIMATION SWAP (Boutons CONTACT/LINKS) --- */
         .trigger-links {
             position: relative;
             overflow: hidden; 
@@ -89,9 +91,9 @@
             transform: translateY(-0.95em);
         }
 
-        /* --- OPACITÉ & FOCUS (PC UNIQUEMENT) --- */
-        
-        /* 1. État quand un tiroir est ouvert */
+        /* --- LOGIQUE D'OPACITÉ (CORRIGÉE) --- */
+
+        /* 1. État quand un tiroir est ouvert (fixe) */
         .viq-master-wrapper.ui-open .top-block a, 
         .viq-master-wrapper.ui-open .top-block .trigger-links {
             opacity: 0.3;
@@ -100,18 +102,16 @@
             opacity: 1 !important;
         }
 
-        /* 2. Effet de survol Global (Menu + Tiroirs) */
+        /* 2. Effet de survol PC (La règle la plus simple) */
         @media(hover: hover) {
-            /* Si un lien ou un trigger n'importe où est survolé, on baisse tout le reste */
-            .viq-master-wrapper:has(a:hover) .viq-links a,
-            .viq-master-wrapper:has(a:hover) .trigger-links,
-            .viq-master-wrapper:has(.trigger-links:hover) .viq-links a,
-            .viq-master-wrapper:has(.trigger-links:hover) .trigger-links {
+            /* Dès qu'on survole le wrapper, TOUS les liens deviennent transparents */
+            .viq-master-wrapper:hover .viq-links a,
+            .viq-master-wrapper:hover .trigger-links {
                 opacity: 0.3;
             }
 
-            /* On force l'opacité 1 et le décalage sur l'élément survolé */
-            .viq-master-wrapper a:hover,
+            /* MAIS celui qui est spécifiquement survolé redevient opaque et bouge */
+            .viq-master-wrapper .viq-links a:hover,
             .viq-master-wrapper .trigger-links:hover {
                 opacity: 1 !important;
                 transform: translateX(15px);
@@ -128,7 +128,7 @@
             transform: translateY(15px);
         }
 
-        /* Délais de cascade pour les liens du tiroir */
+        /* Délais de cascade */
         .drawer.active a:nth-of-type(1) { animation-delay: 0.05s; }
         .drawer.active a:nth-of-type(2) { animation-delay: 0.10s; }
         .drawer.active a:nth-of-type(3) { animation-delay: 0.15s; }
@@ -150,12 +150,12 @@
                 --margin-left: 20px; 
                 --margin-y: 35px; 
                 height: calc(100% - (var(--margin-y) * 2));
-                position: fixed;
             }
             .viq-bottom-zone { margin-top: auto; }
             #bg-video { object-position: 35% center; }
-            /* Désactiver le translateX sur mobile pour éviter les soucis de largeur */
-            .viq-master-wrapper a:hover, .viq-master-wrapper .trigger-links:hover { transform: none; }
+            /* Stop translateX sur mobile */
+            .viq-master-wrapper .viq-links a:hover, 
+            .viq-master-wrapper .trigger-links:hover { transform: none; }
         }
     </style>
 </head>
