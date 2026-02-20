@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>VIQ | Official Website</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -13,34 +13,41 @@
             color: #fff;
             font-family: 'Playfair Display', serif;
             min-height: 100vh;
+            /* Empêche le rebond du scroll sur mobile */
+            overflow: hidden; 
         }
 
-        /* VIDÉO ET OVERLAY (Idem précédent) */
+        /* VIDÉO DE FOND */
         #bg-video {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             object-fit: cover;
             z-index: -2;
         }
+
         .overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.5); 
+            background: rgba(0, 0, 0, 0.4); 
             z-index: -1;
         }
 
-        /* BLOC DE LIENS FIGÉ EN HAUT À GAUCHE */
+        /* LE CONTENEUR RESPONSIVE */
         .viq-container {
-            position: fixed; /* Fige le bloc */
-            top: 40px;      /* Distance du haut */
-            left: 40px;     /* Distance de la gauche */
+            position: fixed;
+            /* Se place à 5% du bord, s'adapte à toutes les tailles d'écran */
+            top: 5vh; 
+            left: 5vw;
             z-index: 10;
+            width: fit-content;
+            max-width: 90vw; /* Évite de sortir de l'écran sur petit mobile */
         }
 
         .viq-links {
-            font: 400 clamp(24px, 5vw, 45px) 'Playfair Display', serif;
+            /* clamp(minimum, taille_fluide, maximum) */
+            font-size: clamp(22px, 4.5vw, 42px);
+            font-weight: 400;
             text-transform: uppercase;
-            width: fit-content;
             line-height: 1.1;
         }
 
@@ -48,19 +55,21 @@
             display: block;
             color: #fff;
             text-decoration: none;
-            padding: 3px 0;
+            padding: 0.15em 0;
             transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
+            white-space: nowrap; /* Évite que SOUNDCLOUD passe sur 2 lignes */
         }
 
-        /* Header : STORE | VIQ | CONTACT */
+        /* HEADER : STORE | VIQ | CONTACT */
         .viq-nav-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
             width: 100%;
-            font-size: 0.55em;
-            margin-bottom: 15px;
-            letter-spacing: 2px;
+            /* Proportionnel à la taille du texte principal */
+            font-size: 0.52em; 
+            margin-bottom: 1rem;
+            letter-spacing: 0.1em;
         }
 
         .viq-nav-top a { display: inline-block; }
@@ -71,23 +80,37 @@
             opacity: 1 !important;
         }
 
-        /* Effets au survol */
+        /* EFFETS HOVER (Uniquement sur PC) */
         @media(hover:hover) {
-            .viq-links > a:hover { transform: translateX(15px); }
+            .viq-links > a:hover { transform: translateX(12px); }
             .viq-links:hover a:not(:hover):not(.viq-brand) { opacity: 0.25; }
         }
 
-        /* Ajustements Mobile */
-        @media (max-width: 600px) {
-            .viq-container { top: 20px; left: 20px; }
-            .viq-links { font-size: 24px; }
+        /* OPTIMISATION MOBILE (Écrans < 768px) */
+        @media (max-width: 767px) {
+            .viq-container {
+                top: 4vh;
+                left: 6vw;
+            }
+            .viq-links {
+                /* On réduit un peu l'interligne sur mobile pour que tout rentre sans scroll */
+                line-height: 1.2;
+            }
+            /* On réduit le décalage sur mobile si on touche */
+            .viq-links > a:active { transform: translateX(5px); }
+        }
+
+        /* GESTION DES PETITS ÉCRANS EN HAUTEUR (ex: iPhone en paysage) */
+        @media (max-height: 500px) {
+            .viq-links { font-size: clamp(16px, 8vh, 24px); }
+            .viq-nav-top { margin-bottom: 5px; }
         }
     </style>
 </head>
 <body>
 
     <video autoplay muted loop playsinline id="bg-video">
-        <source src="Background.mp4" type="video/mp4">
+        <source src="ton-video.mp4" type="video/mp4">
     </video>
     <div class="overlay"></div>
 
