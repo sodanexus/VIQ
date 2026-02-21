@@ -90,17 +90,6 @@
             pointer-events: none;
         }
 
-        /* Paysage hauteur réduite : tiroirs scrollables */
-        @media (orientation: landscape) and (max-height: 500px) {
-            #linksDrawer, #followDrawer {
-                overflow-y: auto;
-                scrollbar-width: none;
-                -ms-overflow-style: none;
-            }
-            #linksDrawer::-webkit-scrollbar,
-            #followDrawer::-webkit-scrollbar { display: none; }
-        }
-
         .top {
             flex-shrink: 0;
             pointer-events: auto;
@@ -152,16 +141,16 @@
             visibility: hidden;
             pointer-events: none;
             max-height: 100%;
-        }
-
-        #bioDrawer {
+            /* Active le scroll sur tous les tiroirs */
             overflow-y: auto;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-            pointer-events: auto;
+            scrollbar-width: none; /* Cache la scrollbar (Firefox) */
+            -ms-overflow-style: none; /* Cache la scrollbar (IE/Edge) */
         }
-        #bioDrawer::-webkit-scrollbar { display: none; }
 
+        /* Cache la scrollbar (Chrome, Safari, Opera) */
+        .drawer::-webkit-scrollbar { 
+            display: none; 
+        }
         .drawer.active, .drawer.closing { visibility: visible; pointer-events: auto; }
         .drawer > a { opacity: 0; transform: translateY(18px); }
         .drawer > a.dl {
