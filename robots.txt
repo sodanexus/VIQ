@@ -4,5 +4,7 @@ Allow: /
 # Sitemap
 Sitemap: https://www.viqmusic.net/sitemap.xml
 
-# Crawl-delay (optionnel, aide à ne pas surcharger le serveur)
+# LLMs
+# https://www.viqmusic.net/llms.txt
+
 Crawl-delay: 1
