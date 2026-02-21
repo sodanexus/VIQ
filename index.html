@@ -151,6 +151,7 @@
         .drawer::-webkit-scrollbar { 
             display: none; 
         }
+
         .drawer.active, .drawer.closing { visibility: visible; pointer-events: auto; }
         .drawer > a { opacity: 0; transform: translateY(18px); }
         .drawer > a.dl {
@@ -344,6 +345,10 @@ function reset(a) {
 function openDrawer(drawer, btn) {
     var id    = drawer.id;
     var links = Array.from(drawer.querySelectorAll('a, p, .bio-spacer'));
+    
+    // On remet le scroll en haut à chaque ouverture
+    drawer.scrollTop = 0; 
+    
     kill(id);
     links.forEach(function(a) { reset(a); a.classList.remove('dl'); void a.offsetWidth; });
     drawer.classList.add('active');
