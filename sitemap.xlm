@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  
+  <!-- Page principale -->
+  <url>
+    <loc>https://www.viqmusic.net/</loc>
+    <lastmod>2025-02-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+    
+    <!-- Image Open Graph -->
+    <image:image>
+      <image:loc>https://www.viqmusic.net/og-image.jpg</image:loc>
+      <image:title>VIQ - Electronic Music Artist</image:title>
+    </image:image>
+  </url>
+
+</urlset>
