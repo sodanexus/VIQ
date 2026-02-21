@@ -109,7 +109,7 @@
             display: flex;
             flex-direction: column;
         }
-        .links a, .nav-btn {
+.links a, .nav-btn {
             display: inline-block;
             color: #fff;
             text-decoration: none;
@@ -118,6 +118,7 @@
             white-space: nowrap;
             width: fit-content;
             transition: transform .25s cubic-bezier(.2,0,.2,1), opacity .25s ease;
+            padding-right: 25px; 
         }
         .red { color: #b31300 !important; }
         .waving { filter: url(#wave-filter); }
@@ -254,8 +255,6 @@
     </div>
 </div>
 
-<div id="filter-warmup" style="position:fixed;opacity:0;pointer-events:none;filter:url(#wave-filter);width:1px;height:1px;"> </div>
-
 <script>
 var STEP = 35, IN = 300, OUT = 250;
 var ui = document.getElementById('ui');
@@ -271,8 +270,13 @@ function getDisp() {
 
 window.addEventListener('load', function() {
     var d = getDisp();
-    d.setAttribute('scale', '0.01');
-    setTimeout(function() { d.setAttribute('scale', '0'); }, 100);
+    // On utilise 0.5 au lieu de 0.01 pour que le processeur mobile 
+    // se dise "Ok, ce filtre est important, je dois l'activer".
+    d.setAttribute('scale', '0.5'); 
+    
+    setTimeout(function() { 
+        d.setAttribute('scale', '0'); 
+    }, 150); // Un timing légèrement plus long pour être sûr que le rendu a eu lieu
 });
 
 function startWave(btn) {
