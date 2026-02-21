@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://www.viqmusic.net/sitemap.xml
+
+# Crawl-delay (optionnel, aide à ne pas surcharger le serveur)
+Crawl-delay: 1
