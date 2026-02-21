@@ -55,6 +55,28 @@
     <link rel="preload" href="Background.mp4" as="video" type="video/mp4">
 
     <style>
+
+.entrance-fade {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: black;
+    z-index: 9999;
+    pointer-events: none; /* Important pour cliquer sur le texte direct */
+    animation: fade-out 0.8s forwards ease-out;
+}
+
+@keyframes fade-out {
+    0% { opacity: 1; }
+    /* On peut rester blanc un court instant si on veut */
+    20% { opacity: 1; } 
+    100% { 
+        opacity: 0;
+        visibility: hidden;
+    }
+}
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: #000;
@@ -187,7 +209,7 @@
     </style>
 </head>
 <body>
-
+<div class="entrance-fade"></div>
 <svg width="0" height="0" style="position:absolute">
     <defs>
         <filter id="wave-filter" x="-5%" y="-40%" width="120%" height="180%" color-interpolation-filters="sRGB">
