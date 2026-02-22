@@ -161,8 +161,14 @@
         @media (hover: hover) {
             .top:hover > a, .top:hover > .nav-btn { opacity: .3; }
             .top > a:hover, .top > .nav-btn:hover { opacity: 1 !important; transform: translateX(15px) !important; }
-            .drawer:not(#bioDrawer):hover > .dl { opacity: .3; }
-            .drawer:not(#bioDrawer) > .dl:hover { opacity: 1 !important; transform: translateX(15px) !important; }
+
+            /* ✅ Global drawers (sauf BIO et sauf RELEASE): comportement inchangé */
+            .drawer:not(#bioDrawer):not(#releaseDrawer):hover > .dl { opacity: .3; }
+            .drawer:not(#bioDrawer):not(#releaseDrawer) > .dl:hover { opacity: 1 !important; transform: translateX(15px) !important; }
+
+            /* ✅ RELEASE drawer: PAS de fade global (aucun) */
+            /* On garde juste un hover sur STREAM HERE */
+            #releaseDrawer a.dl:hover { opacity: 1 !important; transform: translateX(15px) !important; }
         }
 
         #ui.dim .top > a, #ui.dim .top > .nav-btn { opacity: .3; }
@@ -189,11 +195,52 @@
         }
 
         .drawer.active, .drawer.closing { visibility: visible; pointer-events: auto; }
-        .drawer > a { opacity: 0; transform: translateY(18px); }
-        .drawer > a.dl {
+        .drawer > a, .drawer > p, .drawer > img { opacity: 0; transform: translateY(18px); }
+        .drawer > a.dl, .drawer > p.dl, .drawer > img.dl {
             opacity: 1; transform: translateY(0);
             transition: transform .25s cubic-bezier(.2,0,.2,1), opacity .25s ease;
         }
+
+/* NEW RELEASE drawer specifics */
+.release-title {
+    display: inline-block;
+    color: #fff;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    width: fit-content;
+    cursor: default;
+    padding-right: 25px;
+}
+
+/* MISSED CALL: aucun hover (pas de transform/opacity) */
+#releaseDrawer .release-title.dl:hover {
+    opacity: 1 !important;
+    transform: none !important;
+}
+
+.release-small { 
+    font-size: 0.5em; 
+    line-height: 1; 
+}
+
+.release-cover{
+    width: clamp(180px, 28vw, 400px);
+    height: auto;
+    margin-top: 10px;
+    display: block;
+    pointer-events: none;
+    border-radius: 4px;
+    filter: contrast(1.05) brightness(1.05);
+    border: 1px solid rgba(255,255,255,0.12);
+    backdrop-filter: blur(0px);
+}
+
+/* COVER: aucun hover (pas de transform/opacity) */
+#releaseDrawer .release-cover.dl:hover {
+    opacity: 1 !important;
+    transform: none !important;
+}
+
         .bio-text {
             font-size: clamp(15px, 2.2vw, 21px) !important;
             line-height: 1.65 !important;
@@ -254,10 +301,11 @@ VIQ - Electronic Music Artist from Paris, France
 
 <div id="ui">
     <div class="links top">
+        <a href="#release" class="nav-btn red" id="btn-release">OUT NOW</a>
         <a href="#listen" class="nav-btn" id="btn-links">LISTEN</a>
         <a href="#reach" class="nav-btn" id="btn-follow">REACH</a>
         <a href="https://viq-shop.fourthwall.com/">WEAR</a>
-        <a href="#bio" class="nav-btn red" id="btn-bio">BIO</a>
+        <a href="#bio" class="nav-btn" id="btn-bio">BIO</a>
     </div>
 
     <div class="bottom">
@@ -283,6 +331,12 @@ VIQ - Electronic Music Artist from Paris, France
             <a href="https://soundcloud.com/viqmusic" target="_blank" rel="noopener">SOUNDCLOUD</a>
         </div>
 
+        <div class="links drawer" id="releaseDrawer">
+            <p class="release-title">MISSED CALL</p>
+            <a class="release-small" href="https://found.ee/missedcall" target="_blank" rel="noopener">PLAY NOW</a>
+            <img class="release-cover" src="cover.jpg" alt="art cover">
+        </div>
+
         <div class="links drawer" id="bioDrawer">
             <p class="bio-text">Julien Pannetier, better known as VIQ, brings a fresh perspective to the electronic and indie music scene. Born and raised in Montmorency, France, he grew up surrounded by music, splitting his time between skateboarding and drawing inspiration from electronic pioneers such as Lorn, Justice, Daft Punk, and Mk.gee.</p>
             <p class="bio-text">Influenced by his daily life and emotions, VIQ crafts a sound that blends electronic music, chillwave, synthwave, and dreampop. He began releasing music in 2019, quickly developing a signature style that caught the attention of California-based independent label Stratford.Ct, which he joined in 2020, releasing albums on vinyl and cassette.</p>
@@ -295,7 +349,7 @@ VIQ - Electronic Music Artist from Paris, France
 <script>
 var STEP = 35, IN = 300, OUT = 250;
 var ui = document.getElementById('ui');
-var timers = { followDrawer: [], linksDrawer: [], bioDrawer: [] };
+var timers = { followDrawer: [], linksDrawer: [], bioDrawer: [], releaseDrawer: [] };
 var waveDisp = null;
 var waveRaf  = null;
 var waveVal  = 0;
@@ -307,13 +361,8 @@ function getDisp() {
 
 window.addEventListener('load', function() {
     var d = getDisp();
-    // On utilise 0.5 au lieu de 0.01 pour que le processeur mobile 
-    // se dise "Ok, ce filtre est important, je dois l'activer".
     d.setAttribute('scale', '0.5'); 
-    
-    setTimeout(function() { 
-        d.setAttribute('scale', '0'); 
-    }, 150);
+    setTimeout(function() { d.setAttribute('scale', '0'); }, 150);
 });
 
 function startWave(btn) {
@@ -358,11 +407,8 @@ function setTopOpacity(activeBtn) {
     var els = Array.from(top.querySelectorAll('a, .nav-btn'));
     els.forEach(function(el) {
         el.style.transition = 'opacity .25s ease, transform .25s cubic-bezier(.2,0,.2,1)';
-        if (!activeBtn) {
-            el.style.opacity = '';
-        } else {
-            el.style.opacity = (el === activeBtn) ? '1' : '0.3';
-        }
+        if (!activeBtn) el.style.opacity = '';
+        else el.style.opacity = (el === activeBtn) ? '1' : '0.3';
     });
 }
 
@@ -385,11 +431,8 @@ function reset(a) {
 
 function openDrawer(drawer, btn) {
     var id    = drawer.id;
-    var links = Array.from(drawer.querySelectorAll('a, p, .bio-spacer'));
-    
-    // On remet le scroll en haut à chaque ouverture
+    var links = Array.from(drawer.querySelectorAll('a, p, img, .bio-spacer'));
     drawer.scrollTop = 0; 
-    
     kill(id);
     links.forEach(function(a) { reset(a); a.classList.remove('dl'); void a.offsetWidth; });
     drawer.classList.add('active');
@@ -409,7 +452,7 @@ function openDrawer(drawer, btn) {
 
 function closeDrawer(drawer, btn) {
     var id    = drawer.id;
-    var links = Array.from(drawer.querySelectorAll('a, p, .bio-spacer'));
+    var links = Array.from(drawer.querySelectorAll('a, p, img, .bio-spacer'));
     var n     = links.length;
     kill(id);
     links.forEach(function(a) {
@@ -439,9 +482,10 @@ function closeDrawer(drawer, btn) {
 
 function closeAll(exceptId) {
     var all = [
-        { d: document.getElementById('followDrawer'),  b: document.getElementById('btn-follow') },
-        { d: document.getElementById('linksDrawer'),   b: document.getElementById('btn-links') },
-        { d: document.getElementById('bioDrawer'),     b: document.getElementById('btn-bio') }
+        { d: document.getElementById('followDrawer'),   b: document.getElementById('btn-follow') },
+        { d: document.getElementById('linksDrawer'),    b: document.getElementById('btn-links') },
+        { d: document.getElementById('releaseDrawer'),  b: document.getElementById('btn-release') },
+        { d: document.getElementById('bioDrawer'),      b: document.getElementById('btn-bio') }
     ];
     all.forEach(function(o) {
         if (o.d.id !== exceptId && (o.d.classList.contains('active') || o.d.classList.contains('closing'))) {
@@ -454,23 +498,22 @@ function closeAll(exceptId) {
 function toggle(section, e) {
     if (e) e.preventDefault();
     var map = {
-        follow:  { d: 'followDrawer',  b: 'btn-follow' },
-        links:   { d: 'linksDrawer',   b: 'btn-links' },
-        bio:     { d: 'bioDrawer',     b: 'btn-bio' }
+        follow:   { d: 'followDrawer',   b: 'btn-follow' },
+        links:    { d: 'linksDrawer',    b: 'btn-links' },
+        release:  { d: 'releaseDrawer',  b: 'btn-release' },
+        bio:      { d: 'bioDrawer',      b: 'btn-bio' }
     };
     var drawer = document.getElementById(map[section].d);
     var btn    = document.getElementById(map[section].b);
     var isOpen = drawer.classList.contains('active');
     closeAll(isOpen ? null : map[section].d);
-    if (isOpen) {
-        closeDrawer(drawer, btn);
-    } else {
-        openDrawer(drawer, btn);
-    }
+    if (isOpen) closeDrawer(drawer, btn);
+    else openDrawer(drawer, btn);
 }
 
 document.getElementById('btn-links').addEventListener('click', function(e) { toggle('links', e); });
 document.getElementById('btn-follow').addEventListener('click', function(e) { toggle('follow', e); });
+document.getElementById('btn-release').addEventListener('click', function(e) { toggle('release', e); });
 document.getElementById('btn-bio').addEventListener('click', function(e) { toggle('bio', e); });
 document.addEventListener('touchstart', function() { document.getElementById('bg-video').play(); }, { once: true });
 </script>
