@@ -50,33 +50,32 @@
         }
     }
     </script>
+
     <link rel="icon" type="image/png" href="favicon.png">
+
+    <!-- Perf: preconnect fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400&display=swap" rel="stylesheet">
-    <link rel="preload" href="Background.mp4" as="video" type="video/mp4">
 
     <style>
+        .entrance-fade {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: black;
+            z-index: 9999;
+            pointer-events: none;
+            animation: fade-out 0.8s forwards ease-out;
+        }
+        @keyframes fade-out {
+            0% { opacity: 1; }
+            20% { opacity: 1; }
+            100% { opacity: 0; visibility: hidden; }
+        }
 
-.entrance-fade {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: black;
-    z-index: 9999;
-    pointer-events: none; /* Important pour cliquer sur le texte direct */
-    animation: fade-out 0.8s forwards ease-out;
-}
-
-@keyframes fade-out {
-    0% { opacity: 1; }
-    /* On peut rester blanc un court instant si on veut */
-    20% { opacity: 1; } 
-    100% { 
-        opacity: 0;
-        visibility: hidden;
-    }
-}
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: #000;
@@ -86,10 +85,31 @@
             overflow: hidden;
             -webkit-font-smoothing: antialiased;
         }
+
+        /* Accessible "sr-only" (SEO + lecteurs d'écran) */
+        .sr-only {
+            position: absolute !important;
+            width: 1px !important;
+            height: 1px !important;
+            padding: 0 !important;
+            margin: -1px !important;
+            overflow: hidden !important;
+            clip: rect(0, 0, 0, 0) !important;
+            white-space: nowrap !important;
+            border: 0 !important;
+        }
+
+        /* Focus clavier visible */
+        :focus-visible {
+            outline: 2px solid rgba(255,255,255,.9);
+            outline-offset: 6px;
+        }
+
         #bg-video {
             position: fixed;
             inset: 0;
-            width: 100%; height: 100%;
+            width: 100%;
+            height: 100%;
             object-fit: cover;
             object-position: 35% 45%;
             z-index: -2;
@@ -100,6 +120,7 @@
             background: rgba(0,0,0,.4);
             z-index: -1;
         }
+
         #ui {
             position: fixed;
             --mx: clamp(25px, 5vw, 45px);
@@ -123,15 +144,17 @@
             position: relative;
             overflow: visible;
         }
+
         .links {
-            font-size: clamp(0px, min(6.5vw, 8vmin), 65px);
+            font-size: clamp(18px, min(6.5vw, 8vmin), 65px);
             text-transform: uppercase;
             line-height: .95;
             pointer-events: auto;
             display: flex;
             flex-direction: column;
         }
-.links a, .nav-btn {
+
+        .links a, .nav-btn {
             display: inline-block;
             color: #fff;
             text-decoration: none;
@@ -140,8 +163,20 @@
             white-space: nowrap;
             width: fit-content;
             transition: transform .25s cubic-bezier(.2,0,.2,1), opacity .25s ease;
-            padding-right: 25px; 
+            padding-right: 25px;
         }
+
+        /* Boutons reset (pour garder le look des <a>) */
+        .nav-btn {
+            background: transparent;
+            border: 0;
+            font: inherit;
+            text-transform: inherit;
+            letter-spacing: inherit;
+            padding-left: 0;
+            text-align: left;
+        }
+
         .red { color: #b31300 !important; }
         .waving { filter: url(#wave-filter); }
 
@@ -164,16 +199,11 @@
             visibility: hidden;
             pointer-events: none;
             max-height: 100%;
-            /* Active le scroll sur tous les tiroirs */
             overflow-y: auto;
-            scrollbar-width: none; /* Cache la scrollbar (Firefox) */
-            -ms-overflow-style: none; /* Cache la scrollbar (IE/Edge) */
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
-
-        /* Cache la scrollbar (Chrome, Safari, Opera) */
-        .drawer::-webkit-scrollbar { 
-            display: none; 
-        }
+        .drawer::-webkit-scrollbar { display: none; }
 
         .drawer.active, .drawer.closing { visibility: visible; pointer-events: auto; }
         .drawer > a { opacity: 0; transform: translateY(18px); }
@@ -181,8 +211,9 @@
             opacity: 1; transform: translateY(0);
             transition: transform .25s cubic-bezier(.2,0,.2,1), opacity .25s ease;
         }
+
         .bio-text {
-            font-size: clamp(0px, 2.2vw, 21px) !important;
+            font-size: clamp(16px, 2.2vw, 21px) !important;
             line-height: 1.65 !important;
             white-space: normal !important;
             max-width: 560px;
@@ -204,12 +235,33 @@
             flex-shrink: 0;
             cursor: default !important;
         }
+
         @keyframes in  { from { opacity:0; transform:translateY(18px) } to { opacity:1; transform:translateY(0) } }
         @keyframes out { from { opacity:1; transform:translateY(0) } to { opacity:0; transform:translateY(18px) } }
+
+        /* Reduced motion: coupe anim + vidéo */
+        @media (prefers-reduced-motion: reduce) {
+            #bg-video { display: none; }
+            .overlay { background: #000; }
+            * { animation: none !important; transition: none !important; }
+        }
     </style>
 </head>
+
 <body>
 <div class="entrance-fade"></div>
+
+<!-- Contenu accessible (SEO + screen readers), sans "texte caché" douteux -->
+<header class="sr-only">
+    <h1>VIQ — Official Website</h1>
+    <p>Electronic and indie music artist Julien Pannetier, known as VIQ, from Paris, France.</p>
+</header>
+
+<!-- Cibles d’ancrage (au cas où, et pour cohérence sémantique) -->
+<div id="listen" class="sr-only"></div>
+<div id="reach" class="sr-only"></div>
+<div id="bio" class="sr-only"></div>
+
 <svg width="0" height="0" style="position:absolute">
     <defs>
         <filter id="wave-filter" x="-5%" y="-40%" width="120%" height="180%" color-interpolation-filters="sRGB">
@@ -227,45 +279,43 @@
     </defs>
 </svg>
 
-<div style="position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;" aria-hidden="true">
-    <h1>VIQ - Official Website</h1>
-    <p>Electronic and indie music artist Julien Pannetier, known as VIQ, from Paris, France.</p>
-</div>
-
-<video autoplay muted loop playsinline id="bg-video">
+<!-- Vidéo: preload metadata + poster (remplace poster.jpg par ton image) -->
+<video autoplay muted loop playsinline id="bg-video" preload="metadata" poster="poster.jpg">
     <source src="Background.mp4" type="video/mp4">
 </video>
 <div class="overlay"></div>
 
 <div id="ui">
     <div class="links top">
-        <a href="#listen" class="nav-btn" id="btn-links">LISTEN</a>
-        <a href="#reach" class="nav-btn" id="btn-follow">REACH</a>
-        <a href="https://viq-shop.fourthwall.com/">WEAR</a>
-        <a href="#bio" class="nav-btn red" id="btn-bio">BIO</a>
+        <button type="button" class="nav-btn" id="btn-links" aria-controls="linksDrawer" aria-expanded="false">LISTEN</button>
+        <button type="button" class="nav-btn" id="btn-follow" aria-controls="followDrawer" aria-expanded="false">REACH</button>
+
+        <a href="https://viq-shop.fourthwall.com/" target="_blank" rel="noopener noreferrer">WEAR</a>
+
+        <button type="button" class="nav-btn red" id="btn-bio" aria-controls="bioDrawer" aria-expanded="false">BIO</button>
     </div>
 
     <div class="bottom">
         <div class="links drawer" id="followDrawer">
-            <a href="https://www.tiktok.com/@viqmusic" target="_blank">TIK TOK</a>
-            <a href="https://www.threads.com/@viqmusic" target="_blank">THREADS</a>
-            <a href="https://www.facebook.com/Viqmusic" target="_blank">FACEBOOK</a>
-            <a href="https://www.instagram.com/viqmusic/" target="_blank">INSTAGRAM</a>
+            <a href="https://www.tiktok.com/@viqmusic" target="_blank" rel="noopener noreferrer">TIK TOK</a>
+            <a href="https://www.threads.com/@viqmusic" target="_blank" rel="noopener noreferrer">THREADS</a>
+            <a href="https://www.facebook.com/Viqmusic" target="_blank" rel="noopener noreferrer">FACEBOOK</a>
+            <a href="https://www.instagram.com/viqmusic/" target="_blank" rel="noopener noreferrer">INSTAGRAM</a>
             <a class="bio-spacer"> </a>
-            <a href="https://drive.google.com/drive/folders/13zPAOc29mHrjve1CM-KaZwaS_TqAtFzI?usp=sharing" target="_blank">PRESS KIT</a>
+            <a href="https://drive.google.com/drive/folders/13zPAOc29mHrjve1CM-KaZwaS_TqAtFzI?usp=sharing" target="_blank" rel="noopener noreferrer">PRESS KIT</a>
             <a href="mailto:contact@viqmusic.net">ALL INQUIRIES</a>
         </div>
 
         <div class="links drawer" id="linksDrawer">
-            <a href="https://tidal.com/artist/14851275" target="_blank">TIDAL</a>
-            <a href="https://music.apple.com/us/artist/viq/1467177415" target="_blank">APPLE</a>
-            <a href="https://www.deezer.com/fr/artist/53988822" target="_blank">DEEZER</a>
-            <a href="https://open.spotify.com/artist/6XpN8mRlhuOXuvEyva4yjZ" target="_blank">SPOTIFY</a>
-            <a href="https://music.amazon.fr/artists/B07SVHSJ37/viq" target="_blank">AMAZON</a>
-            <a href="https://www.youtube.com/c/VIQmusic" target="_blank">YOUTUBE</a>
-            <a href="https://www.pandora.com/artist/viq/AR7v5wJfcr9gkKX" target="_blank">PANDORA</a>
-            <a href="https://viqmusic.bandcamp.com/music" target="_blank">BANDCAMP</a>
-            <a href="https://soundcloud.com/viqmusic" target="_blank">SOUNDCLOUD</a>
+            <a href="https://tidal.com/artist/14851275" target="_blank" rel="noopener noreferrer">TIDAL</a>
+            <a href="https://music.apple.com/us/artist/viq/1467177415" target="_blank" rel="noopener noreferrer">APPLE</a>
+            <a href="https://www.deezer.com/fr/artist/53988822" target="_blank" rel="noopener noreferrer">DEEZER</a>
+            <a href="https://open.spotify.com/artist/6XpN8mRlhuOXuvEyva4yjZ" target="_blank" rel="noopener noreferrer">SPOTIFY</a>
+            <a href="https://music.amazon.fr/artists/B07SVHSJ37/viq" target="_blank" rel="noopener noreferrer">AMAZON</a>
+            <a href="https://www.youtube.com/c/VIQmusic" target="_blank" rel="noopener noreferrer">YOUTUBE</a>
+            <a href="https://www.pandora.com/artist/viq/AR7v5wJfcr9gkKX" target="_blank" rel="noopener noreferrer">PANDORA</a>
+            <a href="https://viqmusic.bandcamp.com/music" target="_blank" rel="noopener noreferrer">BANDCAMP</a>
+            <a href="https://soundcloud.com/viqmusic" target="_blank" rel="noopener noreferrer">SOUNDCLOUD</a>
         </div>
 
         <div class="links drawer" id="bioDrawer">
@@ -290,15 +340,17 @@ function getDisp() {
     return waveDisp;
 }
 
+function setExpanded(btn, isOpen) {
+    if (!btn) return;
+    btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+}
+
 window.addEventListener('load', function() {
     var d = getDisp();
-    // On utilise 0.5 au lieu de 0.01 pour que le processeur mobile 
-    // se dise "Ok, ce filtre est important, je dois l'activer".
-    d.setAttribute('scale', '0.5'); 
-    
-    setTimeout(function() { 
-        d.setAttribute('scale', '0'); 
-    }, 150); // Un timing légèrement plus long pour être sûr que le rendu a eu lieu
+    d.setAttribute('scale', '0.5');
+    setTimeout(function() {
+        d.setAttribute('scale', '0');
+    }, 150);
 });
 
 function startWave(btn) {
@@ -371,17 +423,21 @@ function reset(a) {
 function openDrawer(drawer, btn) {
     var id    = drawer.id;
     var links = Array.from(drawer.querySelectorAll('a, p, .bio-spacer'));
-    
-    // On remet le scroll en haut à chaque ouverture
-    drawer.scrollTop = 0; 
-    
+
+    drawer.scrollTop = 0;
+
     kill(id);
     links.forEach(function(a) { reset(a); a.classList.remove('dl'); void a.offsetWidth; });
     drawer.classList.add('active');
     drawer.classList.remove('closing');
     ui.classList.add('dim');
     setTopOpacity(btn);
+
+    // ARIA
+    setExpanded(btn, true);
+
     if (btn) startWave(btn);
+
     links.forEach(function(a, i) {
         var t1 = setTimeout(function() {
             anim(a, 'in', IN);
@@ -396,7 +452,9 @@ function closeDrawer(drawer, btn) {
     var id    = drawer.id;
     var links = Array.from(drawer.querySelectorAll('a, p, .bio-spacer'));
     var n     = links.length;
+
     kill(id);
+
     links.forEach(function(a) {
         var cs = getComputedStyle(a);
         a.style.animation = 'none';
@@ -405,20 +463,28 @@ function closeDrawer(drawer, btn) {
         a.classList.remove('dl');
         void a.offsetWidth;
     });
+
     drawer.classList.remove('active');
     drawer.classList.add('closing');
     ui.classList.remove('dim');
     setTopOpacity(null);
+
+    // ARIA
+    setExpanded(btn, false);
+
     if (btn) stopWave(btn);
+
     links.forEach(function(a, i) {
         var t = setTimeout(function() { anim(a, 'out', OUT); }, (n - 1 - i) * STEP);
         timers[id].push(t);
     });
+
     var tClean = setTimeout(function() {
         drawer.classList.remove('closing');
         links.forEach(function(a) { reset(a); });
         drawer.scrollTop = 0;
     }, (n - 1) * STEP + OUT + 60);
+
     timers[id].push(tClean);
 }
 
@@ -428,9 +494,11 @@ function closeAll(exceptId) {
         { d: document.getElementById('linksDrawer'),   b: document.getElementById('btn-links') },
         { d: document.getElementById('bioDrawer'),     b: document.getElementById('btn-bio') }
     ];
+
     all.forEach(function(o) {
         if (o.d.id !== exceptId && (o.d.classList.contains('active') || o.d.classList.contains('closing'))) {
             killWave(o.b);
+            setExpanded(o.b, false);
             closeDrawer(o.d, null);
         }
     });
@@ -438,15 +506,19 @@ function closeAll(exceptId) {
 
 function toggle(section, e) {
     if (e) e.preventDefault();
+
     var map = {
         follow:  { d: 'followDrawer',  b: 'btn-follow' },
         links:   { d: 'linksDrawer',   b: 'btn-links' },
         bio:     { d: 'bioDrawer',     b: 'btn-bio' }
     };
+
     var drawer = document.getElementById(map[section].d);
     var btn    = document.getElementById(map[section].b);
     var isOpen = drawer.classList.contains('active');
+
     closeAll(isOpen ? null : map[section].d);
+
     if (isOpen) {
         closeDrawer(drawer, btn);
     } else {
@@ -457,7 +529,17 @@ function toggle(section, e) {
 document.getElementById('btn-links').addEventListener('click', function(e) { toggle('links', e); });
 document.getElementById('btn-follow').addEventListener('click', function(e) { toggle('follow', e); });
 document.getElementById('btn-bio').addEventListener('click', function(e) { toggle('bio', e); });
-document.addEventListener('touchstart', function() { document.getElementById('bg-video').play(); }, { once: true });
+
+// Optionnel: ESC pour fermer le tiroir actif (clavier)
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeAll(null);
+});
+
+// iOS autoplay fallback
+document.addEventListener('touchstart', function() {
+    var v = document.getElementById('bg-video');
+    if (v) v.play().catch(function(){});
+}, { once: true });
 </script>
 </body>
 </html>
