@@ -313,7 +313,7 @@ window.addEventListener('load', function() {
     
     setTimeout(function() { 
         d.setAttribute('scale', '0'); 
-    }, 150); // Un timing lÃ©gÃ¨rement plus long pour ÃÂªtre sÃÂ»r que le rendu a eu lieu
+    }, 150);
 });
 
 function startWave(btn) {
@@ -387,7 +387,7 @@ function openDrawer(drawer, btn) {
     var id    = drawer.id;
     var links = Array.from(drawer.querySelectorAll('a, p, .bio-spacer'));
     
-    // On remet le scroll en haut ÃÂ  chaque ouverture
+    // On remet le scroll en haut à chaque ouverture
     drawer.scrollTop = 0; 
     
     kill(id);
