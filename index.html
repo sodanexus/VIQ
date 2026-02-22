@@ -207,6 +207,37 @@
             opacity: 0;
             transform: translateY(18px);
         }
+        
+        .bio-layout{
+  display: grid;
+  grid-template-columns: minmax(0, 560px) minmax(0, 300px);
+  gap: 28px;
+  align-items: start;
+  max-width: 920px;
+}
+
+.bio-copy{ min-width: 0; }
+
+.bio-photo{
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  border-radius: 18px;
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity .25s ease, transform .25s cubic-bezier(.2,0,.2,1);
+}
+
+.bio-photo.dl{
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Mobile: la photo passe au-dessus */
+@media (max-width: 720px){
+  .bio-layout{ grid-template-columns: 1fr; }
+  .bio-photo{ max-width: 380px; }
+}
         .bio-text.dl {
             opacity: 1 !important; transform: translateY(0) !important;
             transition: opacity .25s ease, transform .25s cubic-bezier(.2,0,.2,1) !important;
@@ -284,12 +315,21 @@ VIQ — Electronic Music Artist from Paris, France
         </div>
 
         <div class="links drawer" id="bioDrawer">
+            <div class="bio-layout">
+            <div class="bio-copy">
             <p class="bio-text">Julien Pannetier, better known as VIQ, brings a fresh perspective to the electronic and indie music scene. Born and raised in Montmorency, France, he grew up surrounded by music, splitting his time between skateboarding and drawing inspiration from electronic pioneers such as Lorn, Justice, Daft Punk, and Mk.gee.</p>
             <p class="bio-text">Influenced by his daily life and emotions, VIQ crafts a sound that blends electronic music, chillwave, synthwave, and dreampop. He began releasing music in 2019, quickly developing a signature style that caught the attention of California-based independent label Stratford.Ct, which he joined in 2020, releasing albums on vinyl and cassette.</p>
             <p class="bio-text">His work has been featured on several influential platforms including Lofi Girl, EDM.com, Electronic Gems, KALTBLUT Magazine, Stereofox, Nightride FM, etc. Alongside his music, he has also collaborated with the video game industry, contributing music and creative work to the gaming sector.</p>
             <div class="bio-spacer"></div>
         </div>
-    </div>
+        <img
+      src="viq-portrait.jpg"
+      alt="Portrait of VIQ (Julien Pannetier)"
+      class="bio-photo"
+      loading="lazy"
+      decoding="async"
+    />
+  </div>
 </div>
 
 <script>
@@ -385,7 +425,7 @@ function reset(a) {
 
 function openDrawer(drawer, btn) {
     var id    = drawer.id;
-    var links = Array.from(drawer.querySelectorAll('a, p, .bio-spacer'));
+    var links = Array.from(drawer.querySelectorAll('a, p, img, .bio-spacer'));
     
     // On remet le scroll en haut Ã  chaque ouverture
     drawer.scrollTop = 0; 
@@ -409,7 +449,7 @@ function openDrawer(drawer, btn) {
 
 function closeDrawer(drawer, btn) {
     var id    = drawer.id;
-    var links = Array.from(drawer.querySelectorAll('a, p, .bio-spacer'));
+    var links = Array.from(drawer.querySelectorAll('a, p, img, .bio-spacer'));
     var n     = links.length;
     kill(id);
     links.forEach(function(a) {
