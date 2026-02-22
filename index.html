@@ -80,6 +80,17 @@
         visibility: hidden;
     }
 }
+
+.exit-fade {
+    position: fixed;
+    inset: 0;
+    background: #fff;
+    opacity: 0;
+    z-index: 99999;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: #000;
@@ -276,6 +287,7 @@ VIQ - Electronic Music Artist from Paris, France
 <span id="reach" class="sr-only"></span>
 <span id="bio" class="sr-only"></span>
 <div class="entrance-fade"></div>
+<div class="exit-fade" id="exit-fade"></div>
 <svg width="0" height="0" style="position:absolute">
     <defs>
         <filter id="wave-filter" x="-5%" y="-40%" width="120%" height="180%" color-interpolation-filters="sRGB">
@@ -303,7 +315,7 @@ VIQ - Electronic Music Artist from Paris, France
         <a href="#release" class="nav-btn red" id="btn-release">OUT NOW</a>
         <a href="#listen" class="nav-btn" id="btn-links">LISTEN</a>
         <a href="#reach" class="nav-btn" id="btn-follow">REACH</a>
-        <a href="https://viq-shop.fourthwall.com/">WEAR</a>
+        <a href="https://viq-shop.fourthwall.com/" id="btn-wear">WEAR</a>
         <a href="#bio" class="nav-btn" id="btn-bio">BIO</a>
     </div>
 
@@ -514,6 +526,17 @@ document.getElementById('btn-links').addEventListener('click', function(e) { tog
 document.getElementById('btn-follow').addEventListener('click', function(e) { toggle('follow', e); });
 document.getElementById('btn-release').addEventListener('click', function(e) { toggle('release', e); });
 document.getElementById('btn-bio').addEventListener('click', function(e) { toggle('bio', e); });
+
+// Fade blanc au clic sur WEAR
+document.getElementById('btn-wear').addEventListener('click', function(e) {
+    e.preventDefault();
+    var url = this.href;
+    var fade = document.getElementById('exit-fade');
+    fade.style.opacity = '1';
+    fade.style.pointerEvents = 'all';
+    setTimeout(function() { window.location.href = url; }, 400);
+});
+
 document.addEventListener('touchstart', function() { document.getElementById('bg-video').play(); }, { once: true });
 </script>
 </body>
