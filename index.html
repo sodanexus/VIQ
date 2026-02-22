@@ -207,37 +207,6 @@
             opacity: 0;
             transform: translateY(18px);
         }
-        
-        .bio-layout{
-  display: grid;
-  grid-template-columns: minmax(0, 560px) minmax(0, 300px);
-  gap: 28px;
-  align-items: start;
-  max-width: 920px;
-}
-
-.bio-copy{ min-width: 0; }
-
-.bio-photo{
-  width: 100%;
-  max-width: 200px; /* ou 300 si tu préfères */
-  height: auto;
-  border-radius: 0;
-  opacity: 30;
-  transform: translateY(18px);
-  transition: opacity .25s ease, transform .25s cubic-bezier(.2,0,.2,1);
-}
-
-.bio-photo.dl{
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Mobile: la photo passe au-dessus */
-@media (max-width: 720px){
-  .bio-layout{ grid-template-columns: 1fr; }
-  .bio-photo{ max-width: 380px; }
-}
         .bio-text.dl {
             opacity: 1 !important; transform: translateY(0) !important;
             transition: opacity .25s ease, transform .25s cubic-bezier(.2,0,.2,1) !important;
@@ -254,7 +223,7 @@
 </head>
 <body>
     <h1 class="sr-only">
-VIQ — Electronic Music Artist from Paris, France
+VIQ â Electronic Music Artist from Paris, France
 </h1>
 
 <span id="listen" class="sr-only"></span>
@@ -315,21 +284,12 @@ VIQ — Electronic Music Artist from Paris, France
         </div>
 
         <div class="links drawer" id="bioDrawer">
-            <div class="bio-layout">
-            <div class="bio-copy">
             <p class="bio-text">Julien Pannetier, better known as VIQ, brings a fresh perspective to the electronic and indie music scene. Born and raised in Montmorency, France, he grew up surrounded by music, splitting his time between skateboarding and drawing inspiration from electronic pioneers such as Lorn, Justice, Daft Punk, and Mk.gee.</p>
             <p class="bio-text">Influenced by his daily life and emotions, VIQ crafts a sound that blends electronic music, chillwave, synthwave, and dreampop. He began releasing music in 2019, quickly developing a signature style that caught the attention of California-based independent label Stratford.Ct, which he joined in 2020, releasing albums on vinyl and cassette.</p>
             <p class="bio-text">His work has been featured on several influential platforms including Lofi Girl, EDM.com, Electronic Gems, KALTBLUT Magazine, Stereofox, Nightride FM, etc. Alongside his music, he has also collaborated with the video game industry, contributing music and creative work to the gaming sector.</p>
             <div class="bio-spacer"></div>
         </div>
-        <img
-      src="viq-portrait.jpg"
-      alt="Portrait of VIQ (Julien Pannetier)"
-      class="bio-photo"
-      loading="lazy"
-      decoding="async"
-    />
-  </div>
+    </div>
 </div>
 
 <script>
@@ -353,7 +313,7 @@ window.addEventListener('load', function() {
     
     setTimeout(function() { 
         d.setAttribute('scale', '0'); 
-    }, 150); // Un timing légèrement plus long pour Ãªtre sÃ»r que le rendu a eu lieu
+    }, 150); // Un timing lÃ©gÃ¨rement plus long pour ÃÂªtre sÃÂ»r que le rendu a eu lieu
 });
 
 function startWave(btn) {
@@ -425,9 +385,9 @@ function reset(a) {
 
 function openDrawer(drawer, btn) {
     var id    = drawer.id;
-    var links = Array.from(drawer.querySelectorAll('a, p, img, .bio-spacer'));
+    var links = Array.from(drawer.querySelectorAll('a, p, .bio-spacer'));
     
-    // On remet le scroll en haut Ã  chaque ouverture
+    // On remet le scroll en haut ÃÂ  chaque ouverture
     drawer.scrollTop = 0; 
     
     kill(id);
@@ -449,7 +409,7 @@ function openDrawer(drawer, btn) {
 
 function closeDrawer(drawer, btn) {
     var id    = drawer.id;
-    var links = Array.from(drawer.querySelectorAll('a, p, img, .bio-spacer'));
+    var links = Array.from(drawer.querySelectorAll('a, p, .bio-spacer'));
     var n     = links.length;
     kill(id);
     links.forEach(function(a) {
