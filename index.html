@@ -61,10 +61,8 @@
 
 .entrance-fade {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
     background-color: black;
     z-index: 9999;
     pointer-events: none;
@@ -72,12 +70,9 @@
 }
 
 @keyframes fade-out {
-    0% { opacity: 1; }
-    20% { opacity: 1; } 
-    100% { 
-        opacity: 0;
-        visibility: hidden;
-    }
+    0%   { opacity: 1; }
+    20%  { opacity: 1; }
+    100% { opacity: 0; visibility: hidden; }
 }
 
 .exit-fade {
@@ -126,12 +121,10 @@
         }
         .sr-only {
             position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
+            width: 1px; height: 1px;
+            padding: 0; margin: -1px;
             overflow: hidden;
-            clip: rect(0, 0, 0, 0);
+            clip: rect(0,0,0,0);
             white-space: nowrap;
             border: 0;
         }
@@ -193,7 +186,6 @@
             -ms-overflow-style: none;
         }
         .drawer::-webkit-scrollbar { display: none; }
-
         .drawer.active, .drawer.closing { visibility: visible; pointer-events: auto; }
         .drawer > a, .drawer > p, .drawer > img { opacity: 0; transform: translateY(18px); }
         .drawer > a.dl, .drawer > p.dl, .drawer > img.dl {
@@ -210,14 +202,8 @@
             cursor: default;
             padding-right: 25px;
         }
-        #releaseDrawer .release-title.dl:hover {
-            opacity: 1 !important;
-            transform: none !important;
-        }
-        .release-small {
-            font-size: 0.5em;
-            line-height: 1;
-        }
+        #releaseDrawer .release-title.dl:hover { opacity: 1 !important; transform: none !important; }
+        .release-small { font-size: 0.5em; line-height: 1; }
         .release-cover {
             width: clamp(180px, 28vw, 400px);
             height: auto;
@@ -228,10 +214,7 @@
             filter: contrast(1.05) brightness(1.05);
             border: 1px solid rgba(255,255,255,0.12);
         }
-        #releaseDrawer .release-cover.dl:hover {
-            opacity: 1 !important;
-            transform: none !important;
-        }
+        #releaseDrawer .release-cover.dl:hover { opacity: 1 !important; transform: none !important; }
 
         .bio-text {
             font-size: clamp(15px, 2.2vw, 21px) !important;
@@ -298,30 +281,30 @@
 
         <div class="bottom">
             <div class="links drawer" id="followDrawer">
-                <a href="https://www.tiktok.com/@viqmusic" target="_blank" rel="noopener">TIK TOK</a>
-                <a href="https://www.threads.com/@viqmusic" target="_blank" rel="noopener">THREADS</a>
-                <a href="https://www.facebook.com/Viqmusic" target="_blank" rel="noopener">FACEBOOK</a>
-                <a href="https://www.instagram.com/viqmusic/" target="_blank" rel="noopener">INSTAGRAM</a>
+                <a href="https://www.tiktok.com/@viqmusic" target="_blank" rel="noopener noreferrer">TIK TOK</a>
+                <a href="https://www.threads.com/@viqmusic" target="_blank" rel="noopener noreferrer">THREADS</a>
+                <a href="https://www.facebook.com/Viqmusic" target="_blank" rel="noopener noreferrer">FACEBOOK</a>
+                <a href="https://www.instagram.com/viqmusic/" target="_blank" rel="noopener noreferrer">INSTAGRAM</a>
                 <a class="bio-spacer"> </a>
                 <a href="/viq-press-kit.zip" download>PRESS KIT</a>
                 <a href="mailto:contact@viqmusic.net">ALL INQUIRIES</a>
             </div>
 
             <div class="links drawer" id="linksDrawer">
-                <a href="https://tidal.com/artist/14851275" target="_blank" rel="noopener">TIDAL</a>
-                <a href="https://music.apple.com/us/artist/viq/1467177415" target="_blank" rel="noopener">APPLE</a>
-                <a href="https://www.deezer.com/fr/artist/53988822" target="_blank" rel="noopener">DEEZER</a>
-                <a href="https://open.spotify.com/artist/6XpN8mRlhuOXuvEyva4yjZ" target="_blank" rel="noopener">SPOTIFY</a>
-                <a href="https://music.amazon.fr/artists/B07SVHSJ37/viq" target="_blank" rel="noopener">AMAZON</a>
-                <a href="https://www.youtube.com/c/VIQmusic" target="_blank" rel="noopener">YOUTUBE</a>
-                <a href="https://www.pandora.com/artist/viq/AR7v5wJfcr9gkKX" target="_blank" rel="noopener">PANDORA</a>
-                <a href="https://viqmusic.bandcamp.com/music" target="_blank" rel="noopener">BANDCAMP</a>
-                <a href="https://soundcloud.com/viqmusic" target="_blank" rel="noopener">SOUNDCLOUD</a>
+                <a href="https://tidal.com/artist/14851275" target="_blank" rel="noopener noreferrer">TIDAL</a>
+                <a href="https://music.apple.com/us/artist/viq/1467177415" target="_blank" rel="noopener noreferrer">APPLE</a>
+                <a href="https://www.deezer.com/fr/artist/53988822" target="_blank" rel="noopener noreferrer">DEEZER</a>
+                <a href="https://open.spotify.com/artist/6XpN8mRlhuOXuvEyva4yjZ" target="_blank" rel="noopener noreferrer">SPOTIFY</a>
+                <a href="https://music.amazon.fr/artists/B07SVHSJ37/viq" target="_blank" rel="noopener noreferrer">AMAZON</a>
+                <a href="https://www.youtube.com/c/VIQmusic" target="_blank" rel="noopener noreferrer">YOUTUBE</a>
+                <a href="https://www.pandora.com/artist/viq/AR7v5wJfcr9gkKX" target="_blank" rel="noopener noreferrer">PANDORA</a>
+                <a href="https://viqmusic.bandcamp.com/music" target="_blank" rel="noopener noreferrer">BANDCAMP</a>
+                <a href="https://soundcloud.com/viqmusic" target="_blank" rel="noopener noreferrer">SOUNDCLOUD</a>
             </div>
 
             <div class="links drawer" id="releaseDrawer">
                 <p class="release-title">MISSED CALL</p>
-                <a class="release-small" href="https://found.ee/missedcall" target="_blank" rel="noopener">PLAY NOW</a>
+                <a class="release-small" href="https://found.ee/missedcall" target="_blank" rel="noopener noreferrer">PLAY NOW</a>
                 <img class="release-cover" src="cover.jpg" alt="art cover">
             </div>
 
@@ -401,7 +384,7 @@ function setTopOpacity(activeBtn) {
 }
 
 function kill(id) {
-    timers[id].forEach(function(t) { clearTimeout(t); });
+    (timers[id] || []).forEach(function(t) { clearTimeout(t); });
     timers[id] = [];
 }
 
