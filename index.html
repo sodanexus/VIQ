@@ -154,7 +154,7 @@
             display: flex;
             flex-direction: column;
         }
-.links a, .nav-btn {
+        .links a, .nav-btn {
             display: inline-block;
             color: #fff;
             text-decoration: none;
@@ -163,7 +163,7 @@
             white-space: nowrap;
             width: fit-content;
             transition: transform .25s cubic-bezier(.2,0,.2,1), opacity .25s ease;
-            padding-right: 25px; 
+            padding-right: 25px;
         }
         .red { color: #b31300 !important; }
         .waving { filter: url(#wave-filter); }
@@ -171,10 +171,8 @@
         @media (hover: hover) {
             .top:hover > a, .top:hover > .nav-btn { opacity: .3; }
             .top > a:hover, .top > .nav-btn:hover { opacity: 1 !important; transform: translateX(15px) !important; }
-
             .drawer:not(#bioDrawer):not(#releaseDrawer):hover > .dl { opacity: .3; }
             .drawer:not(#bioDrawer):not(#releaseDrawer) > .dl:hover { opacity: 1 !important; transform: translateX(15px) !important; }
-
             #releaseDrawer a.dl:hover { opacity: 1 !important; transform: translateX(15px) !important; }
         }
 
@@ -194,10 +192,7 @@
             scrollbar-width: none;
             -ms-overflow-style: none;
         }
-
-        .drawer::-webkit-scrollbar { 
-            display: none; 
-        }
+        .drawer::-webkit-scrollbar { display: none; }
 
         .drawer.active, .drawer.closing { visibility: visible; pointer-events: auto; }
         .drawer > a, .drawer > p, .drawer > img { opacity: 0; transform: translateY(18px); }
@@ -206,41 +201,37 @@
             transition: transform .25s cubic-bezier(.2,0,.2,1), opacity .25s ease;
         }
 
-.release-title {
-    display: inline-block;
-    color: #fff;
-    margin-bottom: 4px;
-    white-space: nowrap;
-    width: fit-content;
-    cursor: default;
-    padding-right: 25px;
-}
-
-#releaseDrawer .release-title.dl:hover {
-    opacity: 1 !important;
-    transform: none !important;
-}
-
-.release-small { 
-    font-size: 0.5em; 
-    line-height: 1; 
-}
-
-.release-cover{
-    width: clamp(180px, 28vw, 400px);
-    height: auto;
-    margin-top: 10px;
-    display: block;
-    pointer-events: none;
-    border-radius: 3px;
-    filter: contrast(1.05) brightness(1.05);
-    border: 1px solid rgba(255,255,255,0.12);
-}
-
-#releaseDrawer .release-cover.dl:hover {
-    opacity: 1 !important;
-    transform: none !important;
-}
+        .release-title {
+            display: inline-block;
+            color: #fff;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            width: fit-content;
+            cursor: default;
+            padding-right: 25px;
+        }
+        #releaseDrawer .release-title.dl:hover {
+            opacity: 1 !important;
+            transform: none !important;
+        }
+        .release-small {
+            font-size: 0.5em;
+            line-height: 1;
+        }
+        .release-cover {
+            width: clamp(180px, 28vw, 400px);
+            height: auto;
+            margin-top: 10px;
+            display: block;
+            pointer-events: none;
+            border-radius: 3px;
+            filter: contrast(1.05) brightness(1.05);
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+        #releaseDrawer .release-cover.dl:hover {
+            opacity: 1 !important;
+            transform: none !important;
+        }
 
         .bio-text {
             font-size: clamp(15px, 2.2vw, 21px) !important;
@@ -270,83 +261,78 @@
     </style>
 </head>
 <body>
-    <h1 class="sr-only">
-VIQ - Electronic Music Artist from Paris, France
-</h1>
+    <h1 class="sr-only">VIQ - Electronic Music Artist from Paris, France</h1>
+    <div class="entrance-fade"></div>
+    <div class="exit-fade" id="exit-fade"></div>
 
-<span id="listen" class="sr-only"></span>
-<span id="reach" class="sr-only"></span>
-<span id="bio" class="sr-only"></span>
-<div class="entrance-fade"></div>
-<div class="exit-fade" id="exit-fade"></div>
-<svg width="0" height="0" style="position:absolute">
-    <defs>
-        <filter id="wave-filter" x="-5%" y="-40%" width="120%" height="180%" color-interpolation-filters="sRGB">
-            <feTurbulence type="turbulence" baseFrequency="0.03 0.07" numOctaves="3" seed="5" result="noise">
-                <animate attributeName="baseFrequency"
-                    values="0.03 0.07;0.025 0.055;0.032 0.065;0.03 0.07"
-                    dur="3s" repeatCount="indefinite"/>
-            </feTurbulence>
-            <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0" result="noise2"/>
-            <feImage result="mask" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='20'%3E%3Cdefinitions%3E%3ClinearGradient id='g' x1='0' x2='1'%3E%3Cstop offset='0' stop-color='black'/%3E%3Cstop offset='1' stop-color='white'/%3E%3C/linearGradient%3E%3C/definitions%3E%3Crect width='200' height='20' fill='url(%23g)'/%3E%3C/svg%3E"/>
-            <feComposite in="noise2" in2="mask" operator="arithmetic" k2="1" k3="1" result="modulated"/>
-            <feDisplacementMap in="SourceGraphic" in2="modulated" scale="0"
-                xChannelSelector="R" yChannelSelector="G" id="flag-disp"/>
-        </filter>
-    </defs>
-</svg>
+    <svg width="0" height="0" style="position:absolute">
+        <defs>
+            <filter id="wave-filter" x="-5%" y="-40%" width="120%" height="180%" color-interpolation-filters="sRGB">
+                <feTurbulence type="turbulence" baseFrequency="0.03 0.07" numOctaves="3" seed="5" result="noise">
+                    <animate attributeName="baseFrequency"
+                        values="0.03 0.07;0.025 0.055;0.032 0.065;0.03 0.07"
+                        dur="3s" repeatCount="indefinite"/>
+                </feTurbulence>
+                <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0" result="noise2"/>
+                <feImage result="mask" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='20'%3E%3Cdefinitions%3E%3ClinearGradient id='g' x1='0' x2='1'%3E%3Cstop offset='0' stop-color='black'/%3E%3Cstop offset='1' stop-color='white'/%3E%3C/linearGradient%3E%3C/definitions%3E%3Crect width='200' height='20' fill='url(%23g)'/%3E%3C/svg%3E"/>
+                <feComposite in="noise2" in2="mask" operator="arithmetic" k2="1" k3="1" result="modulated"/>
+                <feDisplacementMap in="SourceGraphic" in2="modulated" scale="0"
+                    xChannelSelector="R" yChannelSelector="G" id="flag-disp"/>
+            </filter>
+        </defs>
+    </svg>
 
-<video autoplay muted loop playsinline id="bg-video">
-    <source src="Background.mp4" type="video/mp4">
-</video>
-<div class="overlay"></div>
+    <video autoplay muted loop playsinline id="bg-video">
+        <source src="Background.mp4" type="video/mp4">
+    </video>
+    <div class="overlay"></div>
 
-<div id="ui">
-    <div class="links top">
-        <a href="#release" class="nav-btn red" id="btn-release">OUT NOW</a>
-        <a href="#listen" class="nav-btn" id="btn-links">LISTEN</a>
-        <a href="#reach" class="nav-btn" id="btn-follow">REACH</a>
-        <a href="https://viq-shop.fourthwall.com/" id="btn-wear">WEAR</a>
-        <a href="#bio" class="nav-btn" id="btn-bio">BIO</a>
-    </div>
-
-    <div class="bottom">
-        <div class="links drawer" id="followDrawer">
-            <a href="https://www.tiktok.com/@viqmusic" target="_blank" rel="noopener">TIK TOK</a>
-            <a href="https://www.threads.com/@viqmusic" target="_blank" rel="noopener">THREADS</a>
-            <a href="https://www.facebook.com/Viqmusic" target="_blank" rel="noopener">FACEBOOK</a>
-            <a href="https://www.instagram.com/viqmusic/" target="_blank" rel="noopener">INSTAGRAM</a>
-            <a class="bio-spacer"> </a>
-            <a href="/viq-press-kit.zip" download>PRESS KIT</a>
-            <a href="mailto:contact@viqmusic.net">ALL INQUIRIES</a>
+    <div id="ui">
+        <div class="links top">
+            <a href="#release" class="nav-btn red" id="btn-release">OUT NOW</a>
+            <a href="#listen" class="nav-btn" id="btn-links">LISTEN</a>
+            <a href="#reach" class="nav-btn" id="btn-follow">REACH</a>
+            <a href="https://viq-shop.fourthwall.com/" id="btn-wear">WEAR</a>
+            <a href="#bio" class="nav-btn" id="btn-bio">BIO</a>
         </div>
 
-        <div class="links drawer" id="linksDrawer">
-            <a href="https://tidal.com/artist/14851275" target="_blank" rel="noopener">TIDAL</a>
-            <a href="https://music.apple.com/us/artist/viq/1467177415" target="_blank" rel="noopener">APPLE</a>
-            <a href="https://www.deezer.com/fr/artist/53988822" target="_blank" rel="noopener">DEEZER</a>
-            <a href="https://open.spotify.com/artist/6XpN8mRlhuOXuvEyva4yjZ" target="_blank" rel="noopener">SPOTIFY</a>
-            <a href="https://music.amazon.fr/artists/B07SVHSJ37/viq" target="_blank" rel="noopener">AMAZON</a>
-            <a href="https://www.youtube.com/c/VIQmusic" target="_blank" rel="noopener">YOUTUBE</a>
-            <a href="https://www.pandora.com/artist/viq/AR7v5wJfcr9gkKX" target="_blank" rel="noopener">PANDORA</a>
-            <a href="https://viqmusic.bandcamp.com/music" target="_blank" rel="noopener">BANDCAMP</a>
-            <a href="https://soundcloud.com/viqmusic" target="_blank" rel="noopener">SOUNDCLOUD</a>
-        </div>
+        <div class="bottom">
+            <div class="links drawer" id="followDrawer">
+                <a href="https://www.tiktok.com/@viqmusic" target="_blank" rel="noopener">TIK TOK</a>
+                <a href="https://www.threads.com/@viqmusic" target="_blank" rel="noopener">THREADS</a>
+                <a href="https://www.facebook.com/Viqmusic" target="_blank" rel="noopener">FACEBOOK</a>
+                <a href="https://www.instagram.com/viqmusic/" target="_blank" rel="noopener">INSTAGRAM</a>
+                <a class="bio-spacer"> </a>
+                <a href="/viq-press-kit.zip" download>PRESS KIT</a>
+                <a href="mailto:contact@viqmusic.net">ALL INQUIRIES</a>
+            </div>
 
-        <div class="links drawer" id="releaseDrawer">
-            <p class="release-title">MISSED CALL</p>
-            <a class="release-small" href="https://found.ee/missedcall" target="_blank" rel="noopener">PLAY NOW</a>
-            <img class="release-cover" src="cover.jpg" alt="art cover">
-        </div>
+            <div class="links drawer" id="linksDrawer">
+                <a href="https://tidal.com/artist/14851275" target="_blank" rel="noopener">TIDAL</a>
+                <a href="https://music.apple.com/us/artist/viq/1467177415" target="_blank" rel="noopener">APPLE</a>
+                <a href="https://www.deezer.com/fr/artist/53988822" target="_blank" rel="noopener">DEEZER</a>
+                <a href="https://open.spotify.com/artist/6XpN8mRlhuOXuvEyva4yjZ" target="_blank" rel="noopener">SPOTIFY</a>
+                <a href="https://music.amazon.fr/artists/B07SVHSJ37/viq" target="_blank" rel="noopener">AMAZON</a>
+                <a href="https://www.youtube.com/c/VIQmusic" target="_blank" rel="noopener">YOUTUBE</a>
+                <a href="https://www.pandora.com/artist/viq/AR7v5wJfcr9gkKX" target="_blank" rel="noopener">PANDORA</a>
+                <a href="https://viqmusic.bandcamp.com/music" target="_blank" rel="noopener">BANDCAMP</a>
+                <a href="https://soundcloud.com/viqmusic" target="_blank" rel="noopener">SOUNDCLOUD</a>
+            </div>
 
-        <div class="links drawer" id="bioDrawer">
-            <p class="bio-text">Julien Pannetier, better known as VIQ, brings a fresh perspective to the electronic and indie music scene. Born and raised in Montmorency, France, he grew up surrounded by music, splitting his time between skateboarding and drawing inspiration from electronic pioneers such as Lorn, Justice, Daft Punk, and Mk.gee.</p>
-            <p class="bio-text">Influenced by his daily life and emotions, VIQ crafts a sound that blends electronic music, chillwave, synthwave, and dreampop. He began releasing music in 2019, quickly developing a signature style that caught the attention of California-based independent label Stratford.Ct, which he joined in 2020, releasing albums on vinyl and cassette.</p>
-            <p class="bio-text">His work has been featured on several influential platforms including Lofi Girl, EDM.com, Electronic Gems, KALTBLUT Magazine, Stereofox, Nightride FM, etc. Alongside his music, he has also collaborated with the video game industry, contributing music and creative work to the gaming sector.</p>
-            <div class="bio-spacer"></div>
+            <div class="links drawer" id="releaseDrawer">
+                <p class="release-title">MISSED CALL</p>
+                <a class="release-small" href="https://found.ee/missedcall" target="_blank" rel="noopener">PLAY NOW</a>
+                <img class="release-cover" src="cover.jpg" alt="art cover">
+            </div>
+
+            <div class="links drawer" id="bioDrawer">
+                <p class="bio-text">Julien Pannetier, better known as VIQ, brings a fresh perspective to the electronic and indie music scene. Born and raised in Montmorency, France, he grew up surrounded by music, splitting his time between skateboarding and drawing inspiration from electronic pioneers such as Lorn, Justice, Daft Punk, and Mk.gee.</p>
+                <p class="bio-text">Influenced by his daily life and emotions, VIQ crafts a sound that blends electronic music, chillwave, synthwave, and dreampop. He began releasing music in 2019, quickly developing a signature style that caught the attention of California-based independent label Stratford.Ct, which he joined in 2020, releasing albums on vinyl and cassette.</p>
+                <p class="bio-text">His work has been featured on several influential platforms including Lofi Girl, EDM.com, Electronic Gems, KALTBLUT Magazine, Stereofox, Nightride FM, etc. Alongside his music, he has also collaborated with the video game industry, contributing music and creative work to the gaming sector.</p>
+                <div class="bio-spacer"></div>
+            </div>
         </div>
     </div>
-</div>
 
 <script>
 var STEP = 35, IN = 300, OUT = 250;
@@ -363,7 +349,7 @@ function getDisp() {
 
 window.addEventListener('load', function() {
     var d = getDisp();
-    d.setAttribute('scale', '0.5'); 
+    d.setAttribute('scale', '0.5');
     setTimeout(function() { d.setAttribute('scale', '0'); }, 150);
 });
 
@@ -434,7 +420,7 @@ function reset(a) {
 function openDrawer(drawer, btn) {
     var id    = drawer.id;
     var links = Array.from(drawer.querySelectorAll('a, p, img, .bio-spacer'));
-    drawer.scrollTop = 0; 
+    drawer.scrollTop = 0;
     kill(id);
     links.forEach(function(a) { reset(a); a.classList.remove('dl'); void a.offsetWidth; });
     drawer.classList.add('active');
@@ -484,10 +470,10 @@ function closeDrawer(drawer, btn) {
 
 function closeAll(exceptId) {
     var all = [
-        { d: document.getElementById('followDrawer'),   b: document.getElementById('btn-follow') },
-        { d: document.getElementById('linksDrawer'),    b: document.getElementById('btn-links') },
-        { d: document.getElementById('releaseDrawer'),  b: document.getElementById('btn-release') },
-        { d: document.getElementById('bioDrawer'),      b: document.getElementById('btn-bio') }
+        { d: document.getElementById('followDrawer'),  b: document.getElementById('btn-follow') },
+        { d: document.getElementById('linksDrawer'),   b: document.getElementById('btn-links') },
+        { d: document.getElementById('releaseDrawer'), b: document.getElementById('btn-release') },
+        { d: document.getElementById('bioDrawer'),     b: document.getElementById('btn-bio') }
     ];
     all.forEach(function(o) {
         if (o.d.id !== exceptId && (o.d.classList.contains('active') || o.d.classList.contains('closing'))) {
@@ -500,10 +486,10 @@ function closeAll(exceptId) {
 function toggle(section, e) {
     if (e) e.preventDefault();
     var map = {
-        follow:   { d: 'followDrawer',   b: 'btn-follow' },
-        links:    { d: 'linksDrawer',    b: 'btn-links' },
-        release:  { d: 'releaseDrawer',  b: 'btn-release' },
-        bio:      { d: 'bioDrawer',      b: 'btn-bio' }
+        follow:  { d: 'followDrawer',  b: 'btn-follow' },
+        links:   { d: 'linksDrawer',   b: 'btn-links' },
+        release: { d: 'releaseDrawer', b: 'btn-release' },
+        bio:     { d: 'bioDrawer',     b: 'btn-bio' }
     };
     var drawer = document.getElementById(map[section].d);
     var btn    = document.getElementById(map[section].b);
@@ -513,12 +499,11 @@ function toggle(section, e) {
     else openDrawer(drawer, btn);
 }
 
-document.getElementById('btn-links').addEventListener('click', function(e) { toggle('links', e); });
-document.getElementById('btn-follow').addEventListener('click', function(e) { toggle('follow', e); });
+document.getElementById('btn-links').addEventListener('click',   function(e) { toggle('links', e); });
+document.getElementById('btn-follow').addEventListener('click',  function(e) { toggle('follow', e); });
 document.getElementById('btn-release').addEventListener('click', function(e) { toggle('release', e); });
-document.getElementById('btn-bio').addEventListener('click', function(e) { toggle('bio', e); });
+document.getElementById('btn-bio').addEventListener('click',     function(e) { toggle('bio', e); });
 
-// Fade blanc au clic sur WEAR
 document.getElementById('btn-wear').addEventListener('click', function(e) {
     e.preventDefault();
     var url = this.href;
