@@ -67,13 +67,12 @@
     height: 100vh;
     background-color: black;
     z-index: 9999;
-    pointer-events: none; /* Important pour cliquer sur le texte direct */
+    pointer-events: none;
     animation: fade-out 0.8s forwards ease-out;
 }
 
 @keyframes fade-out {
     0% { opacity: 1; }
-    /* On peut rester blanc un court instant si on veut */
     20% { opacity: 1; } 
     100% { 
         opacity: 0;
@@ -111,7 +110,7 @@
         .overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,.4);
+            background: rgba(0,0,0,.2);
             z-index: -1;
         }
         #ui {
@@ -173,12 +172,9 @@
             .top:hover > a, .top:hover > .nav-btn { opacity: .3; }
             .top > a:hover, .top > .nav-btn:hover { opacity: 1 !important; transform: translateX(15px) !important; }
 
-            /* ✅ Global drawers (sauf BIO et sauf RELEASE): comportement inchangé */
             .drawer:not(#bioDrawer):not(#releaseDrawer):hover > .dl { opacity: .3; }
             .drawer:not(#bioDrawer):not(#releaseDrawer) > .dl:hover { opacity: 1 !important; transform: translateX(15px) !important; }
 
-            /* ✅ RELEASE drawer: PAS de fade global (aucun) */
-            /* On garde juste un hover sur STREAM HERE */
             #releaseDrawer a.dl:hover { opacity: 1 !important; transform: translateX(15px) !important; }
         }
 
@@ -194,13 +190,11 @@
             visibility: hidden;
             pointer-events: none;
             max-height: 100%;
-            /* Active le scroll sur tous les tiroirs */
             overflow-y: auto;
-            scrollbar-width: none; /* Cache la scrollbar (Firefox) */
-            -ms-overflow-style: none; /* Cache la scrollbar (IE/Edge) */
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
 
-        /* Cache la scrollbar (Chrome, Safari, Opera) */
         .drawer::-webkit-scrollbar { 
             display: none; 
         }
@@ -212,7 +206,6 @@
             transition: transform .25s cubic-bezier(.2,0,.2,1), opacity .25s ease;
         }
 
-/* NEW RELEASE drawer specifics */
 .release-title {
     display: inline-block;
     color: #fff;
@@ -223,7 +216,6 @@
     padding-right: 25px;
 }
 
-/* MISSED CALL: aucun hover (pas de transform/opacity) */
 #releaseDrawer .release-title.dl:hover {
     opacity: 1 !important;
     transform: none !important;
@@ -245,7 +237,6 @@
     border: 1px solid rgba(255,255,255,0.12);
 }
 
-/* COVER: aucun hover (pas de transform/opacity) */
 #releaseDrawer .release-cover.dl:hover {
     opacity: 1 !important;
     transform: none !important;
