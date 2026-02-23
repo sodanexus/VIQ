@@ -5,6 +5,6 @@ Allow: /
 Sitemap: https://www.viqmusic.net/sitemap.xml
 
 # LLMs
-# https://www.viqmusic.net/llms.txt
+LLMs-txt: https://www.viqmusic.net/llms.txt
 
 Crawl-delay: 1
