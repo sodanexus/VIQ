@@ -474,6 +474,21 @@ document.getElementById('btn-outnow').addEventListener('click', function(e) {
     setTimeout(function() { window.location.href = url; }, 400);
 });
 
+// Reset des fondus lors du retour en arrière (Bouton Précédent du navigateur)
+window.addEventListener('pageshow', function(event) {
+    if (event.persisted) {
+        var fadeWhite = document.getElementById('exit-fade');
+        var fadeBlack = document.getElementById('exit-fade-black');
+        
+        // On retire l'opacité et on redonne le contrôle à l'utilisateur
+        fadeWhite.style.opacity = '0';
+        fadeWhite.style.pointerEvents = 'none';
+        
+        fadeBlack.style.opacity = '0';
+        fadeBlack.style.pointerEvents = 'none';
+    }
+});
+
 document.addEventListener('touchstart', function() { document.getElementById('bg-video').play(); }, { once: true });
 </script>
 </body>
