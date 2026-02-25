@@ -164,9 +164,8 @@
         @media (hover: hover) {
             .top:hover > a, .top:hover > .nav-btn { opacity: .3; }
             .top > a:hover, .top > .nav-btn:hover { opacity: 1 !important; transform: translateX(15px) !important; }
-            .drawer:not(#bioDrawer):not(#releaseDrawer):hover > .dl { opacity: .3; }
-            .drawer:not(#bioDrawer):not(#releaseDrawer) > .dl:hover { opacity: 1 !important; transform: translateX(15px) !important; }
-            #releaseDrawer a.dl:hover { opacity: 1 !important; transform: translateX(15px) !important; }
+            .drawer:not(#bioDrawer):hover > .dl { opacity: .3; }
+            .drawer:not(#bioDrawer) > .dl:hover { opacity: 1 !important; transform: translateX(15px) !important; }
         }
 
         #ui.dim .top > a, #ui.dim .top > .nav-btn { opacity: .3; }
@@ -192,29 +191,6 @@
             opacity: 1; transform: translateY(0);
             transition: transform .25s cubic-bezier(.2,0,.2,1), opacity .25s ease;
         }
-
-        .release-title {
-            display: inline-block;
-            color: #fff;
-            margin-bottom: 4px;
-            white-space: nowrap;
-            width: fit-content;
-            cursor: default;
-            padding-right: 25px;
-        }
-        #releaseDrawer .release-title.dl:hover { opacity: 1 !important; transform: none !important; }
-        .release-small { font-size: 0.5em; line-height: 1; }
-        .release-cover {
-            width: clamp(180px, 28vw, 400px);
-            height: auto;
-            margin-top: 10px;
-            display: block;
-            pointer-events: none;
-            border-radius: 3px;
-            filter: contrast(1.05) brightness(1.05);
-            border: 1px solid rgba(255,255,255,0.12);
-        }
-        #releaseDrawer .release-cover.dl:hover { opacity: 1 !important; transform: none !important; }
 
         .bio-text {
             font-size: clamp(15px, 2.2vw, 21px) !important;
@@ -247,6 +223,7 @@
     <h1 class="sr-only">VIQ - Electronic Music Artist from Paris, France</h1>
     <div class="entrance-fade"></div>
     <div class="exit-fade" id="exit-fade"></div>
+    <div class="exit-fade" id="exit-fade-black" style="background: #000;"></div>
 
     <svg width="0" height="0" style="position:absolute">
         <defs>
@@ -272,7 +249,7 @@
 
     <div id="ui">
         <div class="links top">
-            <a href="#release" class="nav-btn red" id="btn-release">OUT NOW</a>
+            <a href="https://go.viqmusic.net/missed-call/" target="_blank" rel="noopener noreferrer" class="red" id="btn-outnow">OUT NOW</a>
             <a href="#listen" class="nav-btn" id="btn-links">LISTEN</a>
             <a href="#reach" class="nav-btn" id="btn-follow">REACH</a>
             <a href="https://viq-shop.fourthwall.com/" id="btn-wear">WEAR</a>
@@ -302,12 +279,6 @@
                 <a href="https://soundcloud.com/viqmusic" target="_blank" rel="noopener noreferrer">SOUNDCLOUD</a>
             </div>
 
-            <div class="links drawer" id="releaseDrawer">
-                <p class="release-title">MISSED CALL</p>
-                <a class="release-small" href="https://go.viqmusic.net/missed-call/" target="_blank" rel="noopener noreferrer">PLAY NOW</a>
-                <img class="release-cover" src="cover.jpg" alt="art cover">
-            </div>
-
             <div class="links drawer" id="bioDrawer">
                 <p class="bio-text">Julien Pannetier, better known as VIQ, brings a fresh perspective to the electronic and indie music scene. Born and raised in Montmorency, France, he grew up surrounded by music, splitting his time between skateboarding and drawing inspiration from electronic pioneers such as Lorn, Justice, Daft Punk, and Mk.gee.</p>
                 <p class="bio-text">Influenced by his daily life and emotions, VIQ crafts a sound that blends electronic music, chillwave, synthwave, and dreampop. He began releasing music in 2019, quickly developing a signature style that caught the attention of California-based independent label Stratford.Ct, which he joined in 2020, releasing albums on vinyl and cassette.</p>
@@ -320,7 +291,7 @@
 <script>
 var STEP = 35, IN = 300, OUT = 250;
 var ui = document.getElementById('ui');
-var timers = { followDrawer: [], linksDrawer: [], bioDrawer: [], releaseDrawer: [] };
+var timers = { followDrawer: [], linksDrawer: [], bioDrawer: [] };
 var waveDisp = null;
 var waveRaf  = null;
 var waveVal  = 0;
@@ -455,7 +426,6 @@ function closeAll(exceptId) {
     var all = [
         { d: document.getElementById('followDrawer'),  b: document.getElementById('btn-follow') },
         { d: document.getElementById('linksDrawer'),   b: document.getElementById('btn-links') },
-        { d: document.getElementById('releaseDrawer'), b: document.getElementById('btn-release') },
         { d: document.getElementById('bioDrawer'),     b: document.getElementById('btn-bio') }
     ];
     all.forEach(function(o) {
@@ -471,7 +441,6 @@ function toggle(section, e) {
     var map = {
         follow:  { d: 'followDrawer',  b: 'btn-follow' },
         links:   { d: 'linksDrawer',   b: 'btn-links' },
-        release: { d: 'releaseDrawer', b: 'btn-release' },
         bio:     { d: 'bioDrawer',     b: 'btn-bio' }
     };
     var drawer = document.getElementById(map[section].d);
@@ -484,13 +453,22 @@ function toggle(section, e) {
 
 document.getElementById('btn-links').addEventListener('click',   function(e) { toggle('links', e); });
 document.getElementById('btn-follow').addEventListener('click',  function(e) { toggle('follow', e); });
-document.getElementById('btn-release').addEventListener('click', function(e) { toggle('release', e); });
 document.getElementById('btn-bio').addEventListener('click',     function(e) { toggle('bio', e); });
 
+// Gestionnaire pour les liens externes avec transitions personnalisées
 document.getElementById('btn-wear').addEventListener('click', function(e) {
     e.preventDefault();
     var url = this.href;
-    var fade = document.getElementById('exit-fade');
+    var fade = document.getElementById('exit-fade'); // Fondu Blanc
+    fade.style.opacity = '1';
+    fade.style.pointerEvents = 'all';
+    setTimeout(function() { window.location.href = url; }, 400);
+});
+
+document.getElementById('btn-outnow').addEventListener('click', function(e) {
+    e.preventDefault();
+    var url = this.href;
+    var fade = document.getElementById('exit-fade-black'); // Fondu Noir
     fade.style.opacity = '1';
     fade.style.pointerEvents = 'all';
     setTimeout(function() { window.location.href = url; }, 400);
