@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 | VIQ</title>
+
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400&display=swap" rel="stylesheet">
+
+    <style>
+        .entrance-fade {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background-color: black;
+            z-index: 9999;
+            pointer-events: none;
+            animation: fade-out 0.8s forwards ease-out;
+        }
+
+        @keyframes fade-out {
+            0%   { opacity: 1; }
+            20%  { opacity: 1; }
+            100% { opacity: 0; visibility: hidden; }
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Playfair Display', serif;
+            min-height: 100vh;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        #bg-video {
+            position: fixed;
+            inset: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            object-position: 35% 45%;
+            z-index: -2;
+        }
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.45);
+            z-index: -1;
+        }
+
+        #ui {
+            position: fixed;
+            --mx: clamp(25px, 5vw, 45px);
+            --my: clamp(40px, 7vh, 65px);
+            inset: var(--my) var(--mx);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            overflow: hidden;
+            z-index: 10;
+        }
+
+        /* ── 404 CONTENT ── */
+        .content-404 {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(12px, 2vh, 20px);
+            pointer-events: auto;
+        }
+
+        .error-number {
+            font-size: clamp(0px, min(6.5vw, 8vmin), 60px);
+            text-transform: uppercase;
+            line-height: .95;
+            color: #b31300;
+            animation: glitch-in 0.6s cubic-bezier(.19,1,.22,1) both;
+            animation-delay: 0.3s;
+            opacity: 0;
+        }
+
+        .error-label {
+            font-size: clamp(0px, min(6.5vw, 8vmin), 60px);
+            text-transform: uppercase;
+            line-height: .95;
+            animation: glitch-in 0.6s cubic-bezier(.19,1,.22,1) both;
+            animation-delay: 0.45s;
+            opacity: 0;
+        }
+
+        .error-sub {
+            font-size: clamp(13px, 1.8vw, 19px);
+            text-transform: uppercase;
+            line-height: 1.4;
+            opacity: 0;
+            letter-spacing: 0.08em;
+            animation: glitch-in 0.6s cubic-bezier(.19,1,.22,1) both;
+            animation-delay: 0.6s;
+            color: rgba(255,255,255,0.55);
+        }
+
+        .home-link {
+            display: inline-block;
+            color: #fff;
+            text-decoration: none;
+            font-size: clamp(0px, min(6.5vw, 8vmin), 60px);
+            text-transform: uppercase;
+            line-height: .95;
+            margin-top: clamp(8px, 1.5vh, 16px);
+            opacity: 0;
+            animation: glitch-in 0.6s cubic-bezier(.19,1,.22,1) both;
+            animation-delay: 0.75s;
+            transition: transform .25s cubic-bezier(.2,0,.2,1), opacity .25s ease;
+            width: fit-content;
+        }
+
+        .home-link:hover {
+            transform: translateX(15px);
+        }
+
+        /* once animated in, hold final state */
+        .error-number, .error-label, .error-sub, .home-link {
+            animation-fill-mode: forwards;
+        }
+
+        @keyframes glitch-in {
+            from { opacity: 0; transform: translateY(18px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* error-sub stays at 0.55 opacity after animation */
+        .error-sub {
+            animation-name: glitch-in-dim;
+        }
+        @keyframes glitch-in-dim {
+            from { opacity: 0; transform: translateY(18px); }
+            to   { opacity: 0.55; transform: translateY(0); }
+        }
+
+        /* scanline glitch on the 404 number */
+        .error-number {
+            position: relative;
+        }
+        .error-number::after {
+            content: '404';
+            position: absolute;
+            left: 3px;
+            top: 0;
+            color: rgba(255,255,255,0.15);
+            clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%);
+            animation: scanline 4s infinite;
+            animation-delay: 1.2s;
+        }
+
+        @keyframes scanline {
+            0%, 90%, 100% { transform: translateX(0); opacity: 0; }
+            92%            { transform: translateX(-4px); opacity: 1; }
+            94%            { transform: translateX(4px); opacity: 1; }
+            96%            { transform: translateX(-2px); opacity: 0.8; }
+            98%            { transform: translateX(0); opacity: 0; }
+        }
+
+        /* horizontal line separator */
+        .separator {
+            width: clamp(40px, 8vw, 80px);
+            height: 1px;
+            background: rgba(255,255,255,0.25);
+            margin: clamp(4px, 1vh, 10px) 0;
+            opacity: 0;
+            animation: glitch-in 0.6s cubic-bezier(.19,1,.22,1) forwards;
+            animation-delay: 0.55s;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="entrance-fade"></div>
+
+    <svg width="0" height="0" style="position:absolute">
+        <defs>
+            <filter id="wave-filter" x="-5%" y="-40%" width="120%" height="180%" color-interpolation-filters="sRGB">
+                <feTurbulence type="turbulence" baseFrequency="0.03 0.07" numOctaves="3" seed="5" result="noise">
+                    <animate attributeName="baseFrequency"
+                        values="0.03 0.07;0.025 0.055;0.032 0.065;0.03 0.07"
+                        dur="3s" repeatCount="indefinite"/>
+                </feTurbulence>
+                <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0" result="noise2"/>
+                <feImage result="mask" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='20'%3E%3Cdefinitions%3E%3ClinearGradient id='g' x1='0' x2='1'%3E%3Cstop offset='0' stop-color='black'/%3E%3Cstop offset='1' stop-color='white'/%3E%3C/linearGradient%3E%3C/definitions%3E%3Crect width='200' height='20' fill='url(%23g)'/%3E%3C/svg%3E"/>
+                <feComposite in="noise2" in2="mask" operator="arithmetic" k2="1" k3="1" result="modulated"/>
+                <feDisplacementMap in="SourceGraphic" in2="modulated" scale="0"
+                    xChannelSelector="R" yChannelSelector="G" id="flag-disp"/>
+            </filter>
+        </defs>
+    </svg>
+
+    <video autoplay muted loop playsinline id="bg-video">
+        <source src="Background.mp4" type="video/mp4">
+    </video>
+    <div class="overlay"></div>
+
+    <div id="ui">
+        <!-- 404 message block -->
+        <div class="content-404">
+            <div class="error-number">404</div>
+            <div class="error-label">Lost Signal</div>
+            <div class="separator"></div>
+            <div class="error-sub">This page doesn't exist<br>or has been moved.</div>
+            <a href="/" class="home-link">← Back</a>
+        </div>
+    </div>
+
+</body>
+</html>
