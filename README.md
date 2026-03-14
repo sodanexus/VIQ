@@ -16,13 +16,16 @@ Le site repose sur une seule page (`index.html`) — pas de framework, pas de bu
 
 ```
 /
-├── index.html          ← Page principale (standalone)
-├── Background.mp4      ← Vidéo de fond
+├── index.html              ← Page principale (standalone)
+├── 404.html                ← Page d'erreur custom
+├── Background.mp4          ← Vidéo de fond
 ├── favicon.png
-├── og-image.jpg        ← Image Open Graph (1260×630)
-├── viq-press-kit.zip   ← Press kit téléchargeable
-├── mentions.html       ← Mentions légales
-└── privacy.html        ← Politique de confidentialité
+├── cover.jpg               ← Visuel principal
+├── og-image.jpg            ← Image Open Graph (1260×630)
+├── viq-press-kit.zip       ← Press kit téléchargeable
+├── llms.txt                ← Fiche artiste pour LLMs / IA
+├── sitemap.xml
+└── robots.txt
 ```
 
 ---
@@ -43,10 +46,10 @@ Le site repose sur une seule page (`index.html`) — pas de framework, pas de bu
 
 | Bouton | Contenu |
 |---|---|
-| **OUT NOW** | Lien direct vers la dernière release (`go.viqmusic.net`) |
+| **OUT NOW** | Lien direct vers la dernière release — *Missed Call* (`go.viqmusic.net/missed-call`) |
 | **LISTEN** | Spotify, Apple Music, Tidal, Deezer, Amazon, YouTube, Pandora, Bandcamp, SoundCloud |
 | **REACH** | TikTok, Threads, Facebook, Instagram + Press Kit + Contact |
-| **WEAR** | Boutique merch (Fourthwall) |
+| **WEAR** | Boutique merch (Fourthwall — `merch.viqmusic.net`) |
 | **BIO** | Biographie complète en anglais |
 
 ---
@@ -62,15 +65,26 @@ Le site repose sur une seule page (`index.html`) — pas de framework, pas de bu
 | **SEO** | Meta OG, Twitter Card, Schema.org `MusicGroup`, canonical |
 | **Analytics** | [Umami](https://umami.is/) |
 | **Email** | Obfuscation Cloudflare (`email-decode`) |
+| **Merch** | [Fourthwall](https://fourthwall.com) |
 
 ---
 
-## 🔍 SEO
+## 🔍 SEO & découvrabilité
 
 - Données structurées **Schema.org** (`MusicGroup`) avec genres, liens plateformes et membre
 - Balises **Open Graph** et **Twitter Card** complètes
 - Balise `canonical` vers `https://www.viqmusic.net/`
-- `robots: index, follow`
+- `robots: index, follow` + `sitemap.xml`
+- **`llms.txt`** — fiche artiste structurée pour les moteurs IA (ChatGPT, Perplexity, etc.)
+
+---
+
+## 🎵 Artiste
+
+- **Labels** : Stratford.Ct, Lofi Girl
+- **Genres** : Synthwave · Dreampop · Indie Electronic · Chillwave · Atmospheric
+- **Actif depuis** : 2019
+- **Notable** : Featured sur Lofi Girl, EDM.com, KALTBLUT Magazine, Stereofox, Nightride FM · Collaborations industrie du jeu vidéo · Sorties physiques (vinyle, cassette)
 
 ---
 
