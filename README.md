@@ -46,7 +46,7 @@ Le site repose sur une seule page (`index.html`) — pas de framework, pas de bu
 
 | Bouton | Contenu |
 |---|---|
-| **OUT NOW** | Lien direct vers la dernière release — *Missed Call* (`go.viqmusic.net/missed-call`) |
+| **OUT NOW** | Lien direct vers la dernière release |
 | **LISTEN** | Spotify, Apple Music, Tidal, Deezer, Amazon, YouTube, Pandora, Bandcamp, SoundCloud |
 | **REACH** | TikTok, Threads, Facebook, Instagram + Press Kit + Contact |
 | **WEAR** | Boutique merch (Fourthwall — `merch.viqmusic.net`) |
