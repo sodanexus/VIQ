@@ -1,93 +1,102 @@
-# VIQ — Official Website
+# VIQ — Site officiel
 
-> Site officiel de **VIQ**, artiste de musique électronique et indie basé à Paris. Conçu comme une expérience visuelle minimaliste et immersive.
+> Site officiel de VIQ, artiste de musique électronique et indie basé à Paris. Une expérience visuelle minimaliste et immersive — une seule page, zéro framework, zéro build.
 >
 > 🌐 [viqmusic.net](https://www.viqmusic.net)
 
----
-
-## ✨ Concept
-
-Le site repose sur une seule page (`index.html`) — pas de framework, pas de build. Une vidéo en fond plein écran, une typographie monumentale, et des tiroirs animés qui révèlent les liens à la demande. L'interface s'efface au profit de l'atmosphère.
+![HTML/JS](https://img.shields.io/badge/stack-HTML%20%2F%20JS%20vanilla-black) ![GitHub Pages](https://img.shields.io/badge/hébergement-GitHub%20Pages-black) ![Umami](https://img.shields.io/badge/analytics-Umami-222222) ![Fourthwall](https://img.shields.io/badge/merch-Fourthwall-FF6B35)
 
 ---
 
-## 🏗️ Structure
+## Concept
+
+Une vidéo en fond plein écran, une typographie monumentale, et des tiroirs animés qui révèlent les liens à la demande. L'interface s'efface au profit de l'atmosphère. Tout tient dans un seul fichier `index.html`.
+
+---
+
+## Structure du projet
 
 ```
-/
-├── index.html              ← Page principale (standalone)
-├── 404.html                ← Page d'erreur custom
-├── Background.mp4          ← Vidéo de fond
+VIQ/
+├── index.html              # Toute l'app — HTML + CSS + JS
+├── 404.html                # Page d'erreur custom
+├── Background.mp4          # Vidéo de fond plein écran
+├── cover.jpg               # Visuel principal
+├── og-image.jpg            # Image Open Graph (1260×630)
 ├── favicon.png
-├── cover.jpg               ← Visuel principal
-├── og-image.jpg            ← Image Open Graph (1260×630)
-├── viq-press-kit.zip       ← Press kit téléchargeable
-├── llms.txt                ← Fiche artiste pour LLMs / IA
+├── viq-press-kit.zip       # Press kit téléchargeable
+├── llms.txt                # Fiche artiste pour LLMs (ChatGPT, Perplexity…)
 ├── sitemap.xml
-└── robots.txt
+├── robots.txt
+└── CNAME                   # viqmusic.net
 ```
 
 ---
 
-## 🎨 Design & interactions
-
-- **Fond vidéo** plein écran (`object-fit: cover`), silencieux, en boucle
-- **Typographie** : Playfair Display — majuscules, taille fluide (`clamp`)
-- **Navigation par tiroirs** : chaque section (Listen, Reach, Bio) s'ouvre avec une animation séquentielle entrée/sortie (`translateY`)
-- **Effet de vague SVG** (`feTurbulence` + `feDisplacementMap`) animé au clic sur les boutons actifs
-- **Transitions de page** : fondu noir (sortie vers une release) / fondu blanc (sortie vers le shop)
-- **Entrance fade** : fondu noir au chargement initial
-- **Hover** : décalage horizontal (`translateX`) + opacité réduite sur les autres liens
-
----
-
-## 📋 Sections
+## Sections
 
 | Bouton | Contenu |
 |---|---|
 | **OUT NOW** | Lien direct vers la dernière release |
-| **LISTEN** | Spotify, Apple Music, Tidal, Deezer, Amazon, YouTube, Pandora, Bandcamp, SoundCloud |
-| **REACH** | TikTok, Threads, Facebook, Instagram + Press Kit + Contact |
+| **LISTEN** | Spotify · Apple Music · Tidal · Deezer · Amazon · YouTube · Pandora · Bandcamp · SoundCloud |
+| **REACH** | TikTok · Threads · Facebook · Instagram · Press Kit · Contact |
 | **WEAR** | Boutique merch (Fourthwall — `merch.viqmusic.net`) |
 | **BIO** | Biographie complète en anglais |
 
 ---
 
-## 🛠️ Stack technique
+## Design & interactions
 
-| Élément | Détail |
-|---|---|
-| **Frontend** | HTML / CSS / JS vanilla — zéro dépendance |
-| **Typographie** | Google Fonts (Playfair Display) |
-| **Animations** | CSS `@keyframes` + SVG Filter (`feTurbulence`) |
-| **Vidéo** | `<video>` natif (autoplay, muted, loop) |
-| **SEO** | Meta OG, Twitter Card, Schema.org `MusicGroup`, canonical |
-| **Analytics** | [Umami](https://umami.is/) |
-| **Email** | Obfuscation Cloudflare (`email-decode`) |
-| **Merch** | [Fourthwall](https://fourthwall.com) |
+- **Fond vidéo** plein écran (`object-fit: cover`), silencieux, en boucle — relancé au premier touch sur mobile
+- **Typographie** Playfair Display — majuscules, taille fluide (`clamp`)
+- **Tiroirs animés** — chaque section s'ouvre avec une animation séquentielle (`translateY`) et se ferme proprement
+- **Effet de vague SVG** (`feTurbulence` + `feDisplacementMap`) animé en `requestAnimationFrame` au clic sur les boutons actifs
+- **Hover links** — décalage horizontal (`translateX`) + opacité réduite sur les autres liens dans le tiroir
+- **Transitions de page** — fondu noir vers une release · fondu blanc vers le shop
+- **Entrance fade** — fondu noir au chargement initial
 
 ---
 
-## 🔍 SEO & découvrabilité
+## Stack technique
 
-- Données structurées **Schema.org** (`MusicGroup`) avec genres, liens plateformes et membre
+| Élément | Détail |
+|---|---|
+| Frontend | HTML + CSS + JS vanilla — zéro dépendance |
+| Typographie | Google Fonts — Playfair Display |
+| Animations | CSS `@keyframes` + SVG Filter (`feTurbulence`) + `requestAnimationFrame` |
+| Vidéo | `<video>` natif (autoplay, muted, loop, playsinline) |
+| Analytics | [Umami](https://umami.is/) (privacy-first, sans cookies) |
+| Email | Obfuscation Cloudflare (`email-decode`) |
+| Merch | [Fourthwall](https://fourthwall.com) |
+| Hébergement | GitHub Pages + CNAME `viqmusic.net` |
+
+---
+
+## SEO & découvrabilité
+
+- Données structurées **Schema.org** (`MusicGroup`) avec genres, liens plateformes et membres
 - Balises **Open Graph** et **Twitter Card** complètes
-- Balise `canonical` vers `https://www.viqmusic.net/`
+- Balise `canonical` → `https://www.viqmusic.net/`
 - `robots: index, follow` + `sitemap.xml`
 - **`llms.txt`** — fiche artiste structurée pour les moteurs IA (ChatGPT, Perplexity, etc.)
 
 ---
 
-## 🎵 Artiste
+## Artiste
 
-- **Labels** : Stratford.Ct, Lofi Girl
-- **Genres** : Synthwave · Dreampop · Indie Electronic · Chillwave · Atmospheric
-- **Actif depuis** : 2019
-- **Notable** : Featured sur Lofi Girl, EDM.com, KALTBLUT Magazine, Stereofox, Nightride FM · Collaborations industrie du jeu vidéo · Sorties physiques (vinyle, cassette)
+| | |
+|---|---|
+| **Nom** | VIQ (Julien Pannetier) |
+| **Basé à** | Paris, France |
+| **Actif depuis** | 2019 |
+| **Labels** | Stratford.Ct · Lofi Girl |
+| **Genres** | Synthwave · Dreampop · Indie Electronic · Chillwave · Atmospheric |
+| **Influences** | Lorn · Justice · Daft Punk · Mk.gee |
+| **Plateformes** | Spotify · Apple Music · Tidal · Deezer · Amazon · YouTube · Bandcamp · SoundCloud |
+| **Notable** | Featured sur Lofi Girl, EDM.com, KALTBLUT Magazine, Stereofox, Nightride FM, Roblox · Sorties physiques vinyl & cassette |
 
 ---
 
-## ⚠️ Note
+## Note légale
 
-Le contenu de ce repo (vidéo, visuels, textes, musique) est protégé par le droit d'auteur et reste la propriété exclusive de VIQ. La licence ci-dessous s'applique uniquement au **code source**.
+Le contenu de ce repo (vidéo, visuels, textes, musique) est protégé par le droit d'auteur et reste la propriété exclusive de VIQ. La licence associée s'applique uniquement au **code source**.
