@@ -33,7 +33,7 @@
         body {
             background: #000;
             color: #fff;
-            font-family: 'Playfair Display', serif;
+            font-family: 'Instrument Serif', serif;
             min-height: 100vh;
             overflow: hidden;
             -webkit-font-smoothing: antialiased;
@@ -67,7 +67,6 @@
             z-index: 10;
         }
 
-        /* ── 404 CONTENT ── */
         .content-404 {
             display: flex;
             flex-direction: column;
@@ -100,7 +99,7 @@
             line-height: 1.4;
             opacity: 0;
             letter-spacing: 0.08em;
-            animation: glitch-in 0.6s cubic-bezier(.19,1,.22,1) both;
+            animation: glitch-in-dim 0.6s cubic-bezier(.19,1,.22,1) both;
             animation-delay: 0.6s;
             color: rgba(255,255,255,0.55);
         }
@@ -114,17 +113,14 @@
             line-height: .95;
             margin-top: clamp(8px, 1.5vh, 16px);
             opacity: 0;
-            animation: glitch-in 0.6s cubic-bezier(.19,1,.22,1) both;
+            animation: glitch-in 0.6s cubic-bezier(.19,1,.22,1) forwards;
             animation-delay: 0.75s;
             transition: transform .25s cubic-bezier(.2,0,.2,1), opacity .25s ease;
             width: fit-content;
         }
 
-        .home-link:hover {
-            transform: translateX(15px);
-        }
+        .home-link:hover { transform: translateX(15px); }
 
-        /* once animated in, hold final state */
         .error-number, .error-label, .error-sub, .home-link {
             animation-fill-mode: forwards;
         }
@@ -134,24 +130,16 @@
             to   { opacity: 1; transform: translateY(0); }
         }
 
-        /* error-sub stays at 0.55 opacity after animation */
-        .error-sub {
-            animation-name: glitch-in-dim;
-        }
         @keyframes glitch-in-dim {
             from { opacity: 0; transform: translateY(18px); }
             to   { opacity: 0.55; transform: translateY(0); }
         }
 
-        /* scanline glitch on the 404 number */
-        .error-number {
-            position: relative;
-        }
+        .error-number { position: relative; }
         .error-number::after {
             content: '404';
             position: absolute;
-            left: 3px;
-            top: 0;
+            left: 3px; top: 0;
             color: rgba(255,255,255,0.15);
             clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%);
             animation: scanline 4s infinite;
@@ -166,7 +154,6 @@
             98%            { transform: translateX(0); opacity: 0; }
         }
 
-        /* horizontal line separator */
         .separator {
             width: clamp(40px, 8vw, 80px);
             height: 1px;
@@ -176,7 +163,6 @@
             animation: glitch-in 0.6s cubic-bezier(.19,1,.22,1) forwards;
             animation-delay: 0.55s;
         }
-
     </style>
 </head>
 <body>
@@ -206,7 +192,6 @@
     <div class="overlay"></div>
 
     <div id="ui">
-        <!-- 404 message block -->
         <div class="content-404">
             <div class="error-number">404</div>
             <div class="error-label">Lost Signal</div>
