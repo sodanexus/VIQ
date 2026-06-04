@@ -50,7 +50,7 @@
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Serif+Display:ital@0;1&family=Crimson+Pro:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <script defer src="https://cloud.umami.is/script.js" data-website-id="ffefcaa0-a2fa-43e5-a992-695150c03160"></script>
 
     <style>
@@ -282,12 +282,13 @@
 
         /* ── LINKS / NAV ──────────────────────────── */
         .links {
-            font-family: 'Bebas Neue', sans-serif;
+            font-family: 'Instrument Serif', serif;
             font-size: clamp(0px, min(7.5vw, 9.5vmin), 80px);
-            line-height: 0.92;
+            line-height: 0.97;
             pointer-events: auto;
             display: flex;
             flex-direction: column;
+            text-transform: uppercase;
         }
 
         .links a, .nav-btn {
@@ -356,10 +357,11 @@
 
         /* ── BIO TEXT ─────────────────────────────── */
         .bio-text {
-            font-family: 'Crimson Pro', serif;
-            font-style: italic;
-            font-size: clamp(15px, 2.1vw, 21px) !important;
-            line-height: 1.7 !important;
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+            font-style: normal;
+            font-size: clamp(12px, 1.5vw, 15px) !important;
+            line-height: 1.8 !important;
             white-space: normal !important;
             max-width: 600px;
             text-transform: none !important;
@@ -368,7 +370,7 @@
             pointer-events: auto;
             opacity: 0;
             transform: translateY(18px);
-            color: var(--cream);
+            color: rgba(232, 224, 208, 0.75);
         }
         .bio-text.dl {
             opacity: 1 !important; transform: translateY(0) !important;
@@ -376,6 +378,9 @@
         }
 
         .bio-spacer { pointer-events: none !important; height: 0.6em; flex-shrink: 0; }
+
+        /* Bio drawer overrides links uppercase */
+        #bioDrawer { text-transform: none; }
 
         @keyframes in  { from { opacity:0; transform:translateY(18px) } to { opacity:1; transform:translateY(0) } }
         @keyframes out { from { opacity:1; transform:translateY(0) } to { opacity:0; transform:translateY(18px) } }
