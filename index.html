@@ -285,11 +285,12 @@
             font-family: 'Instrument Serif', serif;
             font-size: clamp(0px, min(7.5vw, 9.5vmin), 80px);
             line-height: 0.97;
-            pointer-events: auto;
+            pointer-events: none;
             display: flex;
             flex-direction: column;
             text-transform: uppercase;
         }
+        .links > a, .links > .nav-btn { pointer-events: auto; }
 
         .links a, .nav-btn {
             display: inline-block;
@@ -304,18 +305,8 @@
             position: relative;
         }
 
-        /* Scratch line on hover */
-        .links a::after, .nav-btn::after {
-            content: '';
-            position: absolute;
-            bottom: 8%;
-            left: 0;
-            width: 0;
-            height: 1px;
-            background: var(--cream);
-            transition: width .3s ease;
-        }
-        .links a:hover::after, .nav-btn:hover::after { width: calc(100% - 25px); }
+        /* Scratch line on hover — disabled */
+        .links a::after, .nav-btn::after { display: none; }
 
         .red { color: var(--red) !important; }
         .red::after { background: var(--red) !important; }
