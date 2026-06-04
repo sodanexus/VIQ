@@ -455,7 +455,7 @@
     <!-- TOP LEFT — now playing indicator -->
     <div class="now-playing-label" id="now-playing-label">
         <div class="dot"></div>
-        <span class="track-name" id="track-name-el">AMBIENT</span>
+        <span class="track-name" id="track-name-el">TRANSMISSION</span>
     </div>
 
     <!-- TOP RIGHT — tape counter aesthetic -->
@@ -482,61 +482,10 @@
         <span id="sound-label">SOUND OFF</span>
     </button>
 
-    <!-- Ambient audio (Web Audio API for seamless loop) -->
-
-    <script>
-// ── SOUND TOGGLE ─────────────────────────────────────────
-var soundBtn = document.getElementById('sound-btn');
-var soundLabel = document.getElementById('sound-label');
-var nowPlayingLabel = document.getElementById('now-playing-label');
-var isPlaying = false;
-
-var audioCtx = null;
-var audioBuffer = null;
-var sourceNode = null;
-var gainNode = null;
-
-function initAudio(callback) {
-    if (audioBuffer) { callback(); return; }
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    gainNode = audioCtx.createGain();
-    gainNode.gain.value = 0.35;
-    gainNode.connect(audioCtx.destination);
-    fetch('web.mp3')
-        .then(function(r) { return r.arrayBuffer(); })
-        .then(function(buf) { return audioCtx.decodeAudioData(buf); })
-        .then(function(decoded) {
-            audioBuffer = decoded;
-            callback();
-        });
-}
-
-function startLoop() {
-    sourceNode = audioCtx.createBufferSource();
-    sourceNode.buffer = audioBuffer;
-    sourceNode.loop = true;
-    sourceNode.connect(gainNode);
-    sourceNode.start(0);
-}
-
-soundBtn.addEventListener('click', function() {
-    if (!isPlaying) {
-        initAudio(function() {
-            startLoop();
-            isPlaying = true;
-            soundBtn.classList.add('playing');
-            soundLabel.textContent = 'SOUND ON';
-            nowPlayingLabel.classList.add('active');
-        });
-    } else {
-        if (sourceNode) { sourceNode.stop(); sourceNode = null; }
-        isPlaying = false;
-        soundBtn.classList.remove('playing');
-        soundLabel.textContent = 'SOUND OFF';
-        nowPlayingLabel.classList.remove('active');
-    }
-});
-    </script>
+    <!-- Ambient audio (muted by default) -->
+    <audio id="ambient-audio" loop preload="none">
+        <source src="web.mp3" type="audio/mpeg">
+    </audio>
 
     <!-- MAIN NAV -->
     <div id="ui">
@@ -607,6 +556,38 @@ setInterval(updateTapeTimer, 1000);
     document.getElementById('current-date-el').textContent =
         String(d.getDate()).padStart(2,'0') + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
 })();
+
+// ── SOUND TOGGLE ─────────────────────────────────────────
+var soundBtn = document.getElementById('sound-btn');
+var soundLabel = document.getElementById('sound-label');
+var audio = document.getElementById('ambient-audio');
+var nowPlayingLabel = document.getElementById('now-playing-label');
+var isPlaying = false;
+
+// Set audio to low volume for ambience
+audio.volume = 0.35;
+
+soundBtn.addEventListener('click', function() {
+    if (!isPlaying) {
+        var playPromise = audio.play();
+        if (playPromise !== undefined) {
+            playPromise.then(function() {
+                isPlaying = true;
+                soundBtn.classList.add('playing');
+                soundLabel.textContent = 'SOUND ON';
+                nowPlayingLabel.classList.add('active');
+            }).catch(function() {
+                // Autoplay blocked - that's fine
+            });
+        }
+    } else {
+        audio.pause();
+        isPlaying = false;
+        soundBtn.classList.remove('playing');
+        soundLabel.textContent = 'SOUND OFF';
+        nowPlayingLabel.classList.remove('active');
+    }
+});
 
 // ── DRAWER SYSTEM (unchanged logic from original) ────────
 var STEP = 35, IN = 300, OUT = 250;
