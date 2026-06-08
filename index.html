@@ -56,8 +56,6 @@
     <style>
         :root {
             --cream: #e8e0d0;
-            --warm: #c9b99a;
-            --rust: #8b3a1e;
             --red: #b31300;
             --dark: #0a0806;
             --mid: #1a150f;
@@ -303,10 +301,6 @@
             transition: transform .3s cubic-bezier(.2,0,.2,1), opacity .3s ease, color .3s ease;
             padding-right: 25px;
             position: relative;
-        }
-
-        .drawer > a {
-            padding-right: 0 !important;
         }
 
         /* Scratch line on hover — disabled */
@@ -801,6 +795,11 @@ window.addEventListener('pageshow', function(event) {
 });
 
 document.addEventListener('touchstart', function() { document.getElementById('bg-video').play(); }, { once: true });
+
+// Auto-open LISTEN on mobile
+if (window.innerWidth <= 480) {
+    setTimeout(function() { toggle('links'); }, 1400);
+}
 </script>
 </body>
 </html>
