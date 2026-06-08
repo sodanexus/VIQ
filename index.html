@@ -305,6 +305,10 @@
             position: relative;
         }
 
+        .drawer > a {
+            padding-right: 0 !important;
+        }
+
         /* Scratch line on hover — disabled */
         .links a::after, .nav-btn::after { display: none; }
 
@@ -316,8 +320,9 @@
         @media (hover: hover) {
             .top:hover > a, .top:hover > .nav-btn { opacity: .25; }
             .top > a:hover, .top > .nav-btn:hover { opacity: 1 !important; transform: translateX(12px) !important; }
-            .drawer:not(#bioDrawer):hover > .dl { opacity: .25; }
+            .drawer:not(#bioDrawer) > .dl:hover ~ .dl { opacity: .25; }
             .drawer:not(#bioDrawer) > .dl:hover { opacity: 1 !important; transform: translateX(12px) !important; }
+            .drawer:not(#bioDrawer):has(.dl:hover) > .dl:not(:hover) { opacity: .25; }
         }
 
         #ui.dim .top > a, #ui.dim .top > .nav-btn { opacity: .25; }
@@ -335,6 +340,8 @@
             max-height: 100%;
             overflow-y: auto;
             padding-bottom: 0.6em;
+            padding-right: 20px;
+            width: fit-content !important;
             scrollbar-width: none;
             -ms-overflow-style: none;
         }
