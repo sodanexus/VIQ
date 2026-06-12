@@ -374,6 +374,40 @@
         /* Bio drawer overrides links uppercase */
         #bioDrawer { text-transform: none; }
 
+        /* ── REACH RIGHT PANEL ────────────────────── */
+        #reach-right {
+            position: fixed;
+            bottom: clamp(80px, 12vh, 110px);
+            right: clamp(20px, 4vw, 40px);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        #reach-right.active, #reach-right.closing { visibility: visible; pointer-events: auto; }
+        #reach-right > a {
+            font-family: 'Instrument Serif', serif;
+            font-size: clamp(0px, min(7.5vw, 9.5vmin), 68px);
+            line-height: 0.97;
+            color: var(--cream);
+            text-decoration: none;
+            text-transform: uppercase;
+            white-space: nowrap;
+            cursor: crosshair;
+            opacity: 0;
+            transform: translateY(18px);
+            transition: transform .25s cubic-bezier(.2,0,.2,1), opacity .25s ease, color .3s ease;
+        }
+        #reach-right > a.dl {
+            opacity: 1; transform: translateY(0);
+        }
+        @media (hover: hover) {
+            #reach-right > a:hover { opacity: 1 !important; transform: translateX(-12px) !important; }
+        }
+
         @keyframes in  { from { opacity:0; transform:translateY(18px) } to { opacity:1; transform:translateY(0) } }
         @keyframes out { from { opacity:1; transform:translateY(0) } to { opacity:0; transform:translateY(18px) } }
 
@@ -507,7 +541,10 @@
                 <a href="https://www.threads.com/@viqmusic" target="_blank" rel="noopener noreferrer">THREADS</a>
                 <a href="https://www.facebook.com/Viqmusic" target="_blank" rel="noopener noreferrer">FACEBOOK</a>
                 <a href="https://www.instagram.com/viqmusic/" target="_blank" rel="noopener noreferrer">INSTAGRAM</a>
-                <a class="bio-spacer"> </a>
+            </div>
+
+            <!-- REACH right panel (press kit / inquiries) -->
+            <div id="reach-right">
                 <a href="/viq-press-kit.zip" download>PRESS KIT</a>
                 <a href="mailto:contact@viqmusic.net">ALL INQUIRIES</a>
             </div>
@@ -693,6 +730,20 @@ function openDrawer(drawer, btn) {
         }, i * STEP);
         timers[id].push(t1);
     });
+    // Open reach-right panel if followDrawer
+    if (id === 'followDrawer') {
+        var rr = document.getElementById('reach-right');
+        var rrLinks = Array.from(rr.querySelectorAll('a'));
+        rrLinks.forEach(function(a) { reset(a); a.classList.remove('dl'); void a.offsetWidth; });
+        rr.classList.add('active');
+        rr.classList.remove('closing');
+        rrLinks.forEach(function(a, i) {
+            setTimeout(function() {
+                anim(a, 'in', IN);
+                setTimeout(function() { reset(a); a.classList.add('dl'); }, IN + 20);
+            }, (links.length + i) * STEP);
+        });
+    }
 }
 
 function closeDrawer(drawer, btn) {
@@ -723,6 +774,29 @@ function closeDrawer(drawer, btn) {
         drawer.scrollTop = 0;
     }, (n - 1) * STEP + OUT + 60);
     timers[id].push(tClean);
+    // Close reach-right panel if followDrawer
+    if (id === 'followDrawer') {
+        var rr = document.getElementById('reach-right');
+        var rrLinks = Array.from(rr.querySelectorAll('a'));
+        var m = rrLinks.length;
+        rrLinks.forEach(function(a) {
+            var cs = getComputedStyle(a);
+            a.style.animation = 'none';
+            a.style.opacity   = cs.opacity;
+            a.style.transform = cs.transform;
+            a.classList.remove('dl');
+            void a.offsetWidth;
+        });
+        rr.classList.remove('active');
+        rr.classList.add('closing');
+        rrLinks.forEach(function(a, i) {
+            setTimeout(function() { anim(a, 'out', OUT); }, (m - 1 - i) * STEP);
+        });
+        setTimeout(function() {
+            rr.classList.remove('closing');
+            rrLinks.forEach(function(a) { reset(a); });
+        }, (m - 1) * STEP + OUT + 60);
+    }
 }
 
 function closeAll(exceptId) {
