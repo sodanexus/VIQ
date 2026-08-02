@@ -86,6 +86,18 @@
             z-index: -3;
         }
 
+        /* ── BIO DIM OVERLAY ──────────────────────── */
+        .bio-dim {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            pointer-events: none;
+            background: #000;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+        .bio-dim.active { opacity: 0.55; }
+
         /* ── ENTRANCE FADE ────────────────────────── */
         .entrance-fade {
             position: fixed;
@@ -421,6 +433,7 @@
     <video autoplay muted loop playsinline id="bg-video">
         <source src="Background.mp4" type="video/mp4">
     </video>
+    <div class="bio-dim" id="bio-dim"></div>
 
     <!-- TOP LEFT — now playing indicator -->
     <div class="now-playing-label" id="now-playing-label">
@@ -683,6 +696,10 @@ function closeAll(exceptId) {
         if (o.d.id !== exceptId && (o.d.classList.contains('active') || o.d.classList.contains('closing'))) {
             killWave(o.b);
             closeDrawer(o.d, null);
+            if (o.d.id === 'bioDrawer') {
+                var bioDim = document.getElementById('bio-dim');
+                if (bioDim) bioDim.classList.remove('active');
+            }
         }
     });
 }
@@ -697,11 +714,15 @@ function toggle(section, e) {
     var drawer = document.getElementById(map[section].d);
     var btn    = document.getElementById(map[section].b);
     var isOpen = drawer.classList.contains('active');
+    var bioDim = document.getElementById('bio-dim');
     closeAll(isOpen ? null : map[section].d);
     if (isOpen) {
         closeDrawer(drawer, btn);
+        if (section === 'bio') bioDim.classList.remove('active');
     } else {
         openDrawer(drawer, btn);
+        if (section === 'bio') bioDim.classList.add('active');
+        else bioDim.classList.remove('active');
     }
 }
 
