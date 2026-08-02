@@ -113,28 +113,6 @@
             transition: opacity 0.4s ease;
         }
 
-        /* ── TAPE COUNTER / TOP-RIGHT ─────────────── */
-        .tape-counter {
-            position: fixed;
-            top: clamp(18px, 3vh, 32px);
-            right: clamp(20px, 4vw, 40px);
-            z-index: 20;
-            font-family: 'Space Mono', monospace;
-            font-size: 10px;
-            letter-spacing: 0.12em;
-            color: rgba(232, 224, 208, 0.35);
-            text-transform: uppercase;
-            line-height: 1.6;
-            text-align: right;
-            pointer-events: none;
-        }
-        .tape-counter .tc-blinking {
-            color: var(--red);
-            opacity: 1;
-            animation: blink 1.4s step-end infinite;
-        }
-        @keyframes blink { 50% { opacity: 0; } }
-
         /* ── SOUND BUTTON ─────────────────────────── */
         #sound-btn {
             position: fixed;
@@ -406,13 +384,6 @@
         <span class="track-name" id="track-name-el">TRANSMISSION</span>
     </div>
 
-    <!-- TOP RIGHT — tape counter aesthetic -->
-    <div class="tape-counter">
-        <div class="tc-blinking">● REC</div>
-        <div id="tape-time">00:00:00</div>
-        <div style="margin-top:4px; opacity:0.5;">VIQ.TAPE.01</div>
-    </div>
-
     <!-- BOTTOM LEFT — geo stamp -->
     <div class="geo-stamp">
         <div>48.8584°N, 2.2945°E — PARIS, FR</div>
@@ -484,20 +455,6 @@
     </div>
 
 <script>
-// ── TAPE TIMER ──────────────────────────────────────────
-var startTime = Date.now();
-function updateTapeTimer() {
-    var elapsed = Date.now() - startTime;
-    var h = Math.floor(elapsed / 3600000);
-    var m = Math.floor((elapsed % 3600000) / 60000);
-    var s = Math.floor((elapsed % 60000) / 1000);
-    document.getElementById('tape-time').textContent =
-        String(h).padStart(2,'0') + ':' +
-        String(m).padStart(2,'0') + ':' +
-        String(s).padStart(2,'0');
-}
-setInterval(updateTapeTimer, 1000);
-
 // ── DATE STAMP ──────────────────────────────────────────
 (function() {
     var d = new Date();
