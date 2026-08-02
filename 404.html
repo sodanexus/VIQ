@@ -30,7 +30,10 @@
             min-height: 100vh;
             overflow: hidden;
             -webkit-font-smoothing: antialiased;
-            cursor: crosshair;
+            cursor: none;
+        }
+        @media (hover: none), (pointer: coarse) {
+            body { cursor: auto; }
         }
 
         /* ── VIDEO BG ─────────────────────────────── */
@@ -41,55 +44,6 @@
             object-fit: cover;
             object-position: 35% 45%;
             z-index: -3;
-        }
-
-        /* ── FILM GRAIN ───────────────────────────── */
-        .grain {
-            position: fixed;
-            inset: 0;
-            z-index: -2;
-            pointer-events: none;
-            opacity: 0.18;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-            background-size: 180px 180px;
-            animation: grain-drift 0.12s steps(1) infinite;
-        }
-        @keyframes grain-drift {
-            0%   { background-position: 0 0; }
-            10%  { background-position: -10px 5px; }
-            20%  { background-position: 15px -8px; }
-            30%  { background-position: -7px 12px; }
-            40%  { background-position: 20px -3px; }
-            50%  { background-position: -15px 8px; }
-            60%  { background-position: 5px -14px; }
-            70%  { background-position: -20px 2px; }
-            80%  { background-position: 10px 10px; }
-            90%  { background-position: -5px -5px; }
-            100% { background-position: 0 0; }
-        }
-
-        /* ── VIGNETTE ─────────────────────────────── */
-        .vignette {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            pointer-events: none;
-            background: radial-gradient(ellipse at center, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.7) 100%);
-        }
-
-        /* ── SCAN LINES ───────────────────────────── */
-        .scanlines {
-            position: fixed;
-            inset: 0;
-            z-index: 1;
-            pointer-events: none;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 2px,
-                rgba(0,0,0,0.08) 2px,
-                rgba(0,0,0,0.08) 4px
-            );
         }
 
         /* ── ENTRANCE FADE ────────────────────────── */
@@ -106,27 +60,6 @@
             30%  { opacity: 1; }
             100% { opacity: 0; visibility: hidden; }
         }
-
-        /* ── TAPE COUNTER ─────────────────────────── */
-        .tape-counter {
-            position: fixed;
-            top: clamp(18px, 3vh, 32px);
-            right: clamp(20px, 4vw, 40px);
-            z-index: 20;
-            font-family: 'Space Mono', monospace;
-            font-size: 10px;
-            letter-spacing: 0.12em;
-            color: rgba(232, 224, 208, 0.35);
-            text-transform: uppercase;
-            line-height: 1.6;
-            text-align: right;
-            pointer-events: none;
-        }
-        .tape-counter .tc-blinking {
-            color: var(--red);
-            animation: blink 1.4s step-end infinite;
-        }
-        @keyframes blink { 50% { opacity: 0; } }
 
         /* ── GEO STAMP ────────────────────────────── */
         .geo-stamp {
@@ -175,24 +108,6 @@
             animation: slide-in 0.6s cubic-bezier(.19,1,.22,1) forwards;
             animation-delay: 0.3s;
             position: relative;
-        }
-
-        /* glitch ghost */
-        .error-number::after {
-            content: '404';
-            position: absolute;
-            left: 3px; top: 0;
-            color: rgba(232,224,208,0.12);
-            clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%);
-            animation: scanline-glitch 5s infinite;
-            animation-delay: 1.5s;
-        }
-        @keyframes scanline-glitch {
-            0%, 88%, 100% { transform: translateX(0); opacity: 0; }
-            90%            { transform: translateX(-4px); opacity: 1; }
-            93%            { transform: translateX(4px); opacity: 1; }
-            96%            { transform: translateX(-2px); opacity: 0.7; }
-            98%            { transform: translateX(0); opacity: 0; }
         }
 
         .error-label {
@@ -245,7 +160,7 @@
             transition: transform .3s cubic-bezier(.2,0,.2,1), color .3s ease;
             position: relative;
             padding-right: 25px;
-            cursor: crosshair;
+            cursor: none;
             margin-bottom: clamp(20px, 4vh, 40px);
         }
         .home-link::after { display: none; }
@@ -259,14 +174,54 @@
             from { opacity: 0; transform: translateY(18px); }
             to   { opacity: 0.85; transform: translateY(0); }
         }
+
+        /* ── CUSTOM CURSOR ─────────────────────────── */
+        #cursor-dot, #cursor-ring {
+            position: fixed;
+            top: 0; left: 0;
+            pointer-events: none;
+            z-index: 99998;
+            will-change: transform;
+        }
+        #cursor-dot {
+            width: 5px; height: 5px;
+            margin: -2.5px 0 0 -2.5px;
+            border-radius: 50%;
+            background: var(--cream);
+            transform: translate(var(--dx, -100px), var(--dy, -100px));
+            transition: background 0.25s ease;
+        }
+        #cursor-ring {
+            width: 32px; height: 32px;
+            margin: -16px 0 0 -16px;
+            transform: translate(var(--rx, -100px), var(--ry, -100px));
+        }
+        #cursor-ring .ring-inner {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            border: 1px solid rgba(232, 224, 208, 0.45);
+            transition: border-color 0.3s ease, transform 0.2s cubic-bezier(.2,0,.2,1);
+        }
+        #cursor-dot.hovering { background: var(--red); }
+        #cursor-ring.hovering .ring-inner {
+            border-color: var(--red);
+            transform: scale(0.55);
+        }
+        #cursor-ring.clicking .ring-inner {
+            transform: scale(0.8);
+        }
+        @media (hover: none), (pointer: coarse) {
+            #cursor-dot, #cursor-ring { display: none; }
+        }
     </style>
 </head>
 <body>
 
     <div class="entrance-fade"></div>
-    <div class="grain"></div>
-    <div class="vignette"></div>
-    <div class="scanlines"></div>
+
+    <!-- Custom cursor -->
+    <div id="cursor-ring" aria-hidden="true"><div class="ring-inner"></div></div>
+    <div id="cursor-dot" aria-hidden="true"></div>
 
     <svg width="0" height="0" style="position:absolute">
         <defs>
@@ -285,12 +240,6 @@
     <video autoplay muted loop playsinline id="bg-video">
         <source src="Background.mp4" type="video/mp4">
     </video>
-
-    <!-- tape counter top-right -->
-    <div class="tape-counter">
-        VIQ — REC<br>
-        <span class="tc-blinking">● ERROR</span>
-    </div>
 
     <!-- geo stamp bottom-left -->
     <div class="geo-stamp">
@@ -312,6 +261,63 @@
 document.addEventListener('touchstart', function() {
     document.getElementById('bg-video').play();
 }, { once: true });
+
+// ── CUSTOM CURSOR ─────────────────────────────────────────
+(function() {
+    var dotEl  = document.getElementById('cursor-dot');
+    var ringEl = document.getElementById('cursor-ring');
+    if (!dotEl || !ringEl || matchMedia('(hover: none), (pointer: coarse)').matches) return;
+
+    var mx = -100, my = -100;
+    var rx = -100, ry = -100;
+    var raf = null;
+
+    function loop() {
+        // The dot tracks the pointer almost instantly.
+        dotEl.style.setProperty('--dx', mx.toFixed(1) + 'px');
+        dotEl.style.setProperty('--dy', my.toFixed(1) + 'px');
+        // The ring eases behind it for a soft trailing feel.
+        rx += (mx - rx) * 0.30;
+        ry += (my - ry) * 0.30;
+        ringEl.style.setProperty('--rx', rx.toFixed(1) + 'px');
+        ringEl.style.setProperty('--ry', ry.toFixed(1) + 'px');
+        raf = requestAnimationFrame(loop);
+    }
+    raf = requestAnimationFrame(loop);
+
+    window.addEventListener('mousemove', function(e) {
+        mx = e.clientX;
+        my = e.clientY;
+        dotEl.style.opacity = '1';
+        ringEl.style.opacity = '1';
+    });
+
+    document.addEventListener('mouseleave', function() {
+        dotEl.style.opacity = '0';
+        ringEl.style.opacity = '0';
+    });
+    document.addEventListener('mouseenter', function() {
+        dotEl.style.opacity = '1';
+        ringEl.style.opacity = '1';
+    });
+
+    window.addEventListener('mousedown', function() { ringEl.classList.add('clicking'); });
+    window.addEventListener('mouseup',   function() { ringEl.classList.remove('clicking'); });
+
+    var HOVER_SELECTOR = 'a, button, .nav-btn, [role="button"]';
+    document.addEventListener('mouseover', function(e) {
+        if (e.target.closest(HOVER_SELECTOR)) {
+            dotEl.classList.add('hovering');
+            ringEl.classList.add('hovering');
+        }
+    });
+    document.addEventListener('mouseout', function(e) {
+        if (e.target.closest(HOVER_SELECTOR) && !(e.relatedTarget && e.relatedTarget.closest(HOVER_SELECTOR))) {
+            dotEl.classList.remove('hovering');
+            ringEl.classList.remove('hovering');
+        }
+    });
+})();
 </script>
 </body>
 </html>
