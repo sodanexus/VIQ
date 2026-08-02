@@ -88,55 +88,6 @@
             transform: scale(1.45);
         }
 
-        /* ── FILM GRAIN OVERLAY ───────────────────── */
-        .grain {
-            position: fixed;
-            inset: 0;
-            z-index: -2;
-            pointer-events: none;
-            opacity: 0.18;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-            background-size: 180px 180px;
-            animation: grain-drift 0.12s steps(1) infinite;
-        }
-        @keyframes grain-drift {
-            0%   { background-position: 0 0; }
-            10%  { background-position: -10px 5px; }
-            20%  { background-position: 15px -8px; }
-            30%  { background-position: -7px 12px; }
-            40%  { background-position: 20px -3px; }
-            50%  { background-position: -15px 8px; }
-            60%  { background-position: 5px -14px; }
-            70%  { background-position: -20px 2px; }
-            80%  { background-position: 10px 10px; }
-            90%  { background-position: -5px -5px; }
-            100% { background-position: 0 0; }
-        }
-
-        /* ── VIGNETTE ─────────────────────────────── */
-        .vignette {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            pointer-events: none;
-            background: radial-gradient(ellipse at center, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.7) 100%);
-        }
-
-        /* ── SCAN LINES ───────────────────────────── */
-        .scanlines {
-            position: fixed;
-            inset: 0;
-            z-index: 1;
-            pointer-events: none;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 2px,
-                rgba(0,0,0,0.08) 2px,
-                rgba(0,0,0,0.08) 4px
-            );
-        }
-
         /* ── ENTRANCE FADE ────────────────────────── */
         .entrance-fade {
             position: fixed;
@@ -425,8 +376,6 @@
     <div class="entrance-fade"></div>
     <div class="exit-fade" id="exit-fade"></div>
     <div class="exit-fade" id="exit-fade-black" style="background:#000;"></div>
-
-    <!-- Film atmosphere layers -->
 
     <!-- SVG wave filter (kept from original) -->
     <svg width="0" height="0" style="position:absolute">
