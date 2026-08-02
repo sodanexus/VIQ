@@ -132,27 +132,22 @@
             width: 42px;
             height: 42px;
             background: none;
-            border: 1px solid rgba(232, 224, 208, 0.16);
-            border-radius: 50%;
-            color: var(--cream);
+            border: none;
+            color: rgba(232, 224, 208, 0.55);
             cursor: none;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: border-color 0.3s ease, color 0.3s ease, background 0.3s ease;
+            transition: color 0.3s ease;
         }
-        #sound-btn:hover { border-color: rgba(232, 224, 208, 0.4); }
-        #sound-btn.playing {
-            border-color: rgba(179, 19, 0, 0.55);
-            color: var(--red);
-            background: rgba(179, 19, 0, 0.08);
-        }
+        #sound-btn:hover { color: var(--cream); }
+        #sound-btn.playing { color: var(--red); }
         .sound-icon {
-            width: 14px;
-            height: 10px;
+            width: 16px;
+            height: 12px;
             display: flex;
             align-items: flex-end;
-            gap: 2px;
+            gap: 2.5px;
         }
         .sound-bar {
             width: 2px;
@@ -160,17 +155,18 @@
             transition: height 0.2s ease;
         }
         .sound-bar:nth-child(1) { height: 4px; }
-        .sound-bar:nth-child(2) { height: 8px; }
+        .sound-bar:nth-child(2) { height: 9px; }
         .sound-bar:nth-child(3) { height: 6px; }
-        .sound-bar:nth-child(4) { height: 10px; }
+        .sound-bar:nth-child(4) { height: 12px; }
         #sound-btn.playing .sound-bar:nth-child(1) { animation: eq1 0.8s ease-in-out infinite alternate; }
         #sound-btn.playing .sound-bar:nth-child(2) { animation: eq2 0.6s ease-in-out infinite alternate; }
         #sound-btn.playing .sound-bar:nth-child(3) { animation: eq3 0.9s ease-in-out infinite alternate; }
         #sound-btn.playing .sound-bar:nth-child(4) { animation: eq4 0.7s ease-in-out infinite alternate; }
-        @keyframes eq1 { from { height: 2px; } to { height: 8px; } }
-        @keyframes eq2 { from { height: 4px; } to { height: 10px; } }
-        @keyframes eq3 { from { height: 3px; } to { height: 7px; } }
-        @keyframes eq4 { from { height: 6px; } to { height: 10px; } }
+        @keyframes eq1 { from { height: 2px; } to { height: 9px; } }
+        @keyframes eq2 { from { height: 4px; } to { height: 12px; } }
+        @keyframes eq3 { from { height: 3px; } to { height: 8px; } }
+        @keyframes eq4 { from { height: 6px; } to { height: 12px; } }
+
 
         /* ── BOTTOM-LEFT COORDS ───────────────────── */
         .geo-stamp {
@@ -318,49 +314,6 @@
         @keyframes in  { from { opacity:0; transform:translateY(18px) } to { opacity:1; transform:translateY(0) } }
         @keyframes out { from { opacity:1; transform:translateY(0) } to { opacity:0; transform:translateY(18px) } }
 
-        /* ── TRACK LABEL (top-right area) ─────────── */
-        .now-playing-label {
-            position: fixed;
-            top: clamp(18px, 3vh, 32px);
-            left: clamp(20px, 4vw, 40px);
-            z-index: 20;
-            font-family: 'Space Mono', monospace;
-            font-size: 9px;
-            letter-spacing: 0.22em;
-            color: rgba(232, 224, 208, 0.35);
-            text-transform: uppercase;
-            pointer-events: none;
-            display: flex;
-            align-items: center;
-            gap: 9px;
-        }
-        .now-playing-label .dot {
-            width: 4px; height: 4px;
-            border-radius: 50%;
-            background: var(--red);
-            opacity: 0;
-            box-shadow: 0 0 0 rgba(179, 19, 0, 0);
-            transition: opacity 0.4s ease, box-shadow 0.4s ease;
-        }
-        .now-playing-label.active .dot {
-            opacity: 1;
-            box-shadow: 0 0 6px 1px rgba(179, 19, 0, 0.55);
-            animation: pulse-dot 1.8s ease-in-out infinite;
-        }
-        @keyframes pulse-dot {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.5); opacity: 0.55; }
-        }
-        .now-playing-label .track-name {
-            opacity: 0;
-            transform: translateX(-4px);
-            transition: opacity 0.5s ease 0.05s, transform 0.5s cubic-bezier(.2,0,.2,1) 0.05s;
-            max-width: 200px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        .now-playing-label.active .track-name { opacity: 1; transform: translateX(0); }
 
         /* ── CUSTOM CURSOR ─────────────────────────── */
         #cursor-dot, #cursor-ring {
@@ -439,12 +392,6 @@
         <source src="Background.mp4" type="video/mp4">
     </video>
     <div class="bio-dim" id="bio-dim"></div>
-
-    <!-- TOP LEFT — now playing indicator -->
-    <div class="now-playing-label" id="now-playing-label">
-        <div class="dot"></div>
-        <span class="track-name" id="track-name-el">TRANSMISSION</span>
-    </div>
 
     <!-- BOTTOM LEFT — geo stamp -->
     <div class="geo-stamp">
@@ -529,7 +476,6 @@
 var soundBtn = document.getElementById('sound-btn');
 var soundLabel = document.getElementById('sound-label');
 var audio = document.getElementById('ambient-audio');
-var nowPlayingLabel = document.getElementById('now-playing-label');
 var isPlaying = false;
 
 // Set audio to low volume for ambience
@@ -543,7 +489,6 @@ soundBtn.addEventListener('click', function() {
                 isPlaying = true;
                 soundBtn.classList.add('playing');
                 soundLabel.textContent = 'SOUND ON';
-                nowPlayingLabel.classList.add('active');
             }).catch(function() {
                 // Autoplay blocked - that's fine
             });
@@ -553,7 +498,6 @@ soundBtn.addEventListener('click', function() {
         isPlaying = false;
         soundBtn.classList.remove('playing');
         soundLabel.textContent = 'SOUND OFF';
-        nowPlayingLabel.classList.remove('active');
     }
 });
 
