@@ -1,14 +1,14 @@
-# VIQ — Site officiel
+# VIQ — Official Website
 
-> Site officiel de VIQ, artiste de musique électronique et indie basé à Paris. Une expérience visuelle minimaliste et immersive — une seule page, zéro framework, zéro build.
+> Official website of VIQ, an electronic and indie music artist based in Paris. A minimal, immersive visual experience — single page, zero framework, zero build.
 >
 > 🌐 [viqmusic.net](https://www.viqmusic.net)
 
-![HTML/JS](https://img.shields.io/badge/stack-HTML%20%2F%20JS%20vanilla-black) ![GitHub Pages](https://img.shields.io/badge/hébergement-GitHub%20Pages-black) ![Umami](https://img.shields.io/badge/analytics-Umami-222222) ![Fourthwall](https://img.shields.io/badge/merch-Fourthwall-FF6B35)
+![HTML/JS](https://img.shields.io/badge/stack-HTML%20%2F%20JS%20vanilla-black) ![GitHub Pages](https://img.shields.io/badge/hosting-GitHub%20Pages-black) ![Umami](https://img.shields.io/badge/analytics-Umami-222222) ![Fourthwall](https://img.shields.io/badge/merch-Fourthwall-FF6B35)
 
 ---
 
-## 🎧 Écouter
+## 🎧 Listen
 
 [![Spotify](https://img.shields.io/badge/Spotify-1ED760?logo=spotify&logoColor=white)](https://open.spotify.com/artist/6XpN8mRlhuOXuvEyva4yjZ)
 [![Apple Music](https://img.shields.io/badge/Apple%20Music-FA243C?logo=applemusic&logoColor=white)](https://music.apple.com/us/artist/viq/1467177415)
@@ -21,9 +21,9 @@
 [![Bandcamp](https://img.shields.io/badge/Bandcamp-408294?logo=bandcamp&logoColor=white)](https://viqmusic.bandcamp.com/music)
 [![SoundCloud](https://img.shields.io/badge/SoundCloud-FF5500?logo=soundcloud&logoColor=white)](https://soundcloud.com/viqmusic)
 
-**Dernière sortie →** [go.viqmusic.net/stn](https://go.viqmusic.net/stn)
+**Latest release →** [go.viqmusic.net/stn](https://go.viqmusic.net/stn)
 
-## 📡 Suivre
+## 📡 Follow
 
 [![Instagram](https://img.shields.io/badge/Instagram-E4405F?logo=instagram&logoColor=white)](https://www.instagram.com/viqmusic/)
 [![TikTok](https://img.shields.io/badge/TikTok-000000?logo=tiktok&logoColor=white)](https://www.tiktok.com/@viqmusic)
@@ -36,21 +36,21 @@
 
 ## Concept
 
-Une image en fond plein écran, une typographie monumentale, et des tiroirs animés qui révèlent les liens à la demande. L'interface s'efface au profit de l'atmosphère. Tout tient dans un seul fichier `index.html`.
+A full-screen background image, monumental typography, and animated drawers that reveal links on demand. The interface fades away in favor of the atmosphere. Everything lives in a single `index.html` file.
 
 ---
 
-## Structure du projet
+## Project structure
 
 ```
 VIQ/
-├── index.html              # Toute l'app — HTML + CSS + JS
-├── 404.html                # Page d'erreur custom
-├── fond.jpg                # Visuel de fond plein écran
-├── og-image.jpg            # Image Open Graph (1260×630)
+├── index.html              # The whole app — HTML + CSS + JS
+├── 404.html                # Custom error page
+├── fond.jpg                # Full-screen background visual
+├── og-image.jpg            # Open Graph image (1260×630)
 ├── favicon.png
-├── viq-press-kit.zip       # Press kit téléchargeable
-├── llms.txt                # Fiche artiste pour LLMs (ChatGPT, Perplexity…)
+├── viq-press-kit.zip       # Downloadable press kit
+├── llms.txt                # Artist fact sheet for LLMs (ChatGPT, Perplexity…)
 ├── sitemap.xml
 ├── robots.txt
 └── CNAME                   # viqmusic.net
@@ -60,68 +60,68 @@ VIQ/
 
 ## Sections
 
-| Bouton | Contenu |
+| Button | Content |
 |---|---|
-| **OUT NOW** | Lien direct vers la dernière release |
+| **OUT NOW** | Direct link to the latest release |
 | **LISTEN** | Spotify · Apple Music · Tidal · Deezer · Qobuz · Amazon · YouTube · Pandora · Bandcamp · SoundCloud |
 | **REACH** | TikTok · Threads · Facebook · Instagram · Press Kit · Contact |
-| **WEAR** | Boutique merch (Fourthwall — `merch.viqmusic.net`) |
-| **BIO** | Biographie complète en anglais |
+| **WEAR** | Merch store (Fourthwall — `merch.viqmusic.net`) |
+| **BIO** | Full biography (English) |
 
 ---
 
 ## Design & interactions
 
-- **Fond image** plein écran (`object-fit: cover`)
-- **Overlay d'assombrissement** au survol/ouverture des tiroirs Listen, Reach et Bio, pour la lisibilité
-- **Typographie** Playfair Display — majuscules, taille fluide (`clamp`)
-- **Tiroirs animés** — chaque section s'ouvre avec une animation séquentielle (`translateY`) et se ferme proprement
-- **Effet de vague SVG** (`feTurbulence` + `feDisplacementMap`) animé en `requestAnimationFrame` au clic sur les boutons actifs
-- **Hover links** — décalage horizontal (`translateX`) + opacité réduite sur les autres liens dans le tiroir
-- **Transitions de page** — fondu noir vers une release · fondu blanc vers le shop
-- **Entrance fade** — fondu noir au chargement initial
+- **Full-screen background image** (`object-fit: cover`)
+- **Dim overlay** on hover/open of the Listen, Reach and Bio drawers, for readability
+- **Typography** Playfair Display — uppercase, fluid sizing (`clamp`)
+- **Animated drawers** — each section opens with a sequential animation (`translateY`) and closes cleanly
+- **SVG wave effect** (`feTurbulence` + `feDisplacementMap`) animated with `requestAnimationFrame` on active button clicks
+- **Hover links** — horizontal shift (`translateX`) + reduced opacity on the other links in the drawer
+- **Page transitions** — black fade to a release · white fade to the shop
+- **Entrance fade** — black fade on initial load
 
 ---
 
-## Stack technique
+## Tech stack
 
-| Élément | Détail |
+| Item | Detail |
 |---|---|
-| Frontend | HTML + CSS + JS vanilla — zéro dépendance |
-| Typographie | Google Fonts — Playfair Display |
+| Frontend | HTML + CSS + JS vanilla — zero dependencies |
+| Typography | Google Fonts — Playfair Display |
 | Animations | CSS `@keyframes` + SVG Filter (`feTurbulence`) + `requestAnimationFrame` |
-| Analytics | [Umami](https://umami.is/) (privacy-first, sans cookies) |
-| Email | Obfuscation Cloudflare (`email-decode`) |
+| Analytics | [Umami](https://umami.is/) (privacy-first, cookieless) |
+| Email | Cloudflare obfuscation (`email-decode`) |
 | Merch | [Fourthwall](https://fourthwall.com) |
-| Hébergement | GitHub Pages + CNAME `viqmusic.net` |
+| Hosting | GitHub Pages + CNAME `viqmusic.net` |
 
 ---
 
-## SEO & découvrabilité
+## SEO & discoverability
 
-- Données structurées **Schema.org** (`MusicGroup`) avec genres, liens plateformes et membres
-- Balises **Open Graph** et **Twitter Card** complètes
-- Balise `canonical` → `https://www.viqmusic.net/`
+- **Schema.org** structured data (`MusicGroup`) with genres, platform links and members
+- Full **Open Graph** and **Twitter Card** tags
+- `canonical` tag → `https://www.viqmusic.net/`
 - `robots: index, follow` + `sitemap.xml`
-- **`llms.txt`** — fiche artiste structurée pour les moteurs IA (ChatGPT, Perplexity, etc.)
+- **`llms.txt`** — structured artist fact sheet for AI engines (ChatGPT, Perplexity, etc.)
 
 ---
 
-## Artiste
+## Artist
 
 | | |
 |---|---|
-| **Nom** | VIQ (Julien Pannetier) |
-| **Basé à** | Paris, France |
-| **Actif depuis** | 2019 |
+| **Name** | VIQ (Julien Pannetier) |
+| **Based in** | Paris, France |
+| **Active since** | 2019 |
 | **Labels** | Stratford.Ct · Lofi Girl |
 | **Genres** | Synthwave · Dreampop · Indie Electronic · Chillwave · Atmospheric |
 | **Influences** | Lorn · Justice · Daft Punk · Mk.gee |
-| **Plateformes** | Spotify · Apple Music · Tidal · Deezer · Qobuz · Amazon · YouTube · Bandcamp · SoundCloud |
-| **Notable** | Featured sur Lofi Girl, EDM.com, KALTBLUT Magazine, Stereofox, Nightride FM, Roblox · Sorties physiques vinyl & cassette |
+| **Platforms** | Spotify · Apple Music · Tidal · Deezer · Qobuz · Amazon · YouTube · Bandcamp · SoundCloud |
+| **Notable** | Featured on Lofi Girl, EDM.com, KALTBLUT Magazine, Stereofox, Nightride FM, Roblox · Physical releases on vinyl & cassette |
 
 ---
 
-## Note légale
+## Legal notice
 
-Le contenu de ce repo (visuels, textes, musique) est protégé par le droit d'auteur et reste la propriété exclusive de VIQ. La licence associée s'applique uniquement au **code source**.
+The content of this repo (visuals, text, music) is protected by copyright and remains the exclusive property of VIQ. The associated license applies to the **source code** only.
