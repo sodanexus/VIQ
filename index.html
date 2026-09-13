@@ -86,7 +86,7 @@
             z-index: -3;
         }
 
-        /* ── BIO DIM OVERLAY ──────────────────────── */
+        /* ── DIM OVERLAY (bio / listen / reach) ───── */
         .bio-dim {
             position: fixed;
             inset: 0;
@@ -643,10 +643,6 @@ function closeAll(exceptId) {
         if (o.d.id !== exceptId && (o.d.classList.contains('active') || o.d.classList.contains('closing'))) {
             killWave(o.b);
             closeDrawer(o.d, null);
-            if (o.d.id === 'bioDrawer') {
-                var bioDim = document.getElementById('bio-dim');
-                if (bioDim) bioDim.classList.remove('active');
-            }
         }
     });
 }
@@ -665,11 +661,10 @@ function toggle(section, e) {
     closeAll(isOpen ? null : map[section].d);
     if (isOpen) {
         closeDrawer(drawer, btn);
-        if (section === 'bio') bioDim.classList.remove('active');
+        bioDim.classList.remove('active');
     } else {
         openDrawer(drawer, btn);
-        if (section === 'bio') bioDim.classList.add('active');
-        else bioDim.classList.remove('active');
+        bioDim.classList.add('active');
     }
 }
 
