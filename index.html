@@ -76,8 +76,8 @@
             body { cursor: auto; }
         }
 
-        /* ── VIDEO BG ─────────────────────────────── */
-        #bg-video {
+        /* ── IMAGE BG ─────────────────────────────── */
+        #bg-image {
             position: fixed;
             inset: 0;
             width: 100%; height: 100%;
@@ -387,10 +387,8 @@
         </defs>
     </svg>
 
-    <!-- Background video -->
-    <video autoplay muted loop playsinline id="bg-video">
-        <source src="Background.mp4" type="video/mp4">
-    </video>
+    <!-- Background image -->
+    <img src="fond.jpg" alt="" id="bg-image">
     <div class="bio-dim" id="bio-dim"></div>
 
     <!-- BOTTOM LEFT — geo stamp -->
@@ -708,7 +706,6 @@ window.addEventListener('pageshow', function(event) {
     }
 });
 
-document.addEventListener('touchstart', function() { document.getElementById('bg-video').play(); }, { once: true });
 
 // ── CUSTOM CURSOR ─────────────────────────────────────────
 (function() {
