@@ -408,10 +408,8 @@
         <span id="sound-label" class="sr-only">SOUND OFF</span>
     </button>
 
-    <!-- Ambient audio (muted by default) -->
-    <audio id="ambient-audio" loop preload="none">
-        <source src="web.mp3" type="audio/mpeg">
-    </audio>
+    <!-- Ambient audio (SoundCloud widget, chargé au premier clic sur le bouton son) -->
+    <div id="sc-holder" aria-hidden="true" style="position:fixed;left:-9999px;top:0;width:1px;height:1px;overflow:hidden;pointer-events:none;"></div>
 
     <!-- MAIN NAV -->
     <div id="ui">
@@ -473,29 +471,60 @@
 // ── SOUND TOGGLE ─────────────────────────────────────────
 var soundBtn = document.getElementById('sound-btn');
 var soundLabel = document.getElementById('sound-label');
-var audio = document.getElementById('ambient-audio');
+var scHolder = document.getElementById('sc-holder');
 var isPlaying = false;
+var scWidget = null;
+var scLoading = false;
 
-// Set audio to low volume for ambience
-audio.volume = 0.35;
+// >>> Colle ici le lien SoundCloud du morceau (public, intégration autorisée)
+var SC_TRACK_URL = 'https://soundcloud.com/viqmusic/devotion';
+var SC_VOLUME = 35; // 0-100
+
+function setSoundUI(on) {
+    isPlaying = on;
+    soundBtn.classList.toggle('playing', on);
+    soundLabel.textContent = on ? 'SOUND ON' : 'SOUND OFF';
+}
+
+function loadSoundCloud() {
+    if (scLoading) return;
+    scLoading = true;
+    var s = document.createElement('script');
+    s.src = 'https://w.soundcloud.com/player/api.js';
+    s.onload = function() {
+        var iframe = document.createElement('iframe');
+        iframe.allow = 'autoplay';
+        iframe.title = 'Ambient sound';
+        iframe.src = 'https://w.soundcloud.com/player/?url=' + encodeURIComponent(SC_TRACK_URL) +
+            '&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false';
+        scHolder.appendChild(iframe);
+        scWidget = SC.Widget(iframe);
+        scWidget.bind(SC.Widget.Events.READY, function() {
+            scWidget.setVolume(SC_VOLUME);
+        });
+        scWidget.bind(SC.Widget.Events.PLAY, function() { setSoundUI(true); });
+        scWidget.bind(SC.Widget.Events.PAUSE, function() { setSoundUI(false); });
+        // Boucle
+        scWidget.bind(SC.Widget.Events.FINISH, function() {
+            scWidget.seekTo(0);
+            scWidget.play();
+        });
+    };
+    s.onerror = function() { scLoading = false; };
+    document.head.appendChild(s);
+}
 
 soundBtn.addEventListener('click', function() {
+    if (!scWidget) {
+        setSoundUI(true);   // retour visuel immédiat
+        loadSoundCloud();
+        return;
+    }
     if (!isPlaying) {
-        var playPromise = audio.play();
-        if (playPromise !== undefined) {
-            playPromise.then(function() {
-                isPlaying = true;
-                soundBtn.classList.add('playing');
-                soundLabel.textContent = 'SOUND ON';
-            }).catch(function() {
-                // Autoplay blocked - that's fine
-            });
-        }
+        scWidget.play();
+        scWidget.setVolume(SC_VOLUME);
     } else {
-        audio.pause();
-        isPlaying = false;
-        soundBtn.classList.remove('playing');
-        soundLabel.textContent = 'SOUND OFF';
+        scWidget.pause();
     }
 });
 
