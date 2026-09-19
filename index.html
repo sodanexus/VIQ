@@ -243,9 +243,6 @@
         /* Scratch line on hover — disabled */
         .links a::after, .nav-btn::after { display: none; }
 
-        .red { color: var(--red) !important; }
-        .red::after { background: var(--red) !important; }
-
         .waving { filter: url(#wave-filter); }
 
         @media (hover: hover) {
@@ -476,7 +473,7 @@ var isPlaying = false;
 var scWidget = null;
 var scLoading = false;
 
-// >>> Colle ici le lien SoundCloud du morceau (public, intégration autorisée)
+// Lien SoundCloud du morceau (public, intégration autorisée)
 var SC_TRACK_URL = 'https://soundcloud.com/viqmusic/devotion';
 var SC_VOLUME = 35; // 0-100
 
@@ -486,9 +483,21 @@ function setSoundUI(on) {
     soundLabel.textContent = on ? 'SOUND ON' : 'SOUND OFF';
 }
 
+var scFailTimer = null;
+
+function resetSoundCloud() {
+    clearTimeout(scFailTimer);
+    scWidget = null;
+    scLoading = false;
+    scHolder.innerHTML = '';
+    setSoundUI(false);
+}
+
 function loadSoundCloud() {
     if (scLoading) return;
     scLoading = true;
+    // Si rien ne joue au bout de 6 s (script bloqué, embed désactivé, autoplay refusé), on repasse en OFF
+    scFailTimer = setTimeout(resetSoundCloud, 6000);
     var s = document.createElement('script');
     s.src = 'https://w.soundcloud.com/player/api.js';
     s.onload = function() {
@@ -502,7 +511,7 @@ function loadSoundCloud() {
         scWidget.bind(SC.Widget.Events.READY, function() {
             scWidget.setVolume(SC_VOLUME);
         });
-        scWidget.bind(SC.Widget.Events.PLAY, function() { setSoundUI(true); });
+        scWidget.bind(SC.Widget.Events.PLAY, function() { clearTimeout(scFailTimer); setSoundUI(true); });
         scWidget.bind(SC.Widget.Events.PAUSE, function() { setSoundUI(false); });
         // Boucle
         scWidget.bind(SC.Widget.Events.FINISH, function() {
@@ -510,7 +519,7 @@ function loadSoundCloud() {
             scWidget.play();
         });
     };
-    s.onerror = function() { scLoading = false; };
+    s.onerror = function() { resetSoundCloud(); };
     document.head.appendChild(s);
 }
 
