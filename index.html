@@ -642,6 +642,14 @@
     }
     drawers.forEach(function (dr) { dr.addEventListener('scroll', function () { updateMore(dr); }, { passive: true }); });
     addEventListener('resize', function () { drawers.forEach(updateMore); });
+    // While the nav shrinks, the drawer grows: re-check on every size change, so the bottom fade is lifted the
+    // moment the text fits (a single check at the end of the transition made the last lines pop in late)
+    if (window.ResizeObserver) {
+        var drawerRO = new ResizeObserver(function (entries) {
+            entries.forEach(function (e) { if (e.target.classList.contains('is-open')) updateMore(e.target); });
+        });
+        drawers.forEach(function (dr) { drawerRO.observe(dr); });
+    }
 
     btns.forEach(function (b) {
         b.addEventListener('click', function () {
