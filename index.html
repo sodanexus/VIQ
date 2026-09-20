@@ -573,14 +573,14 @@
     var uiSound = (function () {
         var ctx = null, bus = null, echoIn = null, ambient = false;
         var NOTES = {
-            listen: [146.83, 138.59, 110.00],            // D3 · C#3 · A2
-            reach:  [73.42, 92.50, 138.59],              // D2 · F#2 · C#3
-            bio:    [61.74, 73.42, 110.00]               // B1 · D2 · A2
+            listen: [146.83, 138.59, 110.00, 220.00],    // D3 · C#3 · A2 · A3
+            reach:  [73.42, 92.50, 138.59, 110.00],      // D2 · F#2 · C#3 · A2
+            bio:    [61.74, 73.42, 110.00, 92.50]        // B1 · D2 · A2 · F#2
         };
-        var GAINS = [1, 0.88, 0.78], PANS = [-0.1, 0.1, -0.02];   // per note, in playing order
+        var GAINS = [1, 0.88, 0.78, 0.68], PANS = [-0.1, 0.1, -0.02, 0.06];   // per note, in playing order
         // parts: [oscillator type, frequency ratio, gain, decay (fraction of the note), detune in cents]
-        var NIGHT = { parts: [['sine', 1, 1, 1, 0], ['sine', 2, .28, .3, 0], ['sine', 4.02, .05, .1, 0], ['triangle', 1, .15, 1, 6],
-                              ['triangle', 2, .35, 1, 0], ['sine', 3, .18, .5, 0]],
+        var NIGHT = { parts: [['sine', 5, 10, 1, 0], ['sine', 2, .28, .3, 0], ['sine', 4.02, .05, .1, 0], ['triangle', 1, .15, 1, 6],
+                              ['triangle', 5, .15, 14, 10], ['sine', 3, .18, .5, 0]],
                       a: .015, dur: .95, vol: .25, c0: 1500, c1: 700, sag: -60, sagt: .14,
                       drift: 26, wob: 18, trem: [4.2, .2], phaser: [700, 1800, .4], echo: .3, pan: -.08 };
 
@@ -592,7 +592,7 @@
             if (!AC) return null;
             ctx = new AC();
 
-            var master = ctx.createGain(); master.gain.value = 0.5;
+            var master = ctx.createGain(); master.gain.value = 0.1;
             var comp = ctx.createDynamicsCompressor();
             comp.threshold.value = -20; comp.ratio.value = 3; comp.attack.value = 0.005; comp.release.value = 0.25;
             master.connect(comp); comp.connect(ctx.destination);
@@ -612,7 +612,7 @@
             // Tape-style soft saturation, then the tone filter that rolls off the highs
             var sat = ctx.createWaveShaper();
             var curve = new Float32Array(1024);
-            for (var k = 0; k < 1024; k++) { var x = k / 512 - 1; curve[k] = Math.tanh(x * 2.0) / Math.tanh(2.0); }
+            for (var k = 0; k < 1024; k++) { var x = k / 512 - 1; curve[k] = Math.tanh(x * 1.4) / Math.tanh(1.4); }
             sat.curve = curve;
             var tone = ctx.createBiquadFilter(); tone.type = 'lowpass'; tone.frequency.value = 2800; tone.Q.value = 0.5;
             sat.connect(tone); tone.connect(master); tone.connect(conv);
