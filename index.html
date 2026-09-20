@@ -144,13 +144,16 @@
         .dim.is-bio { opacity: 0; }
 
         .portrait {
+            --ph: min(80vh, 44vw);
             position: fixed; z-index: 2;
             right: 17vw; top: 50%;
-            height: min(80vh, 44vw); width: auto; aspect-ratio: 2661 / 4014;
+            height: var(--ph); width: calc(var(--ph) * 2661 / 4014); aspect-ratio: 2661 / 4014;
             transform: translateY(-50%);
+            /* closed: fully clipped. On the way out the photo fades first, and only then snaps back to clipped */
+            opacity: 0;
             clip-path: inset(0 0 100% 0);
             visibility: hidden; pointer-events: none;
-            transition: clip-path .9s cubic-bezier(.19, 1, .22, 1), visibility 0s linear .9s;
+            transition: opacity .3s ease, clip-path 0s linear .3s, visibility 0s linear .3s;
             /* soft edges: the photo dissolves into the background instead of ending on a hard rectangle */
             -webkit-mask-image: linear-gradient(to right, transparent 0, #000 16%, #000 84%, transparent 100%),
                                 linear-gradient(to bottom, transparent 0, #000 32%, #000 86%, transparent 100%);
@@ -159,6 +162,7 @@
                         linear-gradient(to bottom, transparent 0, #000 32%, #000 86%, transparent 100%);
             mask-composite: intersect;
         }
+        .portrait img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
         /* Second portrait: slowly dissolves in and out over the first (a soft double exposure).
            Paused while the bio is closed, so it resumes where it left off and never snaps. */
         .portrait-alt {
@@ -172,10 +176,12 @@
             50%, 62% { opacity: 1; }
             100%     { opacity: 0; }
         }
+        /* open: the photo is revealed from top to bottom (opacity is already 1 while it is still clipped) */
         body.bio .portrait {
+            opacity: 1;
             clip-path: inset(0 0 0 0);
             visibility: visible;
-            transition-delay: .15s, 0s;
+            transition: opacity 0s, clip-path .9s cubic-bezier(.19, 1, .22, 1) .15s, visibility 0s;
         }
 
         /* BIO backdrop: the real photo stays, a soft graded shade sits on top (no blur).
@@ -404,9 +410,9 @@
             .drawer.bio { max-width: none; font-size: 13.5px; line-height: 1.55; }
 
             .portrait {
+                --ph: min(47vh, 118vw);
                 right: var(--mx); left: auto;
                 top: calc(var(--my) + var(--safe-t));   /* starts level with "out now" */
-                height: min(47vh, 118vw);
                 transform: none;
             }
             .scrim {
@@ -437,8 +443,10 @@
 
     <img class="bg" id="bg" src="fond.jpg" alt="" width="3840" height="3248" fetchpriority="high" decoding="async">
     <div class="dim" id="dim"></div>
-    <img class="portrait" src="profil.jpg" alt="Portrait of VIQ" width="1193" height="1800" decoding="async" fetchpriority="low">
-    <img class="portrait portrait-alt" src="profil2.jpg" alt="" aria-hidden="true" width="1193" height="1800" decoding="async" fetchpriority="low">
+    <div class="portrait">
+        <img src="profil.jpg" alt="Portrait of VIQ" width="1193" height="1800" decoding="async" fetchpriority="low">
+        <img class="portrait-alt" src="profil2.jpg" alt="" aria-hidden="true" width="1193" height="1800" decoding="async" fetchpriority="low">
+    </div>
     <div class="scrim" aria-hidden="true"></div>
 
     <div id="ui">
