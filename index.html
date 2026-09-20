@@ -395,13 +395,17 @@
             .stamp { text-align: left; font-size: 11px; transition: opacity .3s ease; }
             body.open .stamp { opacity: 0; }
 
+            /* the sound button steps aside while the bio is open (it would sit on top of the text), like the coordinates */
+            #sound-btn { transition: opacity .3s ease, visibility 0s linear 0s; }
+            body.bio #sound-btn { opacity: 0; visibility: hidden; transition: opacity .3s ease, visibility 0s linear .3s; }
+
             .links { grid-template-columns: 1fr; }
             .links .sep + a { margin-top: 0; }
             .drawer.bio { max-width: none; font-size: 13.5px; line-height: 1.55; }
 
             .portrait {
                 right: var(--mx); left: auto;
-                top: calc(var(--my) + var(--safe-t) + 60px);
+                top: calc(var(--my) + var(--safe-t));   /* starts level with "out now" */
                 height: min(47vh, 118vw);
                 transform: none;
             }
