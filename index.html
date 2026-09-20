@@ -298,6 +298,7 @@
             white-space: nowrap;
             padding-bottom: .1em;
         }
+        .links .sep, .links .sep + a { margin-top: .55em; }   /* blank line between the socials and press kit / inquiries */
         .links a { display: block; color: inherit; text-decoration: none; cursor: none; width: fit-content; padding-right: .1em; }
 
         @media (hover: hover) {
@@ -374,6 +375,7 @@
             body.open .stamp { opacity: 0; }
 
             .links { grid-template-columns: 1fr; }
+            .links .sep + a { margin-top: 0; }
             .bio { max-width: none; font-size: 13.5px; line-height: 1.55; }
 
             .portrait {
@@ -440,7 +442,7 @@
                 <a class="d" href="https://www.threads.com/@viqmusic" target="_blank" rel="noopener noreferrer">threads</a>
                 <a class="d" href="https://www.facebook.com/Viqmusic" target="_blank" rel="noopener noreferrer">facebook</a>
                 <a class="d" href="https://www.instagram.com/viqmusic/" target="_blank" rel="noopener noreferrer">instagram</a>
-                <a class="d" href="/viq-press-kit.zip" download>press kit</a>
+                <a class="d sep" href="/viq-press-kit.zip" download>press kit</a>
                 <a class="d" href="mailto:contact@viqmusic.net">all inquiries</a>
             </section>
 
