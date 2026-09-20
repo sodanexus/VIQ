@@ -36,7 +36,7 @@
 
 ## Concept
 
-A full-screen background image, monumental typography, and animated drawers that reveal links on demand. The interface fades away in favor of the atmosphere. Everything lives in a single `index.html` file.
+A full-screen photograph and monumental typography set in `mix-blend-mode: difference`: the words invert the colors of the image beneath them, so the menu becomes part of the picture. Drawers reveal links on demand, and the BIO section adds a portrait. Everything lives in a single `index.html` file.
 
 ---
 
@@ -46,14 +46,16 @@ A full-screen background image, monumental typography, and animated drawers that
 VIQ/
 ├── index.html              # The whole app — HTML + CSS + JS
 ├── 404.html                # Custom error page
-├── fond.jpg                # Full-screen background visual
+├── fond.jpg                # Full-screen background visual (3840×3248)
+├── profil.jpg              # Portrait shown in the BIO section (1193×1800)
 ├── og-image.jpg            # Open Graph image (1260×630)
-├── favicon.png
+├── favicon.png             # Square 512×512, transparent
+├── apple-touch-icon.png    # 180×180 on the night colour (iOS home screen)
 ├── viq-press-kit.zip       # Downloadable press kit
 ├── llms.txt                # Artist fact sheet for LLMs (ChatGPT, Perplexity…)
 ├── sitemap.xml
 ├── robots.txt
-└── CNAME                   # viqmusic.net
+└── CNAME                   # www.viqmusic.net
 ```
 
 ---
@@ -72,14 +74,17 @@ VIQ/
 
 ## Design & interactions
 
-- **Full-screen background image** (`object-fit: cover`)
-- **Dim overlay** on hover/open of the Listen, Reach and Bio drawers, for readability
-- **Typography** Playfair Display — uppercase, fluid sizing (`clamp`)
-- **Animated drawers** — each section opens with a sequential animation (`translateY`) and closes cleanly
-- **SVG wave effect** (`feTurbulence` + `feDisplacementMap`) animated with `requestAnimationFrame` on active button clicks
-- **Hover links** — horizontal shift (`translateX`) + reduced opacity on the other links in the drawer
+- **Difference blending** — the whole UI layer uses `mix-blend-mode: difference`, so type inverts the photo underneath (teal ↔ orange, dark → white)
+- **Monumental menu** — five lowercase words in Archivo Expanded ExtraBold, always on a single line. A small script (`fit()`) scales the menu down if a word would ever overflow the screen (narrow phones, slow font loading)
+- **Cursor lens** — a white disc, also in `difference`, that grows over links (desktop only)
+- **Photo drift** — the background follows the pointer with a slight parallax; **film grain** overlay (animated SVG noise)
+- **Drawers** — LISTEN, REACH and BIO open below the menu, which shrinks to make room; items appear in sequence, hover dims the siblings, Esc closes
+- **BIO** — the photo stays as the backdrop under a soft graded shade (dark on the text side, opening toward the portrait; no blur). The portrait is revealed on the right (desktop) or above the text with a dark gradient (mobile)
+- **Footer row** — coordinates + `©VIQ <current year>` (the year updates itself) and the sound button share one axis (desktop: bottom-right; mobile: coordinates bottom-left, button bottom-right), both in `difference`
+- **Ambient sound** — SoundCloud widget loaded on first click of the bottom-right button, looped, 35 % volume
 - **Page transitions** — black fade to a release · white fade to the shop
-- **Entrance fade** — black fade on initial load
+- **Entrance** — black curtain lifting, then the words rise one after the other
+- `prefers-reduced-motion` is respected (no grain animation, no drift, no reveal)
 
 ---
 
@@ -88,8 +93,8 @@ VIQ/
 | Item | Detail |
 |---|---|
 | Frontend | HTML + CSS + JS vanilla — zero dependencies |
-| Typography | Google Fonts — Playfair Display |
-| Animations | CSS `@keyframes` + SVG Filter (`feTurbulence`) + `requestAnimationFrame` |
+| Typography | Google Fonts — Archivo (variable: width + weight axes) |
+| Animations | CSS transitions / `@keyframes` + SVG noise (`feTurbulence`) + `requestAnimationFrame` |
 | Analytics | [Umami](https://umami.is/) (privacy-first, cookieless) |
 | Email | Cloudflare obfuscation (`email-decode`) |
 | Merch | [Fourthwall](https://fourthwall.com) |
@@ -99,7 +104,7 @@ VIQ/
 
 ## SEO & discoverability
 
-- **Schema.org** structured data (`MusicGroup`) with genres, platform links and members
+- **Schema.org** structured data (`WebSite` + `MusicGroup` in one `@graph`) with genres, image, founding date, member and all platform links (`sameAs`)
 - Full **Open Graph** and **Twitter Card** tags
 - `canonical` tag → `https://www.viqmusic.net/`
 - `robots: index, follow` + `sitemap.xml`
