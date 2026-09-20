@@ -159,6 +159,19 @@
                         linear-gradient(to bottom, transparent 0, #000 32%, #000 86%, transparent 100%);
             mask-composite: intersect;
         }
+        /* Second portrait: slowly dissolves in and out over the first (a soft double exposure).
+           Paused while the bio is closed, so it resumes where it left off and never snaps. */
+        .portrait-alt {
+            opacity: 0;
+            animation: portrait-pulse 14s ease-in-out infinite;
+            animation-play-state: paused;
+        }
+        body.bio .portrait-alt { animation-play-state: running; }
+        @keyframes portrait-pulse {
+            0%, 12%  { opacity: 0; }
+            50%, 62% { opacity: 1; }
+            100%     { opacity: 0; }
+        }
         body.bio .portrait {
             clip-path: inset(0 0 0 0);
             visibility: visible;
@@ -407,6 +420,7 @@
             .curtain { animation-duration: .01s; }
             .bg { transform: scale(1.02); }
             .nav, .drawer .d, .dim, .portrait, .scrim { transition: none; }
+            .portrait-alt { animation: none; }
         }
     </style>
 </head>
@@ -420,6 +434,7 @@
     <img class="bg" id="bg" src="fond.jpg" alt="" width="3840" height="3248" fetchpriority="high" decoding="async">
     <div class="dim" id="dim"></div>
     <img class="portrait" src="profil.jpg" alt="Portrait of VIQ" width="1193" height="1800" decoding="async" fetchpriority="low">
+    <img class="portrait portrait-alt" src="profil2.jpg" alt="" aria-hidden="true" width="1193" height="1800" decoding="async" fetchpriority="low">
     <div class="scrim" aria-hidden="true"></div>
 
     <div id="ui">
