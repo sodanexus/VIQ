@@ -141,7 +141,7 @@
             transition: opacity .7s ease;
         }
         .dim.on { opacity: .5; }
-        .dim.bio { opacity: 0; }
+        .dim.is-bio { opacity: 0; }
 
         .portrait {
             position: fixed; z-index: 2;
@@ -151,6 +151,13 @@
             clip-path: inset(0 0 100% 0);
             visibility: hidden; pointer-events: none;
             transition: clip-path .9s cubic-bezier(.19, 1, .22, 1), visibility 0s linear .9s;
+            /* soft edges: the photo dissolves into the background instead of ending on a hard rectangle */
+            -webkit-mask-image: linear-gradient(to right, transparent 0, #000 16%, #000 84%, transparent 100%),
+                                linear-gradient(to bottom, transparent 0, #000 32%, #000 86%, transparent 100%);
+            -webkit-mask-composite: source-in;
+            mask-image: linear-gradient(to right, transparent 0, #000 16%, #000 84%, transparent 100%),
+                        linear-gradient(to bottom, transparent 0, #000 32%, #000 86%, transparent 100%);
+            mask-composite: intersect;
         }
         body.bio .portrait {
             clip-path: inset(0 0 0 0);
@@ -306,13 +313,14 @@
             .drawer.ready .d:hover { opacity: 1; transform: translateX(.12em); }
         }
 
-        .bio {
+        .drawer.bio {
             font-size: clamp(14px, 1vw + 9px, 17px);
             max-width: min(36rem, 46vw);
             line-height: 1.65; font-weight: 400; font-stretch: 100%;
             padding-bottom: .2em;
         }
-        .bio p + p { margin-top: 1em; }
+        .drawer.bio { text-align: justify; text-align-last: left; hyphens: none; -webkit-hyphens: none; }
+        .drawer.bio p + p { margin-top: 1em; }
 
         /* ── FOOTER ROW: coordinates + copyright and the sound button share one axis ── */
         .foot {
@@ -376,7 +384,7 @@
 
             .links { grid-template-columns: 1fr; }
             .links .sep + a { margin-top: 0; }
-            .bio { max-width: none; font-size: 13.5px; line-height: 1.55; }
+            .drawer.bio { max-width: none; font-size: 13.5px; line-height: 1.55; }
 
             .portrait {
                 right: var(--mx); left: auto;
@@ -390,7 +398,7 @@
                 transition-duration: .8s;
             }
             /* upper part of the screen (menu + portrait): light overall shade so the photo doesn't fight the type */
-            body.bio .dim.bio { opacity: .55; }
+            body.bio .dim.is-bio { opacity: .55; }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -598,7 +606,7 @@
             }
         });
         dim.classList.toggle('on', !!id && id !== 'bio');
-        dim.classList.toggle('bio', id === 'bio');
+        dim.classList.toggle('is-bio', id === 'bio');
     }
 
     // Fade the bottom edge of a drawer while there is more to scroll
