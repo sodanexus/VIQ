@@ -1,6 +1,6 @@
 <div align="center">
 
-# VIQ — My Official Artist Website
+# VIQ — Official Artist Website
 
 This is my official website as VIQ, an electronic and indie music artist based in Paris. A minimal, immersive visual experience — single page, zero framework, zero build — that I designed and built myself.
 
