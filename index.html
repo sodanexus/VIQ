@@ -563,7 +563,7 @@
 
     // ── SOUND TOGGLE (SoundCloud widget) ─────────────────
     var soundBtn = $('#sound-btn'), soundLabel = $('#sound-label'), scHolder = $('#sc-holder');
-    var isPlaying = false, scWidget = null, scLoading = false, scFailTimer = null;
+    var isPlaying = false, scWidget = null, scReady = false, scPendingPlay = false, scFailTimer = null;
     var SC_TRACK_URL = 'https://soundcloud.com/viqmusic/devotion';
     var SC_VOLUME = 35; // 0–100
 
@@ -572,58 +572,51 @@
         soundBtn.classList.toggle('playing', on);
         soundLabel.textContent = on ? 'SOUND ON' : 'SOUND OFF';
     }
-    function resetSoundCloud() {
-        clearTimeout(scFailTimer);
-        scWidget = null; scLoading = false;
-        scHolder.innerHTML = '';
-        setSoundUI(false);
-    }
-    // Preload the widget API as soon as the page loads (not on click), so that on the first click
-    // the iframe can be created synchronously inside the click handler. If it were created only after
-    // the script finished loading (async), the click's user gesture would have expired by then and
-    // the browser silently refuses the autoplay-with-sound — that's the "must click twice" bug.
-    var scApiReady = false;
-    (function preloadSC() {
+    // The widget is loaded quietly in the background as soon as the page opens — no sound, no playback.
+    // Browsers only allow unmuted playback when play() is called synchronously, directly inside a click
+    // handler. Building the iframe only once someone clicks (as before) meant that first play() call
+    // always happened after an async round-trip (script load, then a postMessage handshake with the
+    // iframe) — by then the click's "gesture" had expired and the browser silently blocked the sound.
+    // Loading everything ahead of time means the click handler below just calls scWidget.play() on a
+    // widget that already exists, which is exactly the direct, synchronous call browsers allow.
+    (function initSoundCloud() {
         var s = document.createElement('script');
         s.src = 'https://w.soundcloud.com/player/api.js';
-        s.onload = function () { scApiReady = true; };
+        s.onload = function () {
+            var iframe = document.createElement('iframe');
+            iframe.allow = 'autoplay';
+            iframe.title = 'Ambient sound';
+            iframe.src = 'https://w.soundcloud.com/player/?url=' + encodeURIComponent(SC_TRACK_URL) +
+                '&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false';
+            scHolder.appendChild(iframe);
+            scWidget = SC.Widget(iframe);
+            scWidget.bind(SC.Widget.Events.READY, function () {
+                scReady = true;
+                scWidget.setVolume(SC_VOLUME);
+                // If the person already clicked while this was still loading, honor it now.
+                if (scPendingPlay) { scPendingPlay = false; clearTimeout(scFailTimer); scWidget.play(); }
+            });
+            scWidget.bind(SC.Widget.Events.PLAY,   function () { setSoundUI(true); });
+            scWidget.bind(SC.Widget.Events.PAUSE,  function () { setSoundUI(false); });
+            scWidget.bind(SC.Widget.Events.FINISH, function () { scWidget.seekTo(0); scWidget.play(); });
+        };
         document.head.appendChild(s);
     })();
-    function createSCIframe() {
-        var iframe = document.createElement('iframe');
-        iframe.allow = 'autoplay';
-        iframe.title = 'Ambient sound';
-        iframe.src = 'https://w.soundcloud.com/player/?url=' + encodeURIComponent(SC_TRACK_URL) +
-            '&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false';
-        scHolder.appendChild(iframe);
-        scWidget = SC.Widget(iframe);
-        scWidget.bind(SC.Widget.Events.READY,  function () { scWidget.setVolume(SC_VOLUME); scWidget.play(); });
-        scWidget.bind(SC.Widget.Events.PLAY,   function () { clearTimeout(scFailTimer); setSoundUI(true); });
-        scWidget.bind(SC.Widget.Events.PAUSE,  function () { setSoundUI(false); });
-        scWidget.bind(SC.Widget.Events.FINISH, function () { scWidget.seekTo(0); scWidget.play(); });
-    }
-    function loadSoundCloud() {
-        if (scLoading) return;
-        scLoading = true;
-        // Nothing playing after 6 s (blocked script, disabled embed, refused autoplay): back to OFF
-        scFailTimer = setTimeout(resetSoundCloud, 6000);
-        if (scApiReady) {
-            // Synchronous: still inside the click's user-gesture window, so autoplay is allowed.
-            createSCIframe();
-        } else {
-            // Rare (very first click before the preload finished): poll briefly and create as soon as ready.
-            var tries = 0;
-            var wait = setInterval(function () {
-                tries++;
-                if (scApiReady) { clearInterval(wait); createSCIframe(); }
-                else if (tries > 100) { clearInterval(wait); resetSoundCloud(); }
-            }, 30);
-        }
-    }
     soundBtn.addEventListener('click', function () {
-        if (!scWidget) { setSoundUI(true); loadSoundCloud(); return; }
-        if (!isPlaying) { scWidget.play(); scWidget.setVolume(SC_VOLUME); }
-        else scWidget.pause();
+        if (isPlaying) { scWidget.pause(); return; }
+        if (scReady) {
+            // Widget already loaded: this is a direct, synchronous response to the click.
+            scWidget.play();
+        } else {
+            // Still loading (only possible if someone clicks within the first instant on a slow
+            // connection) — remember the intent and play as soon as READY fires.
+            setSoundUI(true);
+            scPendingPlay = true;
+            clearTimeout(scFailTimer);
+            scFailTimer = setTimeout(function () {
+                if (!isPlaying) { scPendingPlay = false; setSoundUI(false); }
+            }, 8000);
+        }
     });
 
     // ── DRAWERS ──────────────────────────────────────────
