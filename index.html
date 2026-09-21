@@ -375,19 +375,11 @@
             cursor: none; pointer-events: auto;
         }
         .sound-icon { width: 16px; height: 12px; display: flex; align-items: flex-end; gap: 2.5px; }
-        .sound-bar { width: 2px; background: currentColor; transition: height .2s ease; }
+        .sound-bar { width: 2px; background: currentColor; transition: height .08s linear; }
         .sound-bar:nth-child(1) { height: 4px; }
         .sound-bar:nth-child(2) { height: 9px; }
         .sound-bar:nth-child(3) { height: 6px; }
         .sound-bar:nth-child(4) { height: 12px; }
-        #sound-btn.playing .sound-bar:nth-child(1) { animation: eq1 .8s ease-in-out infinite alternate; }
-        #sound-btn.playing .sound-bar:nth-child(2) { animation: eq2 .6s ease-in-out infinite alternate; }
-        #sound-btn.playing .sound-bar:nth-child(3) { animation: eq3 .9s ease-in-out infinite alternate; }
-        #sound-btn.playing .sound-bar:nth-child(4) { animation: eq4 .7s ease-in-out infinite alternate; }
-        @keyframes eq1 { from { height: 2px; } to { height: 9px; } }
-        @keyframes eq2 { from { height: 4px; } to { height: 12px; } }
-        @keyframes eq3 { from { height: 3px; } to { height: 8px; } }
-        @keyframes eq4 { from { height: 6px; } to { height: 12px; } }
 
         /* ── CURSOR LENS ─────────────────────────────── */
         .lens {
@@ -564,6 +556,7 @@
 
     // ── SOUND TOGGLE (self-hosted audio) ──────────────────
     var soundBtn = $('#sound-btn'), soundLabel = $('#sound-label'), sound = $('#ambient-audio');
+    var soundBars = $$('.sound-bar');
     var isPlaying = false;
     var SC_VOLUME = 0.35; // 0–1
 
@@ -573,12 +566,54 @@
         soundLabel.textContent = on ? 'SOUND ON' : 'SOUND OFF';
     }
     sound.volume = SC_VOLUME;
-    sound.addEventListener('play',  function () { setSoundUI(true); });
-    sound.addEventListener('pause', function () { setSoundUI(false); });
+
+    // ── Real-time equalizer, driven by the actual audio (not a canned CSS loop) ──
+    var audioCtx, analyser, freqData, drawing = false;
+    // Each bar samples a different (low → high) slice of the spectrum, with its own resting/peak
+    // height so the bars still look hand-tuned rather than four identical twitching sticks.
+    var barRanges = [[3, 13], [4, 17], [3, 12], [5, 17]];
+
+    function ensureAudioGraph() {
+        if (audioCtx) return;
+        var AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return; // very old browser: falls back to a static icon, still fully functional
+        audioCtx = new AC();
+        var source = audioCtx.createMediaElementSource(sound);
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 64;
+        analyser.smoothingTimeConstant = .78;
+        source.connect(analyser);
+        analyser.connect(audioCtx.destination);
+        freqData = new Uint8Array(analyser.frequencyBinCount);
+    }
+    function drawBars() {
+        if (!isPlaying || !analyser) { drawing = false; return; }
+        analyser.getByteFrequencyData(freqData);
+        var n = freqData.length, groups = soundBars.length;
+        for (var i = 0; i < groups; i++) {
+            var start = Math.floor((i / groups) * n * .6);
+            var end = Math.floor(((i + 1) / groups) * n * .6);
+            var sum = 0, count = 0;
+            for (var j = start; j < end; j++) { sum += freqData[j]; count++; }
+            var level = count ? sum / count / 255 : 0; // 0–1
+            var range = barRanges[i];
+            soundBars[i].style.height = (range[0] + level * (range[1] - range[0])).toFixed(1) + 'px';
+        }
+        requestAnimationFrame(drawBars);
+    }
+    function resetBars() { soundBars.forEach(function (b) { b.style.height = ''; }); }
+
+    sound.addEventListener('play', function () {
+        setSoundUI(true);
+        if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+        if (!drawing) { drawing = true; requestAnimationFrame(drawBars); }
+    });
+    sound.addEventListener('pause', function () { setSoundUI(false); resetBars(); });
     soundBtn.addEventListener('click', function () {
         if (isPlaying) { sound.pause(); return; }
-        // Same-origin <audio> element, played directly inside the click handler:
-        // no third-party iframe involved, so this always works on the first click.
+        // Built on the user's click, same as sound.play() just below — still counts as the same
+        // gesture, so it's allowed to start right away.
+        ensureAudioGraph();
         sound.play();
     });
 
