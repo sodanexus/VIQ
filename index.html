@@ -298,6 +298,8 @@
             left: calc(var(--mx) + var(--safe-l));
             bottom: calc(var(--my) + var(--safe-b));
             max-height: calc(100% - 2 * var(--my) - var(--safe-t) - var(--safe-b) - var(--nav-open-h));
+            /* keep the right page margin (an absolutely positioned box would otherwise run to the screen edge) */
+            max-width: calc(100% - 2 * var(--mx) - var(--safe-l) - var(--safe-r));
             overflow-y: auto; scrollbar-width: none;
             visibility: hidden; pointer-events: none;
             transition: visibility 0s linear .4s;
@@ -414,7 +416,7 @@
 
             .links { grid-template-columns: 1fr; }
             .links .sep + a { margin-top: 0; }
-            .drawer.bio { max-width: none; font-size: 13.5px; line-height: 1.55; }
+            .drawer.bio { max-width: calc(100% - 2 * var(--mx) - var(--safe-l) - var(--safe-r)); font-size: 13.5px; line-height: 1.55; }
 
             .portrait {
                 --ph: min(47vh, 118vw);
