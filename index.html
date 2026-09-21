@@ -182,7 +182,8 @@
             opacity: 1;
             clip-path: inset(0 0 0 0);
             visibility: visible;
-            transition: opacity 0s, clip-path .9s cubic-bezier(.19, 1, .22, 1) .15s, visibility 0s;
+            /* open: same idea as the close — clip stays fully open, opacity does the work (a fade in) */
+            transition: opacity .5s ease .1s, clip-path 0s linear, visibility 0s linear;
         }
 
         /* BIO backdrop: the real photo stays, a soft graded shade sits on top (no blur).
@@ -577,28 +578,47 @@
         scHolder.innerHTML = '';
         setSoundUI(false);
     }
+    // Preload the widget API as soon as the page loads (not on click), so that on the first click
+    // the iframe can be created synchronously inside the click handler. If it were created only after
+    // the script finished loading (async), the click's user gesture would have expired by then and
+    // the browser silently refuses the autoplay-with-sound — that's the "must click twice" bug.
+    var scApiReady = false;
+    (function preloadSC() {
+        var s = document.createElement('script');
+        s.src = 'https://w.soundcloud.com/player/api.js';
+        s.onload = function () { scApiReady = true; };
+        document.head.appendChild(s);
+    })();
+    function createSCIframe() {
+        var iframe = document.createElement('iframe');
+        iframe.allow = 'autoplay';
+        iframe.title = 'Ambient sound';
+        iframe.src = 'https://w.soundcloud.com/player/?url=' + encodeURIComponent(SC_TRACK_URL) +
+            '&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false';
+        scHolder.appendChild(iframe);
+        scWidget = SC.Widget(iframe);
+        scWidget.bind(SC.Widget.Events.READY,  function () { scWidget.setVolume(SC_VOLUME); scWidget.play(); });
+        scWidget.bind(SC.Widget.Events.PLAY,   function () { clearTimeout(scFailTimer); setSoundUI(true); });
+        scWidget.bind(SC.Widget.Events.PAUSE,  function () { setSoundUI(false); });
+        scWidget.bind(SC.Widget.Events.FINISH, function () { scWidget.seekTo(0); scWidget.play(); });
+    }
     function loadSoundCloud() {
         if (scLoading) return;
         scLoading = true;
         // Nothing playing after 6 s (blocked script, disabled embed, refused autoplay): back to OFF
         scFailTimer = setTimeout(resetSoundCloud, 6000);
-        var s = document.createElement('script');
-        s.src = 'https://w.soundcloud.com/player/api.js';
-        s.onload = function () {
-            var iframe = document.createElement('iframe');
-            iframe.allow = 'autoplay';
-            iframe.title = 'Ambient sound';
-            iframe.src = 'https://w.soundcloud.com/player/?url=' + encodeURIComponent(SC_TRACK_URL) +
-                '&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false';
-            scHolder.appendChild(iframe);
-            scWidget = SC.Widget(iframe);
-            scWidget.bind(SC.Widget.Events.READY,  function () { scWidget.setVolume(SC_VOLUME); });
-            scWidget.bind(SC.Widget.Events.PLAY,   function () { clearTimeout(scFailTimer); setSoundUI(true); });
-            scWidget.bind(SC.Widget.Events.PAUSE,  function () { setSoundUI(false); });
-            scWidget.bind(SC.Widget.Events.FINISH, function () { scWidget.seekTo(0); scWidget.play(); });
-        };
-        s.onerror = resetSoundCloud;
-        document.head.appendChild(s);
+        if (scApiReady) {
+            // Synchronous: still inside the click's user-gesture window, so autoplay is allowed.
+            createSCIframe();
+        } else {
+            // Rare (very first click before the preload finished): poll briefly and create as soon as ready.
+            var tries = 0;
+            var wait = setInterval(function () {
+                tries++;
+                if (scApiReady) { clearInterval(wait); createSCIframe(); }
+                else if (tries > 100) { clearInterval(wait); resetSoundCloud(); }
+            }, 30);
+        }
     }
     soundBtn.addEventListener('click', function () {
         if (!scWidget) { setSoundUI(true); loadSoundCloud(); return; }
