@@ -94,6 +94,7 @@
             --nav: min(17vh, 19vw);
             --nav-size: calc(var(--nav) * var(--fit));
             --nav-open-size: min(7.4vh, 11vw);
+            --nav-open-h: calc(var(--nav-open-size) * 4.3);   /* height of the shrunk menu: 5 rows × .86 line-height */
             --dw: clamp(26px, min(7vh, 7.4vw), 84px);
 
 
@@ -287,10 +288,16 @@
         body.open .item.is-active { opacity: 1; }
 
         /* ── DRAWERS ─────────────────────────────────── */
-        .stage { position: relative; flex: 1; min-height: 0; }
+        .stage { flex: 1; min-height: 0; }
 
+        /* Anchored to the page margins, with a max height computed from the menu's FINAL size.
+           (It used to be 100% of the space left under the menu, which grows while the menu shrinks:
+           for the first ~300 ms the list was clipped, and its last lines showed up late.) */
         .drawer {
-            position: absolute; left: 0; bottom: 0; max-height: 100%;
+            position: absolute;
+            left: calc(var(--mx) + var(--safe-l));
+            bottom: calc(var(--my) + var(--safe-b));
+            max-height: calc(100% - 2 * var(--my) - var(--safe-t) - var(--safe-b) - var(--nav-open-h));
             overflow-y: auto; scrollbar-width: none;
             visibility: hidden; pointer-events: none;
             transition: visibility 0s linear .4s;
@@ -306,8 +313,8 @@
         .drawer.is-open .d {
             opacity: 1; transform: none;
             transition:
-                opacity .5s ease calc(var(--i) * 35ms + .15s),
-                transform .7s cubic-bezier(.19, 1, .22, 1) calc(var(--i) * 35ms + .15s);
+                opacity .4s ease calc(var(--i) * 22ms + .05s),
+                transform .6s cubic-bezier(.19, 1, .22, 1) calc(var(--i) * 22ms + .05s);
         }
         .drawer.is-open.ready .d {
             transition: opacity .25s ease, transform .3s cubic-bezier(.2, 0, .2, 1);
@@ -624,7 +631,7 @@
                 dr.removeAttribute('inert');
                 dr.scrollTop = 0;
                 var n = dr.querySelectorAll('.d').length;
-                readyTimer = setTimeout(function () { dr.classList.add('ready'); }, n * 35 + 900);
+                readyTimer = setTimeout(function () { dr.classList.add('ready'); }, n * 22 + 700);
                 requestAnimationFrame(function () { updateMore(dr); });
                 setTimeout(function () { if (current === id) updateMore(dr); }, 950);   // after the nav has finished shrinking
             } else {
@@ -637,8 +644,13 @@
     }
 
     // Fade the bottom edge of a drawer while there is more to scroll
+    // Uses layout sizes (offsetTop/offsetHeight), not scrollHeight: scrollHeight also counts the items' entrance
+    // translateY, which kept the fade on (and the last lines dimmed) for about a second after opening.
     function updateMore(dr) {
-        dr.classList.toggle('more', dr.scrollHeight - dr.clientHeight > 12 && dr.scrollTop + dr.clientHeight < dr.scrollHeight - 2);
+        var last = dr.lastElementChild;
+        if (!last) return;
+        var contentH = last.offsetTop + last.offsetHeight;
+        dr.classList.toggle('more', contentH - dr.clientHeight > 12 && dr.scrollTop + dr.clientHeight < contentH - 2);
     }
     drawers.forEach(function (dr) { dr.addEventListener('scroll', function () { updateMore(dr); }, { passive: true }); });
     addEventListener('resize', function () { drawers.forEach(updateMore); });
