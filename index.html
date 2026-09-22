@@ -234,7 +234,7 @@
             100% { opacity: 0; visibility: hidden; }
         }
         .exit-fade {
-            position: fixed; inset: 0; z-index: 99999; background: #fff;
+            position: fixed; inset: 0; z-index: 99999; background: #050403;
             opacity: 0; pointer-events: none; transition: opacity .4s ease;
         }
         .exit-fade.black { background: #000; }
@@ -470,7 +470,7 @@
             <a class="item" id="btn-outnow" data-exit="black" style="--i:0" href="https://go.viqmusic.net/stn" aria-label="Out now: listen to the new release"><span class="w"><span>out now</span></span></a>
             <button class="item" style="--i:1" type="button" data-drawer="listen" aria-expanded="false" aria-controls="drawer-listen"><span class="w"><span>listen</span></span></button>
             <button class="item" style="--i:2" type="button" data-drawer="reach" aria-expanded="false" aria-controls="drawer-reach"><span class="w"><span>reach</span></span></button>
-            <a class="item" id="btn-wear" data-exit="white" style="--i:3" href="https://merch.viqmusic.net/"><span class="w"><span>wear</span></span></a>
+            <a class="item" id="btn-wear" data-exit="dark" style="--i:3" href="https://merch.viqmusic.net/"><span class="w"><span>wear</span></span></a>
             <button class="item" style="--i:4" type="button" data-drawer="bio" aria-expanded="false" aria-controls="drawer-bio"><span class="w"><span>bio</span></span></button>
         </nav>
 
@@ -701,7 +701,7 @@
         if (current && !e.target.closest('.nav, .drawer, #sound-btn')) setOpen(null);
     });
 
-    // ── EXIT TRANSITIONS: white fade to the shop, black fade to the release ──
+    // ── EXIT TRANSITIONS: dark fade to the shop, black fade to the release ──
     $$('[data-exit]').forEach(function (a) {
         a.addEventListener('click', function (e) {
             if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
