@@ -103,6 +103,16 @@
             --safe-l: env(safe-area-inset-left, 0px);
             --safe-r: env(safe-area-inset-right, 0px);
 
+            /* Portrait geometry, shared with .portrait so the bio column can stay clear of it.
+               --portrait-left is the photo's actual left edge (viewport-relative); the bio's
+               max-width is capped so its right edge never crosses it, gap included. */
+            --portrait-r: 17vw;
+            --portrait-ph: min(80vh, 44vw);
+            --portrait-w: calc(var(--portrait-ph) * 2661 / 4014);
+            --portrait-left: calc(100vw - var(--portrait-r) - var(--portrait-w));
+            --bio-gap: clamp(28px, 4vw, 64px);
+            --bio-avail: max(200px, calc(var(--portrait-left) - var(--mx) - var(--safe-l) - var(--bio-gap)));
+
             box-sizing: border-box;
             padding-top: env(safe-area-inset-top, 0px);
             padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -145,9 +155,9 @@
         .dim.is-bio { opacity: 0; }
 
         .portrait {
-            --ph: min(80vh, 44vw);
+            --ph: var(--portrait-ph);
             position: fixed; z-index: 2;
-            right: 17vw; top: 50%;
+            right: var(--portrait-r); top: 50%;
             height: var(--ph); width: calc(var(--ph) * 2661 / 4014); aspect-ratio: 2661 / 4014;
             transform: translateY(-50%);
             /* closed: fully clipped. On the way out the photo fades first, and only then snaps back to clipped */
@@ -340,11 +350,15 @@
         @media (hover: hover) {
             .drawer.ready:hover .d { opacity: .28; }
             .drawer.ready .d:hover { opacity: 1; transform: translateX(.12em); }
+            /* the bio paragraphs are plain text, not nav-style links: no dim/highlight on hover */
+            .drawer.bio.ready:hover .d,
+            .drawer.bio.ready .d:hover { opacity: 1; transform: none; }
         }
 
         .drawer.bio {
-            font-size: clamp(14px, 1vw + 9px, 17px);
-            max-width: min(36rem, 46vw);
+            font-size: clamp(16px, 1.2vw + 11px, 23px);
+            /* never crosses the portrait's left edge, whatever the window size (see --bio-avail) */
+            max-width: min(46rem, 62vw, var(--bio-avail));
             line-height: 1.65; font-weight: 400; font-stretch: 100%;
             padding-bottom: .2em;
         }
@@ -409,7 +423,7 @@
 
             .links { grid-template-columns: 1fr; }
             .links .sep + a { margin-top: 0; }
-            .drawer.bio { max-width: calc(100% - 2 * var(--mx) - var(--safe-l) - var(--safe-r)); font-size: 13.5px; line-height: 1.55; }
+            .drawer.bio { max-width: calc(100% - 2 * var(--mx) - var(--safe-l) - var(--safe-r)); font-size: clamp(13px, 3.6vw, 16px); line-height: 1.5; }
 
             .portrait {
                 --ph: min(47vh, 118vw);
